@@ -24,7 +24,7 @@ namespace PRG2_Assignment2_Team12
         public abstract double CalculatePrice();
         public string ToString()
         {
-            return "Option: " + Option + ", Number of Scoops: " + Scoops;
+            return "Option: " + Option + ", Number of Scoops: " + Scoops+"\nFlavours: "+Flavours+"\nToppings: "+Toppings;
         }
     }
 }
