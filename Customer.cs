@@ -8,5 +8,8 @@ namespace PRG2_Assignment2_Team12
 {
     internal class Customer
     {
+        private string name;
+        public string Name { get; set; }
+
     }
 }
