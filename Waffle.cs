@@ -16,11 +16,10 @@ namespace PRG2_Assignment2_Team12
         }
         public override double CalculatePrice()
         {
-
+            return 0.0;
         }
         public override string ToString()
         {
-            return "Option: " + Option + ", Number of Scoops: " + Scoops + "\nFlavours: " + Flavours + "\nToppings: " + Toppings + "\nWaffle Flavour: " + WaffleFlavour;
+            return $"{base.ToString()}\nWaffle Flavour: {WaffleFlavour}";
         }
-    }
 }

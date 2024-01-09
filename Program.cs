@@ -7,3 +7,6 @@
 // (To delete)
 //chloe-ice cream, waffle, cone, cup
 //sahana - customer, order, point cards, flavours, toppings
+
+//chloe - features 2,5 and 6
+//sahana- features 1, 3 ad 4
