@@ -11,7 +11,7 @@ namespace PRG2_Assignment2_Team12
         private int id;
         private DateTime timeReceived;
         private DateTime? timeFulfilled;
-        private List<IceCream> iceCreamList;
+       
         public int Id { get;set; }
         public DateTime TimeReceived { get; set; }
         public DateTime? TimeFulfilled { get; set;}
@@ -24,7 +24,29 @@ namespace PRG2_Assignment2_Team12
         }
         public ModifyIceCream(int id)
         {
+            foreach(IceCream iceCream in iceCreamList)
+            {
+                if (iceCream == id)
+                {
 
+                }
+            }
+        }
+        public AddIceCream(IceCream iceCream)
+        {
+
+        }
+        public DeleteIceCream(int iceCreamId)
+        {
+
+        }
+        public double CalculateTotal()
+        {
+
+        }
+        public override string ToString()
+        {
+            return $"{base.ToString()} ID: {Id} Order Received Time: {TimeReceived} Order Fulfilled Time: {TimeFulfilled}";
         }
     }
 }

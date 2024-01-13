@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace PRG2_Assignment2_Team12
 {
-    class Waffle:IceCream
+    class Waffle : IceCream
     {
         public string WaffleFlavour { get; set; }
-        public Waffle() { }
+        public Waffle(): base() { }
         public Waffle(string option, int scoops, List<Flavour> flavours, List<Topping> toppings, string waffleFlavour) : base(option, scoops, flavours, toppings)
         {
             WaffleFlavour = waffleFlavour;
@@ -22,43 +22,43 @@ namespace PRG2_Assignment2_Team12
             {
                 price = 7.0;
             }
-            else if (Scoops = 2)
+            else if (Scoops == 2)
             {
                 price = 8.5;
             }
-            else if (Scoops = 3)
+            else if (Scoops == 3)
             {
                 price = 9.5;
             }
             foreach (Flavour flavour in Flavours)
             {
-                if (flavour = 'Durian')
+                if (flavour == "Durian")
                 {
                     price += 2;
                 }
-                else if (flavour = 'Ube')
+                else if (flavour == "Ube")
                 {
                     price += 2;
                 }
-                else if (flavour='Sea Salt')
+                else if (flavour == "Sea Salt")
                 {
                     price += 2;
                 }
             }
             foreach (Topping topping in Toppings)
             {
-                toppingCount += 1
+                toppingCount += 1;
             }
             price += (toppingCount * 1);
-            if (WaffleFlavour='Red Velvet')
+            if (WaffleFlavour == "Red Velvet")
             {
                 price += 3;
             }
-            else if (WaffleFlavour = 'Charcoal')
+            else if (WaffleFlavour == "Charcoal")
             {
                 price += 3;
             }
-            else if (WaffleFlavour = 'Pandan')
+            else if (WaffleFlavour == "Pandan")
             {
                 price += 3;
             }
@@ -68,4 +68,5 @@ namespace PRG2_Assignment2_Team12
         {
             return $"{base.ToString()}\nWaffle Flavour: {WaffleFlavour}";
         }
+    }
 }

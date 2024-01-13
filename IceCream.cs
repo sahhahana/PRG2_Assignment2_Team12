@@ -14,7 +14,7 @@ namespace PRG2_Assignment2_Team12
         public List<Flavour> Flavours { get; set; } = new List<Flavour>();
         public List<Topping> Toppings { get; set; } = new List<Topping>();
         public IceCream() { }
-        public IceCream(string option, int scoops, List<Flavour> flavours,List<Topping> toppings)
+        public IceCream(string option, int scoops, List<Flavour> flavours, List<Topping> toppings)
         {
             Option = option;
             Scoops = scoops;
@@ -30,3 +30,5 @@ namespace PRG2_Assignment2_Team12
             return $"Option: {Option}, Number of Scoops: {Scoops}\nFlavours: {flavoursString}\nToppings: {toppingsString}";
         }
     }
+
+}
