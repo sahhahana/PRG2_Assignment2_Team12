@@ -20,17 +20,30 @@ namespace PRG2_Assignment2_Team12
         {
             Points = points;
             PunchCard = punchCard;
+            Tier = "Ordinary";
             
         }
         public void AddPoints(int points)
         {
             PunchCard += points;
+
         }
         public void RedeemPoints(int points)
         {
             if (Tier != "Ordinary")
             {
-                PunchCard -= points;
+                Console.WriteLine("Only Silver and Gold member can reedem their points");
+            }
+            else
+            {
+                if (Points != 0)
+                {
+                    PunchCard -= points;
+                }
+                else
+                {
+                    Console.WriteLine("Insufficient points to redeem.");
+                }
             }
             
         }
