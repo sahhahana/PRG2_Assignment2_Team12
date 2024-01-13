@@ -24,7 +24,7 @@ namespace PRG2_Assignment2_Team12
         }
         public ModifyIceCream(int id)
         {
-            foreach(IceCream iceCream in iceCreamList)
+            foreach(Custome)
             {
                 if (iceCream == id)
                 {
@@ -32,13 +32,14 @@ namespace PRG2_Assignment2_Team12
                 }
             }
         }
-        public AddIceCream(IceCream iceCream)
+        public void AddIceCream(IceCream iceCream)
         {
+            IceCreamList.Add(iceCream);
 
         }
         public DeleteIceCream(int iceCreamId)
         {
-
+            IceCreamList.Remove(IceCream)
         }
         public double CalculateTotal()
         {
