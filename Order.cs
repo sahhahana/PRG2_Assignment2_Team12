@@ -11,10 +11,10 @@ namespace PRG2_Assignment2_Team12
         private int id;
         private DateTime timeReceived;
         private DateTime? timeFulfilled;
-       
-        public int Id { get;set; }
+
+        public int Id { get; set; }
         public DateTime TimeReceived { get; set; }
-        public DateTime? TimeFulfilled { get; set;}
+        public DateTime? TimeFulfilled { get; set; }
         public List<IceCream> IceCreamList { get; set; } = new List<IceCream>();
         public Order() { }
         public Order(int id, DateTime timeReceived)
@@ -25,7 +25,7 @@ namespace PRG2_Assignment2_Team12
         }
         public void ModifyIceCream(int iceCreamIndex)
         {
-            foreach(IceCream iceCream in iceCreamList)
+            if (iceCreamIndex >= 0 && iceCreamIndex < IceCreamList.Count)
             {
                 // Prompt user for modifications
                 Console.WriteLine("Enter modified information for the ice cream.");
@@ -35,9 +35,9 @@ namespace PRG2_Assignment2_Team12
                 Console.Write("Enter the new numebr of scoops: ");
                 int newScoopsInput = Convert.ToInt32(Console.ReadLine());
 
-                int flavourQuantity =0;
+                int flavourQuantity = 0;
                 List<Flavour> newFlavourList = new List<Flavour>();
-                while (flavourQuantity<=newScoopsInput)
+                while (flavourQuantity <= newScoopsInput)
                 {
                     Console.WriteLine("Enter the type of flavour you want: ");
                     string flavour = Console.ReadLine();
@@ -58,19 +58,138 @@ namespace PRG2_Assignment2_Team12
                     newFlavourList.Add(newFlavour);
                 }
 
+                List<Topping> newToppingList = new List<Topping>();
+                Console.WriteLine("Do you want any toppings? Yes/No: ");
+                if (Console.ReadLine() == "Yes")
+                {
+                    while (true)
+                    {
+                        Console.WriteLine("Enter the type of topping (enter 'Quit' to exit): ");
+                        string toppingType = Console.ReadLine();
+                        Topping newTopping = new Topping(toppingType);
+                        newToppingList.Add(newTopping);
+                        if (Console.ReadLine() == "Quit")
+                        {
+                            break;
+                        }
+                    }
+                }
+                else if (Console.ReadLine() == "No")
+                {
+                    Topping newTopping = new Topping(null);
+                    newToppingList.Add(newTopping);
+                }
+                // Update the ice cream with the modified information
+                if (newOption == "Cup")
+                {
+                    IceCream modifiedIceCream = new Cup(newOption, newScoopsInput, newFlavourList, newToppingList);
+                    IceCreamList[iceCreamIndex] = modifiedIceCream;
+                }
+                else if (newOption == "Cone")
+                {
+                    Console.WriteLine("Do you want your cone dipped? Yes/No: ");
+                    bool dipped = false;
+                    if (Console.ReadLine() == "Yes")
+                    {
+                        dipped = true;
+                    }
+                    else if (Console.ReadLine() == "No")
+                    {
+                        dipped = false;
+                    }
+                    IceCream modifiedIceCream = new Cone(newOption, newScoopsInput, newFlavourList, newToppingList, dipped);
+                    IceCreamList[iceCreamIndex] = modifiedIceCream;
+                }
+                else if (newOption == "Waffle")
+                {
+                    Console.WriteLine("Enter your waffle flavour: ");
+                    string waffleFlavour = Console.ReadLine();
+                    List<string> waffleFlavourList = new List<string> { "Red Velvet", "Charcoal", "Pandan" };
+                    if (waffleFlavourList.Contains(waffleFlavour))
+                    {
+                        IceCream modifiedIceCream = new Waffle(newOption, newScoopsInput, newFlavourList, newToppingList, waffleFlavour);
+                        IceCreamList[iceCreamIndex] = modifiedIceCream;
+                    }
+                }
+
+                //printing out modified order
+                Console.WriteLine("Order modified and added. This is your changed order: \nType: {0}\nNumber of Scoops: {1}\nFlavours:", newOption, newScoopsInput);
+                foreach (Flavour flavour in newFlavourList)
+                {
+                    Console.WriteLine(flavour.Type.ToString());
+                }
+                if (newToppingList.Count > 0) //if toppings is requested
+                {
+                    Console.WriteLine("Toppings: ");
+                    foreach (Topping topping in newToppingList)
+                    {
+                        Console.WriteLine(topping.Type.ToString());
+                    }
+                }
+                else if (newToppingList.Count == 0) //if no toppings requested
+                {
+                    Console.WriteLine("No toppings requested.");
                 }
             }
+            else
+            {
+                Console.WriteLine("Invalid ice cream index.");
+            }
         }
-        public AddIceCream(IceCream iceCream)
-        {
 
-        }
-        public DeleteIceCream(int iceCreamId)
+        public void AddIceCream(IceCream iceCream)
         {
-
+            // Update the ice cream with the modified information
+            if (iceCream.Option == "Cup")
+            {
+                IceCream modifiedIceCream = new Cup(iceCream.Option, iceCream.Scoops, iceCream.Flavours, iceCream.Toppings);
+                IceCreamList.Add(modifiedIceCream);
+            }
+            else if (iceCream.Option == "Cone")
+            {
+                Console.WriteLine("Do you want your cone dipped? Yes/No: ");
+                bool dipped = false;
+                if (Console.ReadLine() == "Yes")
+                {
+                    dipped = true;
+                }
+                else if (Console.ReadLine() == "No")
+                {
+                    dipped = false;
+                }
+                IceCream modifiedIceCream = new Cone(iceCream.Option, iceCream.Scoops, iceCream.Flavours, iceCream.Toppings, dipped);
+                IceCreamList.Add(modifiedIceCream);
+            }
+            else if (iceCream.Option == "Waffle")
+            {
+                Console.WriteLine("Enter your waffle flavour: ");
+                string waffleFlavour = Console.ReadLine();
+                List<string> waffleFlavourList = new List<string> { "Red Velvet", "Charcoal", "Pandan" };
+                if (waffleFlavourList.Contains(waffleFlavour))
+                {
+                    IceCream modifiedIceCream = new Waffle(iceCream.Option, iceCream.Scoops, iceCream.Flavours, iceCream.Toppings, waffleFlavour);
+                    IceCreamList.Add(modifiedIceCream);
+                }
+            }
+            //printing out added order
+            Console.WriteLine("Order added. This is your order: \nType: {0}\\nNumber of Scoops: {1}\\nFlavours:", iceCream.Option, iceCream.Scoops);
+            foreach (Flavour flavour in iceCream.Flavours)
+            {
+                Console.WriteLine(flavour.ToString());
+            }
+            if (iceCream.Toppings.Count > 0) //if toppings is requested
+            {
+                Console.WriteLine("Toppings: ");
+                foreach (Topping topping in iceCream.Toppings)
+                {
+                    Console.WriteLine(topping.Type.ToString());
+                }
+            }
+            else if (iceCream.Toppings.Count == 0) //if no toppings requested
+            {
+                Console.WriteLine("No toppings requested.");
+            }
         }
-        public double CalculateTotal()
-        {
 
         public void DeleteIceCream(int iceCreamIndex)
         {
@@ -81,7 +200,7 @@ namespace PRG2_Assignment2_Team12
         public double CalculateTotal()
         {
             double total = 0;
-            foreach(IceCream iceCream in IceCreamList)
+            foreach (IceCream iceCream in IceCreamList)
             {
                 double price = iceCream.CalculatePrice();
                 total += price;
