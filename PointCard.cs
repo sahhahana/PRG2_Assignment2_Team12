@@ -20,37 +20,50 @@ namespace PRG2_Assignment2_Team12
         {
             Points = points;
             PunchCard = punchCard;
-            Tier = "Ordinary";
+            UpdateTier(); //use UpdateTier in the case where the no. of points is >0 50 or >= 100
             
         }
-        public void AddPoints(int points)
+        public void AddPoints(int amountPaid)
         {
-            PunchCard += points;
-
+            int earnedPoints = (int)Math.Floor(amountPaid * 0.72); //formula based on rubrics
+            Points += earnedPoints;
+            UpdateTier();
         }
-        public void RedeemPoints(int points)
+        public void RedeemPoints(int pointsToRedeem)
         {
-            if (Tier != "Ordinary")
+            if (tier == "Silver" || tier == "Gold") // || should refer to 'or'
             {
-                Console.WriteLine("Only Silver and Gold member can reedem their points");
+                points -= pointsToRedeem;
+                UpdateTier();
             }
             else
             {
-                if (Points != 0)
-                {
-                    PunchCard -= points;
-                }
-                else
-                {
-                    Console.WriteLine("Insufficient points to redeem.");
-                }
+                Console.WriteLine("Only Silver and Gold members can redeem points.");
             }
-            
         }
         public void Punch()
         {
-            PunchCard = 0;
+            punchCard++;
+            if (punchCard == 10)
+            {
+                Console.WriteLine("Congratulations! Your 11th ice cream is free!");
+                punchCard = 0; // Reset punch card
+            }
         }
-
+        private void UpdateTier() //for easier reference to update the tier regularly instead of constantly re-coding it out
+        {
+            if (points >= 100)
+            {
+                tier = "Gold";
+            }
+            else if (points >= 50)
+            {
+                tier = "Silver";
+            }
+            else
+            {
+                tier = "Ordinary";
+            }
+        }
     }
 }

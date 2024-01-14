@@ -32,15 +32,15 @@ namespace PRG2_Assignment2_Team12
             }
             foreach (Flavour flavour in Flavours)
             {
-                if (flavour == "Durian")
+                if (flavour.Type == "Durian")
                 {
                     price += 2;
                 }
-                else if (flavour == "Ube")
+                else if (flavour.Type == "Ube")
                 {
                     price += 2;
                 }
-                else if (flavour == "Sea Salt")
+                else if (flavour.Type == "Sea Salt")
                 {
                     price += 2;
                 }
@@ -64,7 +64,7 @@ namespace PRG2_Assignment2_Team12
             }
             return price;
         }
-        public override string ToString()
+        public string ToString()
         {
             return $"{base.ToString()}\nWaffle Flavour: {WaffleFlavour}";
         }
