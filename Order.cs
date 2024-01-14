@@ -37,9 +37,8 @@ namespace PRG2_Assignment2_Team12
 
                 int flavourQuantity =0;
                 List<Flavour> newFlavourList = new List<Flavour>();
-                for (flavourQuantity<=newScoopsInput)
+                while (flavourQuantity<=newScoopsInput)
                 {
-                    Console.WriteLine("Entering for flavour {0}: ", i);
                     Console.WriteLine("Enter the type of flavour you want: ");
                     string flavour = Console.ReadLine();
                     Console.WriteLine("Is this flavour a premium flavour? Yes/No? \nPremium flavours: Durian, Ube, Sea Salt");
@@ -81,8 +80,37 @@ namespace PRG2_Assignment2_Team12
                     newToppingList.Add(newTopping);
                 }
                 // Update the ice cream with the modified information
-                IceCream modifiedIceCream = new(newOption, newScoopsInput, newFlavourList, newToppingList);
-                IceCreamList[iceCreamIndex] = modifiedIceCream;
+                if (newOption == "Cup") 
+                {
+                    IceCream modifiedIceCream = new Cup(newOption, newScoopsInput, newFlavourList, newToppingList);
+                    IceCreamList[iceCreamIndex] = modifiedIceCream;
+                }
+                else if (newOption == "Cone")
+                {
+                    Console.WriteLine("Do you want your cone dipped? Yes/No: ");
+                    bool dipped = false;
+                    if (Console.ReadLine() == "Yes")
+                    {
+                        dipped = true;
+                    }
+                    else if (Console.ReadLine() == "No")
+                    {
+                        dipped = false;
+                    }
+                    IceCream modifiedIceCream = new Cone(newOption, newScoopsInput, newFlavourList, newToppingList,dipped);
+                    IceCreamList[iceCreamIndex] = modifiedIceCream;
+                }
+                else if (newOption == "Waffle")
+                {
+                    Console.WriteLine("Enter your waffle flavour: ");
+                    string waffleFlavour = Console.ReadLine();
+                    List<string> waffleFlavourList = new List<string> { "Red Velvet", "Charcoal", "Pandan" };
+                    if (waffleFlavourList.Contains(waffleFlavour))
+                    {
+                        IceCream modifiedIceCream = new Waffle(newOption, newScoopsInput, newFlavourList, newToppingList, waffleFlavour);
+                        IceCreamList[iceCreamIndex] = modifiedIceCream;
+                    }
+                }
             }
             else
             {
