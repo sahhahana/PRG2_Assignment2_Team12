@@ -28,3 +28,5 @@
 // Advanced (b)
 
 // Advanced (c)
+
+Console.WriteLine("hello world");
