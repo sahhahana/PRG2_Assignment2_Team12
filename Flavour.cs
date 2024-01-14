@@ -23,7 +23,7 @@ namespace PRG2_Assignment2_Team12
         }
         public override string ToString()
         {
-            return
+            return "Type: " + Type + "\nPremium: " + Premium + "\nQuantity: " + Quantity;
         }
     }
 }

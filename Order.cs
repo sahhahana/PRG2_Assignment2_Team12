@@ -33,7 +33,7 @@ namespace PRG2_Assignment2_Team12
                 string newOption = Console.ReadLine();
 
                 Console.Write("Enter the new numebr of scoops: ");
-                int newScoopsInput = Console.ReadLine();
+                int newScoopsInput = Convert.ToInt32(Console.ReadLine());
 
                 int flavourQuantity =0;
                 List<Flavour> newFlavourList = new List<Flavour>();
@@ -42,7 +42,7 @@ namespace PRG2_Assignment2_Team12
                     Console.WriteLine("Entering for flavour {0}: ", i);
                     Console.WriteLine("Enter the type of flavour you want: ");
                     string flavour = Console.ReadLine();
-                    Console.WriteLine("Is this flavour a premium flavour? Yes\No\nPremium flavours: Durian, Ube, Sea Salt");
+                    Console.WriteLine("Is this flavour a premium flavour? Yes/No? \nPremium flavours: Durian, Ube, Sea Salt");
                     bool premiumFlavour = false;
                     if (Console.ReadLine() == "Yes")
                     {
@@ -69,7 +69,7 @@ namespace PRG2_Assignment2_Team12
                         string toppingType = Console.ReadLine();
                         Topping newTopping = new Topping(toppingType);
                         newToppingList.Add(newTopping);
-                        if (Console.ReadLine() == 'Quit')
+                        if (Console.ReadLine() == "Quit")
                         {
                             break;
                         }
@@ -81,7 +81,7 @@ namespace PRG2_Assignment2_Team12
                     newToppingList.Add(newTopping);
                 }
                 // Update the ice cream with the modified information
-                IceCream modifiedIceCream = new IceCream(newOption, newScoopsInput, newFlavourList, newToppingList);
+                IceCream modifiedIceCream = new(newOption, newScoopsInput, newFlavourList, newToppingList);
                 IceCreamList[iceCreamIndex] = modifiedIceCream;
             }
             else
