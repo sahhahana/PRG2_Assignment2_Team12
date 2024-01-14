@@ -111,6 +111,25 @@ namespace PRG2_Assignment2_Team12
                         IceCreamList[iceCreamIndex] = modifiedIceCream;
                     }
                 }
+
+                //printing out modified order
+                Console.WriteLine("Order modified and added. This is your changed order: \nType: {0}\nNumber of Scoops: {1}\nFlavours:",newOption,newScoopsInput);
+                foreach (Flavour flavour in newFlavourList)
+                {
+                    Console.WriteLine(flavour.Type.ToString());
+                }
+                if (newToppingList.Count > 0) //if toppings is requested
+                {
+                    Console.WriteLine("Toppings: ");
+                    foreach(Topping topping in newToppingList)
+                    {
+                        Console.WriteLine(topping.Type.ToString());
+                    }
+                }
+                else if (newToppingList.Count == 0) //if no toppings requested
+                {
+                    Console.WriteLine("No toppings requested.");
+                }
             }
             else
             {
@@ -118,5 +137,76 @@ namespace PRG2_Assignment2_Team12
             }
         }
 
+        public void AddIceCream(IceCream iceCream)
+        {
+            // Update the ice cream with the modified information
+            if (iceCream.Option == "Cup")
+            {
+                IceCream modifiedIceCream =new Cup(iceCream.Option, iceCream.Scoops, iceCream.Flavours, iceCream.Toppings);
+                IceCreamList.Add(modifiedIceCream);
+            }
+            else if (iceCream.Option == "Cone")
+            {
+                Console.WriteLine("Do you want your cone dipped? Yes/No: ");
+                bool dipped = false;
+                if (Console.ReadLine() == "Yes")
+                {
+                    dipped = true;
+                }
+                else if (Console.ReadLine() == "No")
+                {
+                    dipped = false;
+                }
+                IceCream modifiedIceCream = new Cone(iceCream.Option, iceCream.Scoops, iceCream.Flavours, iceCream.Toppings, dipped);
+                IceCreamList.Add(modifiedIceCream);
+            }
+            else if (iceCream.Option == "Waffle")
+            {
+                Console.WriteLine("Enter your waffle flavour: ");
+                string waffleFlavour = Console.ReadLine();
+                List<string> waffleFlavourList = new List<string> { "Red Velvet", "Charcoal", "Pandan" };
+                if (waffleFlavourList.Contains(waffleFlavour))
+                {
+                    IceCream modifiedIceCream = new Waffle(iceCream.Option, iceCream.Scoops, iceCream.Flavours, iceCream.Toppings, waffleFlavour);
+                    IceCreamList.Add(modifiedIceCream);
+                }
+            }
+            //printing out added order
+            Console.WriteLine("Order added. This is your order: \nType: {0}\\nNumber of Scoops: {1}\\nFlavours:",iceCream.Option,iceCream.Scoops);
+            foreach(Flavour flavour in iceCream.Flavours)
+            {
+                Console.WriteLine(flavour.ToString());
+            }
+            if (iceCream.Toppings.Count > 0) //if toppings is requested
+            {
+                Console.WriteLine("Toppings: ");
+                foreach (Topping topping in iceCream.Toppings)
+                {
+                    Console.WriteLine(topping.Type.ToString());
+                }
+            }
+            else if (iceCream.Toppings.Count == 0) //if no toppings requested
+            {
+                Console.WriteLine("No toppings requested.");
+            }
+        }
+
+        public void DeleteIceCream(int iceCreamIndex)
+        {
+            IceCreamList.Remove(IceCreamList[iceCreamIndex]);
+            Console.WriteLine("Order {0} has been removed.", iceCreamIndex);
+        }
+
+        public double CalculateTotal()
+        {
+            double total = 0;
+            foreach(IceCream iceCream in IceCreamList)
+            {
+                double price = iceCream.CalculatePrice();
+                total += price;
+            }
+            Console.WriteLine("Total amount to pay: {0}", total);
+            return total;
+        }
     }
 }
