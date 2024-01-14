@@ -47,12 +47,12 @@ namespace PRG2_Assignment2_Team12
             }
             foreach (Topping topping in Toppings)
             {
-                toppingCount += 1
+                toppingCount += 1;
             }
             price += (toppingCount * 1);
             if (Dipped = true)
             {
-                price+=2
+                price += 2;
             }
             return price;
         }
