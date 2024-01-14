@@ -12,7 +12,7 @@ Console.WriteLine("Hello World");
 // Feature 1
 
 // Feature 2
-PointCard card = new PointCard();
+
 // Feature 3
 
 // Feature 4
