@@ -3,12 +3,9 @@
 // Student Name : Chloe 
 // Partner Name : Sahana
 //==========================================================
-
-// (To delete)
-//chloe-ice cream, waffle, cone, cup
-//sahana - customer, order, point cards, flavours, toppings
 using PRG2_Assignment2_Team12;
 Console.WriteLine("Hello World");
+
 //chloe - features 2,5 and 6
 //sahana- features 1, 3 ad 4
 
