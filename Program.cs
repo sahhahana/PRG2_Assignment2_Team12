@@ -106,7 +106,10 @@ while (true)
 }
 
 // Feature 1
-
+static void OptionOne()
+{
+    Console.WriteLine("Hello World");
+}
 // Feature 2
 static void OptionTwo(List<Customer> customerList)
 {
@@ -279,3 +282,6 @@ static void OptionEight()
 {
     Console.WriteLine("Hello World");
 }
+
+// Advanced (c)- GUI
+// Will be done most likely on a separate document
