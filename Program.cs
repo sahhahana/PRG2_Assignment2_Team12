@@ -56,16 +56,16 @@ using (StreamReader sr=new StreamReader("orders.csv"))
 //display menu
 static void DisplayMenu()
 {
-    Console.WriteLine("============================ Welcome to I.C.Treats! =============================" +
+    Console.WriteLine("========= Welcome to I.C.Treats! =========\nChoose your option:" +
         "\n1. List all customers\n2. List all current orders\n3. Register a new customer" +
         "\n4. Create a customer's order\n5. Display order details of a customer" +
         "\n6. Modify order details\n7. Process an order and checkout" +
-        "\n8. Display monthly charged amounts breakdown & total charged amounts for the year\n0. Exit");
-    string option = Console.ReadLine();
-    return option;
+        "\n8. Display monthly charged amounts breakdown & total charged amounts for the year" +
+        "\n0. Exit");
+    Console.Write("Enter your option: ");
 }
-// Run program
-while (true)
+    // Run program
+    while (true)
 {
     DisplayMenu();
     string option = Console.ReadLine(); 
@@ -114,6 +114,47 @@ while (true)
 }
 
 // Feature 1
+void OptionOne()
+{
+
+
+    using (StreamReader sr = new StreamReader("customers.csv"))
+    {
+        string s = sr.ReadLine(); // Read heading
+
+        while ((s = sr.ReadLine()) != null)
+        {
+            string[] data = s.Split(",");
+            string name = data[0];
+            int memberId = (int)Convert.ToInt64(data[1]);
+            DateTime dob = Convert.ToDateTime(data[2]);
+            int points = (int)Convert.ToInt32(data[4]);
+            int punchCard = Convert.ToInt32(data[5]);
+            string status = data[3];
+
+            // Create Customer and PointCard objects
+            Customer customerData = new Customer(name, memberId, dob, status);
+            PointCard pointCard = new PointCard(punchCard, points, status);
+
+            // Link the PointCard to the Customer
+            customerData.Rewards = pointCard;
+
+            // Add Customer to the dictionary
+            customerDictionary.Add(memberId, customerData);
+        }
+    }
+
+
+    Console.WriteLine($"{"Name",-8} {"MemberID",-12} {"DOB",-14} {"Status",-14} {"Points",-10} {"Punch Card",-10}");
+    Console.WriteLine($"{"----",-8} {"--------",-12} {"---",-14} {"------",-14} {"------",-10} {"----------",-10}");
+
+    foreach (Customer customer in customerDictionary.Values)
+    {
+        Console.WriteLine($"{customer.Name,-8} {customer.Memberid,-12} {customer.Dob.ToString("dd/MM/yyyy"),-14} {customer.Rewards.Tier,-14} {customer.Rewards.Points,-10} {customer.Rewards.PunchCard,-10}");
+    }
+    Console.WriteLine("");
+
+}
 
 // Feature 2
 static void OptionTwo(List<Customer> customerList)
@@ -181,7 +222,7 @@ static void OptionTwo(List<Customer> customerList)
 
 
 // Feature 3
- void OptionThree()
+void OptionThree()
 {
     Console.WriteLine("\nNew Customer\n\r" +
                       "------------");
@@ -211,6 +252,7 @@ static void OptionTwo(List<Customer> customerList)
     Console.WriteLine("\nCustomer is officially a member of I.C.Treats! Welcome:D\n");
 
 }
+
 // Feature 4
 static void OptionFour()
 {
