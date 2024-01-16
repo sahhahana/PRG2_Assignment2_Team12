@@ -4,6 +4,7 @@
 // Partner Name : Sahana
 //==========================================================
 using PRG2_Assignment2_Team12;
+using System;
 using System.Linq;
 using System.Numerics;
 
@@ -34,18 +35,34 @@ using (StreamReader sr = new StreamReader("customers.csv")) //to read file 'cust
 Dictionary<int, Customer> customerDictionary = new Dictionary<int, Customer>();
 
 // Read orders.csv separately beacuse it is used throughout the whole program
+List<string[]> orderDetailsList = new List<string[]>();
 List<Order> orderList = new List<Order>();
+using (StreamReader sr=new StreamReader("orders.csv"))
+{
+    string s = sr.ReadLine(); //read heading
+    if (s != null)
+    {
+        string[] headings = s.Split(",");//headings
+    }
+    while ((s = sr.ReadLine()) != null)
+    {
+        string[] data = s.Split(",");
+        // Order: id, time received
+        Order orderData = new Order(Convert.ToInt32(data[0]), Convert.ToDateTime(data[2]));
+        orderList.Add(orderData);
+    }
+}
 
 //display menu
 static void DisplayMenu()
 {
-    Console.WriteLine("========= Welcome to I.C.Treats! =========\nChoose your option:" +
+    Console.WriteLine("============================ Welcome to I.C.Treats! =============================" +
         "\n1. List all customers\n2. List all current orders\n3. Register a new customer" +
         "\n4. Create a customer's order\n5. Display order details of a customer" +
         "\n6. Modify order details\n7. Process an order and checkout" +
-        "\n8. Display monthly charged amounts breakdown & total charged amounts for the year" +
-        "\n0. Exit");
-    Console.Write("Enter your option: ");
+        "\n8. Display monthly charged amounts breakdown & total charged amounts for the year\n0. Exit");
+    string option = Console.ReadLine();
+    return option;
 }
 // Run program
 while (true)
@@ -71,7 +88,7 @@ while (true)
     }
     else if (option == "5")
     {
-        OptionFive(customerList,orderList);
+        OptionFive(customerList,orderDetailsList,orderList);
     }
     else if (option == "6")
     {
@@ -97,47 +114,6 @@ while (true)
 }
 
 // Feature 1
-void OptionOne()
-{
-
-
-    using (StreamReader sr = new StreamReader("customers.csv"))
-    {
-        string s = sr.ReadLine(); // Read heading
-
-        while ((s = sr.ReadLine()) != null)
-        {
-            string[] data = s.Split(",");
-            string name = data[0];
-            int memberId = (int)Convert.ToInt64(data[1]);
-            DateTime dob = Convert.ToDateTime(data[2]);
-            int points = (int)Convert.ToInt32(data[4]);
-            int punchCard = Convert.ToInt32(data[5]);
-            string status = data[3];
-
-            // Create Customer and PointCard objects
-            Customer customerData = new Customer(name, memberId, dob, status);
-            PointCard pointCard = new PointCard(punchCard, points, status);
-
-            // Link the PointCard to the Customer
-            customerData.Rewards = pointCard;
-
-            // Add Customer to the dictionary
-            customerDictionary.Add(memberId, customerData);
-        }
-    }
-
-
-    Console.WriteLine($"{"Name",-8} {"MemberID",-12} {"DOB",-14} {"Status",-14} {"Points",-10} {"Punch Card",-10}");
-    Console.WriteLine($"{"----",-8} {"--------",-12} {"---",-14} {"------",-14} {"------",-10} {"----------",-10}");
-
-    foreach (Customer customer in customerDictionary.Values)
-    {
-        Console.WriteLine($"{customer.Name,-8} {customer.Memberid,-12} {customer.Dob.ToString("dd/MM/yyyy"),-14} {customer.Rewards.Tier,-14} {customer.Rewards.Points,-10} {customer.Rewards.PunchCard,-10}");
-    }
-    Console.WriteLine("");
-
-}
 
 // Feature 2
 static void OptionTwo(List<Customer> customerList)
@@ -241,25 +217,29 @@ static void OptionFour()
     Console.WriteLine("Hello World");
 }
 // Feature 5
-static void OptionFive(List<Customer> customerList, List<Order> orderList)
+static void OptionFive(List<Customer> customerList, List<string[]> orderDetailsList, List<Order> orderList)
 {
     DisplayCustomerList(customerList);
 
-    Console.WriteLine("Enter the MemberID of the customer you want to view orders for:");
+    Console.WriteLine("Enter the Member ID of the customer you want to view orders for:");
+    string inputId = Console.ReadLine();
     int selectedMemberId;
-    if (int.TryParse(Console.ReadLine(), out selectedMemberId))
+    if (int.TryParse(inputId, out selectedMemberId))
     {
         Customer selectedCustomer = customerList.Find(c => c.Memberid == selectedMemberId);
 
         if (selectedCustomer != null)
         {
-            Console.WriteLine($"Orders for {selectedCustomer.Name} (MemberID: {selectedCustomer.Memberid}):");
+            Console.WriteLine($"\nOrders for {selectedCustomer.Name} (MemberID: {selectedCustomer.Memberid}):\n");
 
-            List<Order> customerOrders = GetCustomerOrders(orderList, selectedMemberId);
-
-            foreach (Order order in customerOrders)
+            foreach (string[] orderDetails in orderDetailsList)
             {
-                DisplayOrderDetails(order);
+                if (orderDetails[1] == inputId)
+                {
+                    Console.WriteLine($"Order ID: {orderDetails[1]}, Time Received: {orderDetails[2]}");
+                    DisplayOrderDetails(orderDetails);
+                    Console.WriteLine("\n");
+                }
             }
         }
         else
@@ -272,7 +252,6 @@ static void OptionFive(List<Customer> customerList, List<Order> orderList)
         Console.WriteLine("Invalid input. Please enter a valid MemberID.");
     }
 }
-
 static void DisplayCustomerList(List<Customer> customers)
 {
     Console.WriteLine("Customer List:");
@@ -283,25 +262,38 @@ static void DisplayCustomerList(List<Customer> customers)
     Console.WriteLine();
 }
 
-static List<Order> GetCustomerOrders(List<Order> orders, int memberId)
+static void DisplayOrderDetails(string[] orderDetails)
 {
-    return orders.FindAll(o => o.Id == memberId);
+    Console.WriteLine($"ID: {orderDetails[0]}\nMember ID: {orderDetails[1]}\nTime Received: {orderDetails[2]}\nTime Fulfilled: {orderDetails[3]}" +
+        $"\nOption: {orderDetails[4]}\nScoops: {orderDetails[5]}");
+
+    if (orderDetails[4] == "Cone")
+    {
+        Console.WriteLine("Dipped: {0}", orderDetails[6]);
+    }
+    if (orderDetails[4] == "Waffle")
+    {
+        Console.WriteLine("Waffle Flavour: {0}", orderDetails[7]);
+    }
+    if (orderDetails[4] == "Cup" || orderDetails[4] == "Cone" || orderDetails[4] == "Waffle")
+    {
+        string flavours = string.Join(", ", GetNonNullOrWhiteSpaceValues(orderDetails, 8, 10));
+        Console.WriteLine("Flavours: {0}", flavours);
+
+        string toppings = string.Join(", ", GetNonNullOrWhiteSpaceValues(orderDetails, 11, 13));
+        Console.WriteLine("Toppings: {0}", toppings);
+    }
 }
 
-static void DisplayOrderDetails(Order order)
+static IEnumerable<string> GetNonNullOrWhiteSpaceValues(string[] array, int startIndex, int endIndex)
 {
-    Console.WriteLine($"Order ID: {order.Id}, Time Received: {order.TimeReceived}");
-
-    // Assuming Order class has a property for TimeFulfilled and a list of IceCream objects
-    Console.WriteLine($"Time Fulfilled: {order.TimeFulfilled}");
-
-    Console.WriteLine("Ice Cream Details:");
-    foreach (IceCream iceCream in order.IceCreamList)
+    for (int i = startIndex; i <= endIndex; i++)
     {
-        Console.WriteLine($"Flavour: {iceCream.Flavours}, Toppings: {iceCream.Toppings}");
+        if (!string.IsNullOrWhiteSpace(array[i]))
+        {
+            yield return array[i];
+        }
     }
-
-    Console.WriteLine();
 }
 
 // Feature 6
@@ -310,13 +302,17 @@ static void OptionSix()
     Console.WriteLine("Hello World");
 }
 
-// Advanced (a)
+
+// Advanced (a)- Feature 7
 static void OptionSeven()
 {
     Console.WriteLine("Hello World");
 }
-// Advanced (b)
+// Advanced (b)- Feature 8
+static void OptionEight()
+{
+    Console.WriteLine("Hello World");
+}
 
-// Advanced (c)
-
-Console.WriteLine("hello world");
+// Advanced (c)- GUI
+// Will be done most likely on a separate document
