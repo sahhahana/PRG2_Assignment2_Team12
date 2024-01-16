@@ -1,4 +1,9 @@
-﻿using System;
+﻿//==========================================================
+// Student Number : S10256056
+// Student Name : Chloe 
+// Partner Name : Sahana
+//==========================================================
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,16 +22,18 @@ namespace PRG2_Assignment2_Team12
         public string Name { get; set; }
         public int Memberid { get; set; }
         public DateTime Dob { get; set; }
+        public string MembershipStatus { get; set; }
         public Order CurrentOrder { get; set; }
 
         public List<Order> OrderHistory { get; set; } = new List<Order>();
         public PointCard Rewards { get; set; } = new PointCard();
         public Customer() { }
-        public Customer(string name, int memberid, DateTime dob)
+        public Customer(string name, int memberid, DateTime dob, string membershipStatus)
         {
             Name = name;
             Memberid = memberid;
-            Dob = dob;           
+            Dob = dob;
+            MembershipStatus = membershipStatus;
         }
         public Order MakeOrder()
         {
