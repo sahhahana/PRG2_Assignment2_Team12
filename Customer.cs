@@ -21,10 +21,9 @@ namespace PRG2_Assignment2_Team12
         private PointCard rewards;
         public string Name { get; set; }
         public int Memberid { get; set; }
-        public DateTime Dob { get; set; }
-        public string MembershipStatus { get; set; }
+        public DateTime Dob{ get; set; }
         public Order CurrentOrder { get; set; }
-
+        public string MembershipStatus { get; set; }
         public List<Order> OrderHistory { get; set; } = new List<Order>();
         public PointCard Rewards { get; set; } = new PointCard();
         public Customer() { }

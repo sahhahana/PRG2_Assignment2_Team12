@@ -12,6 +12,7 @@ using System.Numerics;
 //sahana- features 1, 3 ad 4
 
 // Read customers.csv separately because it is used throughout the whole program
+
 List<Customer> customerList = new List<Customer>();
 using (StreamReader sr = new StreamReader("customers.csv")) //to read file 'customers.csv'
 {
@@ -28,39 +29,30 @@ using (StreamReader sr = new StreamReader("customers.csv")) //to read file 'cust
         customerList.Add(customerData);
     }
 }
+
+// Read customers.csv and create a dictionary to store customer data
+Dictionary<int, Customer> customerDictionary = new Dictionary<int, Customer>();
+
 // Read orders.csv separately beacuse it is used throughout the whole program
 List<Order> orderList = new List<Order>();
-using (StreamReader sr=new StreamReader("orders.csv"))
-{
-    string s = sr.ReadLine(); //read heading
-    if (s != null)
-    {
-        string[] headings = s.Split(",");//headings
-    }
-    while ((s = sr.ReadLine()) != null)
-    {
-        string[] data = s.Split(",");
-        // Order: id, time received
-        Order orderData = new Order(Convert.ToInt32(data[0]), Convert.ToDateTime(data[2]));
-        orderList.Add(orderData);
-    }
-}
 
 //display menu
-static string DisplayMenu()
+static void DisplayMenu()
 {
     Console.WriteLine("========= Welcome to I.C.Treats! =========\nChoose your option:" +
         "\n1. List all customers\n2. List all current orders\n3. Register a new customer" +
         "\n4. Create a customer's order\n5. Display order details of a customer" +
         "\n6. Modify order details\n7. Process an order and checkout" +
-        "\n8. Display monthly charged amounts breakdown & total charged amounts for the year\n0. Exit");
-    string option = Console.ReadLine();
-    return option;
+        "\n8. Display monthly charged amounts breakdown & total charged amounts for the year" +
+        "\n0. Exit");
+    Console.Write("Enter your option: ");
 }
 // Run program
 while (true)
 {
-    string option=DisplayMenu();
+    DisplayMenu();
+    string option = Console.ReadLine(); 
+
     if (option == "1")
     {
         OptionOne();
@@ -91,16 +83,61 @@ while (true)
     }
     else if (option == "8")
     {
-        OptionEight();
+        //OptionEight();
     }
     else if (option == "0")
     {
         Console.WriteLine("Thank you for shopping with I.C.Treats!");
         break;
     }
+    else
+    {
+        Console.WriteLine("Invalid option! Please try agian.");
+    }
 }
 
 // Feature 1
+void OptionOne()
+{
+
+
+    using (StreamReader sr = new StreamReader("customers.csv"))
+    {
+        string s = sr.ReadLine(); // Read heading
+
+        while ((s = sr.ReadLine()) != null)
+        {
+            string[] data = s.Split(",");
+            string name = data[0];
+            int memberId = (int)Convert.ToInt64(data[1]);
+            DateTime dob = Convert.ToDateTime(data[2]);
+            int points = (int)Convert.ToInt32(data[4]);
+            int punchCard = Convert.ToInt32(data[5]);
+            string status = data[3];
+
+            // Create Customer and PointCard objects
+            Customer customerData = new Customer(name, memberId, dob, status);
+            PointCard pointCard = new PointCard(punchCard, points, status);
+
+            // Link the PointCard to the Customer
+            customerData.Rewards = pointCard;
+
+            // Add Customer to the dictionary
+            customerDictionary.Add(memberId, customerData);
+        }
+    }
+
+
+    Console.WriteLine($"{"Name",-8} {"MemberID",-12} {"DOB",-14} {"Status",-14} {"Points",-10} {"Punch Card",-10}");
+    Console.WriteLine($"{"----",-8} {"--------",-12} {"---",-14} {"------",-14} {"------",-10} {"----------",-10}");
+
+    foreach (Customer customer in customerDictionary.Values)
+    {
+        Console.WriteLine($"{customer.Name,-8} {customer.Memberid,-12} {customer.Dob.ToString("dd/MM/yyyy"),-14} {customer.Rewards.Tier,-14} {customer.Rewards.Points,-10} {customer.Rewards.PunchCard,-10}");
+    }
+    Console.WriteLine("");
+
+}
 
 // Feature 2
 static void OptionTwo(List<Customer> customerList)
@@ -168,9 +205,35 @@ static void OptionTwo(List<Customer> customerList)
 
 
 // Feature 3
-static void OptionThree()
+ void OptionThree()
 {
-    Console.WriteLine("Hello World");
+    Console.WriteLine("\nNew Customer\n\r" +
+                      "------------");
+    Console.Write("Enter your name: ");
+    string name = Console.ReadLine();
+
+    Console.Write("Enter 6-digit member ID: ");
+    int memberId = Convert.ToInt32(Console.ReadLine());
+
+    Console.Write("Enter your date of birth (dd/mm/yyyy): ");
+    DateTime dob = Convert.ToDateTime(Console.ReadLine());
+
+    string status = "Ordinary";
+
+    Customer newCustomer = new Customer(name, memberId, dob, status);
+    customerList.Add(newCustomer);
+
+    PointCard newPointCard = new PointCard(0, 0, status);
+    newCustomer.Rewards = newPointCard;
+    customerDictionary.Add(memberId, newCustomer);
+
+    using (StreamWriter sw = new StreamWriter("Customers.csv", true))
+    {
+        sw.WriteLine($"\n{newCustomer.Name},{newCustomer.Memberid},{newCustomer.Dob.ToString("dd/MM/yyyy")},{newCustomer.MembershipStatus},{newCustomer.Rewards.Points},{newCustomer.Rewards.PunchCard}");
+
+    }
+    Console.WriteLine("\nCustomer is officially a member of I.C.Treats! Welcome:D\n");
+
 }
 // Feature 4
 static void OptionFour()

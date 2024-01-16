@@ -21,10 +21,11 @@ namespace PRG2_Assignment2_Team12
         public int PunchCard { get; set;}
         public string Tier { get; set; }
         public PointCard() { }
-        public PointCard(int points, int punchCard)
+        public PointCard(int punchCard, int points, string tier)
         {
             Points = points;
             PunchCard = punchCard;
+            Tier = tier;
             UpdateTier(); //use UpdateTier in the case where the no. of points is >0 50 or >= 100
             
         }
@@ -57,17 +58,17 @@ namespace PRG2_Assignment2_Team12
         }
         private void UpdateTier() //for easier reference to update the tier regularly instead of constantly re-coding it out
         {
-            if (points >= 100)
+            if (Points >= 100)
             {
-                tier = "Gold";
+                Tier = "Gold";
             }
-            else if (points >= 50)
+            else if (Points >= 50)
             {
-                tier = "Silver";
+                Tier = "Silver";
             }
             else
             {
-                tier = "Ordinary";
+                Tier = "Ordinary";
             }
         }
     }
