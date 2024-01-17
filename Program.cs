@@ -109,7 +109,7 @@ static void DisplayMenu()
     }
     else if (option == "6")
     {
-        OptionSix();
+        OptionSix(customerDictionary,orderDetailsList,orderList);
     }
     else if (option == "7")
     {
@@ -385,59 +385,51 @@ static void OptionSix(Dictionary<int, Customer> customerDictionary, List<string[
             {
                 Console.WriteLine("Choose an action:\n[1] Modify an existing ice cream\n[2] Add a new ice cream\n[3] Delete an existing ice cream");
                 string actionInput = Console.ReadLine();
-
-                if (actionInput == "1")
+                try
                 {
-                    Console.WriteLine("Enter the index of the ice cream you want to modify:");
-                    int iceCreamIndex;
-                    if (int.TryParse(Console.ReadLine(), out iceCreamIndex))
+                    if (actionInput == "1")
                     {
+                        Console.WriteLine("Enter the index of the ice cream you want to modify:");
+                        int iceCreamIndex = Convert.ToInt32(Console.ReadLine());
                         selectedOrder.ModifyIceCream(iceCreamIndex);
                     }
-                }
-                else if (actionInput == "2")
-                {
-                    Console.WriteLine("Enter details for the new ice cream:");
-                    IceCream newIceCream = CreateIceCream();
-                    selectedOrder.AddIceCream(newIceCream);
-                }
-                else if (actionInput == "3")
-                {
-                    Console.WriteLine("Enter the index of the ice cream you want to delete:");
-                    int iceCreamIndex;
-                    if (int.TryParse(Console.ReadLine(), out iceCreamIndex))
+                    else if (actionInput == "2")
                     {
+                        Console.WriteLine("Enter details for the new ice cream:");
+                        IceCream newIceCream = CreateIceCream();
+                        selectedOrder.AddIceCream(newIceCream);
+                    }
+                    else if (actionInput == "3")
+                    {
+                        Console.WriteLine("Enter the index of the ice cream you want to delete:");
+                        int iceCreamIndex = Convert.ToInt32(Console.ReadLine());
                         selectedOrder.DeleteIceCream(iceCreamIndex);
                     }
+                    else
+                    {
+                        Console.WriteLine("Invalid action. Please enter a valid option.");
+                    }
                 }
-                else
+                catch(Exception x)
                 {
-                    Console.WriteLine("Invalid action. Please enter a valid option.");
-                }
+                    Console.WriteLine("Error occured. Please try again.");
                 }
 
-                // Display the updated order details
-                Console.WriteLine("Updated Order Details:");
-                Console.WriteLine($"Order ID: {selectedOrder.Id}, Time Received: {selectedOrder.TimeReceived}");
-                foreach (IceCream iceCream in selectedOrder.IceCreamList)
-                {
-                    Console.WriteLine($"Ice Cream: {iceCream.Option}, Scoops: {iceCream.Scoops}");
-                    // Display additional details as needed
-                }
             }
-            else
+
+            // Display the updated order details
+            Console.WriteLine("Updated Order Details:");
+            Console.WriteLine($"Order ID: {selectedOrder.Id}, Time Received: {selectedOrder.TimeReceived}");
+            foreach (IceCream iceCream in selectedOrder.IceCreamList)
             {
-                Console.WriteLine("Order not found.");
+                Console.WriteLine($"Ice Cream: {iceCream.Option}, Scoops: {iceCream.Scoops}");
+                // Display additional details as needed
             }
         }
         else
         {
-            Console.WriteLine("Invalid Order ID. Please enter a valid numeric Order ID.");
+            Console.WriteLine("Order not found.");
         }
-    }
-    else
-    {
-        Console.WriteLine("Customer not found or invalid input. Please enter a valid MemberID.");
     }
 }
 static IceCream CreateIceCream()
