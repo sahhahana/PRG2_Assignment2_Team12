@@ -166,10 +166,18 @@ namespace PRG2_Assignment2_Team12
             }
         }
 
-        public void DeleteIceCream(IceCream iceCream)
+        public void DeleteIceCream(int iceCreamIndex)
         {
-            IceCreamList.Remove(iceCream);
-            Console.WriteLine("Ice cream removed.");
+            if (iceCreamIndex >= 0 && iceCreamIndex < IceCreamList.Count)
+            {
+                IceCream iceCreamToRemove = IceCreamList[iceCreamIndex];
+                IceCreamList.Remove(iceCreamToRemove);
+                Console.WriteLine("Ice cream removed.");
+            }
+            else
+            {
+                Console.WriteLine("Invalid ice cream index.");
+            }
         }
 
         public double CalculateTotal()
