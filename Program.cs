@@ -348,9 +348,160 @@ static IEnumerable<string> GetNonNullOrWhiteSpaceValues(string[] array, int star
     }
 }
 // Feature 6
-    static void OptionSix()
+static void OptionSix(Dictionary<int, Customer> customerDictionary, List<string[]> orderDetailsList, List<Order> orderList)
 {
-    Console.WriteLine("Hello World");
+    DisplayCustomerDictionary(customerDictionary);
+
+    Console.WriteLine("Enter the Member ID of the customer whose order you want to modify:");
+    string inputId = Console.ReadLine();
+    int selectedMemberId;
+
+    if (int.TryParse(inputId, out selectedMemberId) && customerDictionary.ContainsKey(selectedMemberId))
+    {
+        Customer selectedCustomer = customerDictionary[selectedMemberId];
+
+        Console.WriteLine($"\nOrders for {selectedCustomer.Name} (MemberID: {selectedCustomer.Memberid}):\n");
+
+        // Display existing orders for the selected customer
+        foreach (string[] orderDetails in orderDetailsList)
+        {
+            if (int.TryParse(orderDetails[1], out int orderMemberId) && orderMemberId == selectedMemberId)
+            {
+                Console.WriteLine($"Order ID: {orderDetails[0]}, Time Received: {orderDetails[2]}");
+                DisplayOrderDetails(orderDetails);
+                Console.WriteLine("\n");
+            }
+        }
+
+        Console.WriteLine("Enter the Order ID you want to modify:");
+        string orderIdInput = Console.ReadLine();
+        int orderId;
+
+        if (int.TryParse(orderIdInput, out orderId))
+        {
+            Order selectedOrder = orderList.Find(o => o.Id == orderId);
+
+            if (selectedOrder != null)
+            {
+                Console.WriteLine("Choose an action:\n[1] Modify an existing ice cream\n[2] Add a new ice cream\n[3] Delete an existing ice cream");
+                string actionInput = Console.ReadLine();
+
+                if (actionInput == "1")
+                {
+                    Console.WriteLine("Enter the index of the ice cream you want to modify:");
+                    int iceCreamIndex;
+                    if (int.TryParse(Console.ReadLine(), out iceCreamIndex))
+                    {
+                        selectedOrder.ModifyIceCream(iceCreamIndex);
+                    }
+                }
+                else if (actionInput == "2")
+                {
+                    Console.WriteLine("Enter details for the new ice cream:");
+                    IceCream newIceCream = CreateIceCream();
+                    selectedOrder.AddIceCream(newIceCream);
+                }
+                else if (actionInput == "3")
+                {
+                    Console.WriteLine("Enter the index of the ice cream you want to delete:");
+                    int iceCreamIndex;
+                    if (int.TryParse(Console.ReadLine(), out iceCreamIndex))
+                    {
+                        selectedOrder.DeleteIceCream(iceCreamIndex);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Invalid action. Please enter a valid option.");
+                }
+                }
+
+                // Display the updated order details
+                Console.WriteLine("Updated Order Details:");
+                Console.WriteLine($"Order ID: {selectedOrder.Id}, Time Received: {selectedOrder.TimeReceived}");
+                foreach (IceCream iceCream in selectedOrder.IceCreamList)
+                {
+                    Console.WriteLine($"Ice Cream: {iceCream.Option}, Scoops: {iceCream.Scoops}");
+                    // Display additional details as needed
+                }
+            }
+            else
+            {
+                Console.WriteLine("Order not found.");
+            }
+        }
+        else
+        {
+            Console.WriteLine("Invalid Order ID. Please enter a valid numeric Order ID.");
+        }
+    }
+    else
+    {
+        Console.WriteLine("Customer not found or invalid input. Please enter a valid MemberID.");
+    }
+}
+static IceCream CreateIceCream()
+{
+    Console.Write("Enter the option (cup, cone, waffle): ");
+    string option = Console.ReadLine();
+
+    Console.Write("Enter the number of scoops: ");
+    int scoops = Convert.ToInt32(Console.ReadLine());
+
+    List<Flavour> flavours = new List<Flavour>();
+    int flavourQuantity = 0;
+
+    while (flavourQuantity != scoops)
+    {
+        Console.Write("Enter the type of flavour: ");
+        string flavourType = Console.ReadLine();
+
+        Console.Write("Is this a premium flavour? (Yes/No): ");
+        bool isPremium = Console.ReadLine().Equals("Yes", StringComparison.OrdinalIgnoreCase);
+
+        Console.Write("Enter the quantity of scoops for this flavour: ");
+        int flavourScoops = Convert.ToInt32(Console.ReadLine());
+
+        flavours.Add(new Flavour(flavourType, isPremium, flavourScoops));
+        flavourQuantity += flavourScoops;
+    }
+
+    List<Topping> toppings = new List<Topping>();
+    Console.Write("Do you want any toppings? (Yes/No): ");
+    if (Console.ReadLine()=="Yes")
+    {
+        while (toppings.Count<=4)
+        {
+            Console.WriteLine("You can add a maximum of 4 toppings.");
+            Console.Write("Enter the type of topping (enter 'Quit' to exit): ");
+            string toppingType = Console.ReadLine();
+            if (toppingType=="Quit")
+            {
+                break;
+            }
+            toppings.Add(new Topping(toppingType));
+        }
+    }
+
+    // Create and return the IceCream object
+    IceCream iceCream = null;
+    if (option == "Cup")
+    {
+        iceCream = new Cup(option, scoops, flavours, toppings);
+    }
+    else if (option == "Cone")
+    {
+        Console.WriteLine("Do you want your cone dipped? Yes/No: ");
+        bool dipped = Convert.ToBoolean(Console.ReadLine());
+        iceCream = new Cone(option, scoops, flavours, toppings, dipped);
+    }
+    else if (option == "Waffle")
+    {
+        Console.WriteLine("Enter your waffle flavour: ");
+        string waffleFlavour = Console.ReadLine();
+        iceCream = new Waffle(option, scoops, flavours, toppings, waffleFlavour);
+    }
+    return iceCream;
 }
 
 
