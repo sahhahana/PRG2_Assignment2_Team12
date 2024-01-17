@@ -145,37 +145,7 @@ namespace PRG2_Assignment2_Team12
         public void AddIceCream(IceCream iceCream)
         {
             // Update the ice cream with the modified information
-            if (iceCream.Option == "Cup")
-            {
-                IceCream modifiedIceCream = new Cup(iceCream.Option, iceCream.Scoops, iceCream.Flavours, iceCream.Toppings);
-                IceCreamList.Add(modifiedIceCream);
-            }
-            else if (iceCream.Option == "Cone")
-            {
-                Console.WriteLine("Do you want your cone dipped? Yes/No: ");
-                bool dipped = false;
-                if (Console.ReadLine() == "Yes")
-                {
-                    dipped = true;
-                }
-                else if (Console.ReadLine() == "No")
-                {
-                    dipped = false;
-                }
-                IceCream modifiedIceCream = new Cone(iceCream.Option, iceCream.Scoops, iceCream.Flavours, iceCream.Toppings, dipped);
-                IceCreamList.Add(modifiedIceCream);
-            }
-            else if (iceCream.Option == "Waffle")
-            {
-                Console.WriteLine("Enter your waffle flavour: ");
-                string waffleFlavour = Console.ReadLine();
-                List<string> waffleFlavourList = new List<string> { "Red Velvet", "Charcoal", "Pandan" };
-                if (waffleFlavourList.Contains(waffleFlavour))
-                {
-                    IceCream modifiedIceCream = new Waffle(iceCream.Option, iceCream.Scoops, iceCream.Flavours, iceCream.Toppings, waffleFlavour);
-                    IceCreamList.Add(modifiedIceCream);
-                }
-            }
+            IceCreamList.Add(iceCream);
             //printing out added order
             Console.WriteLine("Order added. This is your order: \nType: {0}\\nNumber of Scoops: {1}\\nFlavours:", iceCream.Option, iceCream.Scoops);
             foreach (Flavour flavour in iceCream.Flavours)
@@ -196,10 +166,10 @@ namespace PRG2_Assignment2_Team12
             }
         }
 
-        public void DeleteIceCream(int iceCreamIndex)
+        public void DeleteIceCream(IceCream iceCream)
         {
-            IceCreamList.Remove(IceCreamList[iceCreamIndex]);
-            Console.WriteLine("Order {0} has been removed.", iceCreamIndex);
+            IceCreamList.Remove(iceCream);
+            Console.WriteLine("Ice cream removed.");
         }
 
         public double CalculateTotal()

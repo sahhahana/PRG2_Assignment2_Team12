@@ -390,7 +390,7 @@ static void OptionSix(Dictionary<int, Customer> customerDictionary, List<string[
                     if (actionInput == "1")
                     {
                         Console.WriteLine("Enter the index of the ice cream you want to modify:");
-                        int iceCreamIndex = Convert.ToInt32(Console.ReadLine());
+                        int iceCreamIndex = Convert.ToInt32(Console.ReadLine())-1;
                         selectedOrder.ModifyIceCream(iceCreamIndex);
                     }
                     else if (actionInput == "2")
@@ -402,8 +402,24 @@ static void OptionSix(Dictionary<int, Customer> customerDictionary, List<string[
                     else if (actionInput == "3")
                     {
                         Console.WriteLine("Enter the index of the ice cream you want to delete:");
-                        int iceCreamIndex = Convert.ToInt32(Console.ReadLine());
-                        selectedOrder.DeleteIceCream(iceCreamIndex);
+                        int iceCreamIndex;
+                        if (int.TryParse(Console.ReadLine(), out iceCreamIndex))
+                        {
+                            iceCreamIndex--; // Subtract 1 to make it 0-based
+                            if (iceCreamIndex >= 0 && iceCreamIndex < selectedOrder.IceCreamList.Count)
+                            {
+                                IceCream iceCreamToDelete = selectedOrder.IceCreamList[iceCreamIndex];
+                                selectedOrder.DeleteIceCream(iceCreamToDelete);
+                            }
+                            else
+                            {
+                                Console.WriteLine("Invalid ice cream index.");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Invalid input. Please enter a valid numeric index.");
+                        }
                     }
                     else
                     {
