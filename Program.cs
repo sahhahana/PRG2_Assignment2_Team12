@@ -14,7 +14,11 @@ using System.Numerics;
 
 // Read customers.csv separately because it is used throughout the whole program
 
+// Read customers.csv and create a dictionary to store customer data
+Dictionary<int, Customer> customerDictionary = new Dictionary<int, Customer>();
+// Read customers.csv and create a list to store customer data
 List<Customer> customerList = new List<Customer>();
+
 using (StreamReader sr = new StreamReader("customers.csv")) //to read file 'customers.csv'
 {
     string s = sr.ReadLine(); //read heading
@@ -25,14 +29,29 @@ using (StreamReader sr = new StreamReader("customers.csv")) //to read file 'cust
     while ((s = sr.ReadLine()) != null)
     {
         string[] data = s.Split(",");
-        // Customer: name, memberid, dob
-        Customer customerData = new Customer(data[0], Convert.ToInt32(data[1]), Convert.ToDateTime(data[2]), data[3]);
-        customerList.Add(customerData);
+        if (data.Length == 6)
+        {
+            string name = data[0];
+            int memberId = (int)Convert.ToInt64(data[1]);
+            DateTime dob = Convert.ToDateTime(data[2]);
+            int points = (int)Convert.ToInt32(data[4]);
+            int punchCard = Convert.ToInt32(data[5]);
+            string status = data[3];
+
+            // Create Customer and PointCard objects
+            Customer customerData = new Customer(name, memberId, dob, status);
+            PointCard pointCard = new PointCard(punchCard, points, status);
+
+            // Link the PointCard to the Customer
+            customerData.Rewards = pointCard;
+            // Customer: name, memberid, dob
+            customerList.Add(customerData);
+            // Add Customer to the dictionary
+            customerDictionary.Add(memberId, customerData);
+        }
     }
 }
 
-// Read customers.csv and create a dictionary to store customer data
-Dictionary<int, Customer> customerDictionary = new Dictionary<int, Customer>();
 
 // Read orders.csv separately beacuse it is used throughout the whole program
 List<string[]> orderDetailsList = new List<string[]>();
@@ -50,6 +69,7 @@ using (StreamReader sr=new StreamReader("orders.csv"))
         // Order: id, time received
         Order orderData = new Order(Convert.ToInt32(data[0]), Convert.ToDateTime(data[2]));
         orderList.Add(orderData);
+        orderDetailsList.Add(data);
     }
 }
 
@@ -76,7 +96,7 @@ static void DisplayMenu()
     }
     else if (option == "2")
     {
-        OptionTwo(customerList);
+        OptionTwo(customerDictionary);
     }
     else if (option == "3")
     {
@@ -88,7 +108,7 @@ static void DisplayMenu()
     }
     else if (option == "5")
     {
-        OptionFive(customerList,orderDetailsList,orderList);
+        OptionFive(customerDictionary,orderDetailsList,orderList);
     }
     else if (option == "6")
     {
@@ -116,52 +136,39 @@ static void DisplayMenu()
 // Feature 1
 void OptionOne()
 {
-
-
-    using (StreamReader sr = new StreamReader("customers.csv"))
-    {
-        string s = sr.ReadLine(); // Read heading
-
-        while ((s = sr.ReadLine()) != null)
-        {
-            string[] data = s.Split(",");
-            string name = data[0];
-            int memberId = (int)Convert.ToInt64(data[1]);
-            DateTime dob = Convert.ToDateTime(data[2]);
-            int points = (int)Convert.ToInt32(data[4]);
-            int punchCard = Convert.ToInt32(data[5]);
-            string status = data[3];
-
-            // Create Customer and PointCard objects
-            Customer customerData = new Customer(name, memberId, dob, status);
-            PointCard pointCard = new PointCard(punchCard, points, status);
-
-            // Link the PointCard to the Customer
-            customerData.Rewards = pointCard;
-
-            // Add Customer to the dictionary
-            customerDictionary.Add(memberId, customerData);
-        }
-    }
-
+    //In this case, i (chloe) used "Celeste" as a test to test if the program worked
+    //So here I have to remove all "Celeste" Values to show only the values taken from the .csv file
+    //Just know that this part works :>
 
     Console.WriteLine($"{"Name",-8} {"MemberID",-12} {"DOB",-14} {"Status",-14} {"Points",-10} {"Punch Card",-10}");
     Console.WriteLine($"{"----",-8} {"--------",-12} {"---",-14} {"------",-14} {"------",-10} {"----------",-10}");
 
-    foreach (Customer customer in customerDictionary.Values)
+    List<int> membersToRemove = new List<int>();
+
+    foreach (var entry in customerDictionary)
     {
-        Console.WriteLine($"{customer.Name,-8} {customer.Memberid,-12} {customer.Dob.ToString("dd/MM/yyyy"),-14} {customer.Rewards.Tier,-14} {customer.Rewards.Points,-10} {customer.Rewards.PunchCard,-10}");
+        Customer customer = entry.Value;
+        // Since I used "Celeste" as my test run experiments, I will remove them from the dictionary
+        // This is because "Celeste" is (unfortunately) now part of the dict permanantly
+        // If this code is removed "Celeste" values will re-appear
+
+        if (customer.Name != "Celeste")
+        {
+            Console.WriteLine($"{customer.Name,-8} {customer.Memberid,-12} {customer.Dob.ToString("dd/MM/yyyy"),-14} {customer.Rewards.Tier,-14} {customer.Rewards.Points,-10} {customer.Rewards.PunchCard,-10}");
+        } 
     }
     Console.WriteLine("");
+
 
 }
 
 // Feature 2
-static void OptionTwo(List<Customer> customerList)
+static void OptionTwo(Dictionary<int, Customer> customerDictionary)
 {
     List<Customer> goldList = new List<Customer>();
     List<Customer> nonGoldList = new List<Customer>();
-    foreach (Customer customer in customerList)
+
+    foreach (Customer customer in customerDictionary.Values)
     {
         if (customer.MembershipStatus == "Gold")
         {
@@ -183,16 +190,20 @@ static void OptionTwo(List<Customer> customerList)
                 "{5,-10}  {6,-10} {7,-15} {8,-30} {9,-10}",
                 headings[0], headings[1], headings[2], headings[3],
                 headings[4], headings[5], headings[6], headings[7], "Flavour", "Toppings");
+            Console.WriteLine("{0,-5}  {1,-10}  {2,-20} {3,-20} {4,-10}" +
+                "{5,-10}  {6,-10} {7,-15} {8,-30} {9,-10}",
+                "--", "--------", "------------", "------------",
+                "------", "------", "------", "-------------", "-------", "--------");
         }
+
         while ((s = sr.ReadLine()) != null)
         {
             string[] data = s.Split(",");
 
             int custId = Convert.ToInt32(data[1]);
-            // Check if the Customer with the specified MemberId is in the goldList
-            Customer customer = goldList.Find(c => c.Memberid == custId);
 
-            if (customer != null)
+            // Check if the Customer with the specified MemberId is in the goldList
+            if (goldList.Any(c => c.Memberid == custId))
             {
                 Console.WriteLine("{0,-5}  {1,-10}  {2,-20} {3,-20} {4,-10}" +
                   "{5,-10}  {6,-10} {7,-15} {8,-30} {9,-10}", data[0], data[1], data[2], data[3], data[4],
@@ -200,20 +211,21 @@ static void OptionTwo(List<Customer> customerList)
             }
 
             // Check if Customer with the specified MemberID is in the nonGoldList
-            Customer customer2 = nonGoldList.Find(c => c.Memberid == custId);
-            if (customer2 != null)
+            else if (nonGoldList.Any(c => c.Memberid == custId))
             {
                 Console.WriteLine("{0,-5}  {1,-10}  {2,-20} {3,-20} {4,-10}" +
                   "{5,-10}  {6,-10} {7,-15} {8,-30} {9,-10}", data[0], data[1], data[2], data[3], data[4],
                   data[5], data[6], data[7], FormatFlavour(data[8], data[9], data[10]), FormatToppings(data[11], data[12], data[13]));
             }
-
         }
+        Console.WriteLine("");
     }
+
     string FormatFlavour(string f1, string f2, string f3)
     {
         return $"{f1}{(string.IsNullOrWhiteSpace(f2) ? "" : $",{f2}")}{(string.IsNullOrWhiteSpace(f3) ? "" : $",{f3}")}";
     }
+
     string FormatToppings(string t1, string t2, string t3)
     {
         return $"{t1}{(string.IsNullOrWhiteSpace(t2) ? "" : $",{t2}")}{(string.IsNullOrWhiteSpace(t3) ? "" : $",{t3}")}";
@@ -259,49 +271,35 @@ static void OptionFour()
     Console.WriteLine("Hello World");
 }
 // Feature 5
-static void OptionFive(List<Customer> customerList, List<string[]> orderDetailsList, List<Order> orderList)
+static void OptionFive(Dictionary<int, Customer> customerDictionary, List<string[]> orderDetailsList, List<Order> orderList)
 {
-    DisplayCustomerList(customerList);
+    DisplayCustomerDictionary(customerDictionary);
 
     Console.WriteLine("Enter the Member ID of the customer you want to view orders for:");
     string inputId = Console.ReadLine();
     int selectedMemberId;
-    if (int.TryParse(inputId, out selectedMemberId))
+
+    if (int.TryParse(inputId, out selectedMemberId) && customerDictionary.ContainsKey(selectedMemberId))
     {
-        Customer selectedCustomer = customerList.Find(c => c.Memberid == selectedMemberId);
+        Customer selectedCustomer = customerDictionary[selectedMemberId];
 
-        if (selectedCustomer != null)
+        Console.WriteLine($"\nOrders for {selectedCustomer.Name} (MemberID: {selectedCustomer.Memberid}):\n");
+
+        foreach (string[] orderDetails in orderDetailsList)
         {
-            Console.WriteLine($"\nOrders for {selectedCustomer.Name} (MemberID: {selectedCustomer.Memberid}):\n");
-
-            foreach (string[] orderDetails in orderDetailsList)
+            int orderMemberId = Convert.ToInt32(orderDetails[1]);
+            if (orderMemberId == selectedMemberId)
             {
-                if (orderDetails[1] == inputId)
-                {
-                    Console.WriteLine($"Order ID: {orderDetails[1]}, Time Received: {orderDetails[2]}");
-                    DisplayOrderDetails(orderDetails);
-                    Console.WriteLine("\n");
-                }
+                Console.WriteLine($"Order ID: {orderDetails[1]}, Time Received: {orderDetails[2]}");
+                DisplayOrderDetails(orderDetails);
+                Console.WriteLine("\n");
             }
-        }
-        else
-        {
-            Console.WriteLine("Customer not found.");
         }
     }
     else
     {
-        Console.WriteLine("Invalid input. Please enter a valid MemberID.");
+        Console.WriteLine("Customer not found or invalid input. Please enter a valid MemberID.");
     }
-}
-static void DisplayCustomerList(List<Customer> customers)
-{
-    Console.WriteLine("Customer List:");
-    foreach (Customer customer in customers)
-    {
-        Console.WriteLine($"MemberID: {customer.Memberid}, Name: {customer.Name}");
-    }
-    Console.WriteLine();
 }
 
 static void DisplayOrderDetails(string[] orderDetails)
@@ -326,7 +324,19 @@ static void DisplayOrderDetails(string[] orderDetails)
         Console.WriteLine("Toppings: {0}", toppings);
     }
 }
-
+static void DisplayCustomerDictionary(Dictionary<int, Customer> customers)
+{
+    Console.WriteLine("Customer List:");
+    foreach (var entry in customers)
+    {
+        Customer customer = entry.Value;
+        if (customer.Name != "Celeste")
+        {
+            Console.WriteLine($"MemberID: {customer.Memberid}, Name: {customer.Name}");
+        }
+    }
+    Console.WriteLine();
+}
 static IEnumerable<string> GetNonNullOrWhiteSpaceValues(string[] array, int startIndex, int endIndex)
 {
     for (int i = startIndex; i <= endIndex; i++)
@@ -337,9 +347,8 @@ static IEnumerable<string> GetNonNullOrWhiteSpaceValues(string[] array, int star
         }
     }
 }
-
-// Feature 6
-static void OptionSix()
+    // Feature 6
+    static void OptionSix()
 {
     Console.WriteLine("Hello World");
 }
