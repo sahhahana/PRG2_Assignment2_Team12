@@ -16,8 +16,6 @@ using System.Numerics;
 
 // Read customers.csv and create a dictionary to store customer data
 Dictionary<int, Customer> customerDictionary = new Dictionary<int, Customer>();
-// Read customers.csv and create a list to store customer data
-List<Customer> customerList = new List<Customer>();
 
 using (StreamReader sr = new StreamReader("customers.csv")) //to read file 'customers.csv'
 {
@@ -44,8 +42,7 @@ using (StreamReader sr = new StreamReader("customers.csv")) //to read file 'cust
 
             // Link the PointCard to the Customer
             customerData.Rewards = pointCard;
-            // Customer: name, memberid, dob
-            customerList.Add(customerData);
+
             // Add Customer to the dictionary
             customerDictionary.Add(memberId, customerData);
         }
@@ -250,7 +247,6 @@ void OptionThree()
     string status = "Ordinary";
 
     Customer newCustomer = new Customer(name, memberId, dob, status);
-    customerList.Add(newCustomer);
 
     PointCard newPointCard = new PointCard(0, 0, status);
     newCustomer.Rewards = newPointCard;
@@ -330,6 +326,10 @@ static void DisplayCustomerDictionary(Dictionary<int, Customer> customers)
     foreach (var entry in customers)
     {
         Customer customer = entry.Value;
+
+        // Since I used "Celeste" as my test run experiments, I will remove them from the dictionary
+        // This is because "Celeste" is (unfortunately) now part of the dict permanantly
+        // If this code is removed "Celeste" values will re-appear
         if (customer.Name != "Celeste")
         {
             Console.WriteLine($"MemberID: {customer.Memberid}, Name: {customer.Name}");
@@ -347,7 +347,7 @@ static IEnumerable<string> GetNonNullOrWhiteSpaceValues(string[] array, int star
         }
     }
 }
-    // Feature 6
+// Feature 6
     static void OptionSix()
 {
     Console.WriteLine("Hello World");
