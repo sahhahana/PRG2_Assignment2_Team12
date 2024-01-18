@@ -14,7 +14,7 @@ namespace PRG2_Assignment2_Team12
     class Cup : IceCream
     {
         public Cup() { }
-        public Cup(string option, int scoops, List<Flavour> flavours, List<Topping> toppings) : base(option, scoops, flavours, toppings)
+        public Cup(string option, int scoops, List<Flavour> flavours, List<Topping> toppings) : base("Cup", scoops, flavours, toppings)
         {
 
         }

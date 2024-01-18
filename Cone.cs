@@ -15,7 +15,7 @@ namespace PRG2_Assignment2_Team12
     {
         public bool Dipped { get; set; }
         public Cone() { }
-        public Cone(string option, int scoops, List<Flavour> flavours, List<Topping> toppings, bool dipped) : base(option, scoops, flavours, toppings)
+        public Cone(string option, int scoops, List<Flavour> flavours, List<Topping> toppings, bool dipped) : base("Cone", scoops, flavours, toppings)
         {
             Dipped = dipped;
         }

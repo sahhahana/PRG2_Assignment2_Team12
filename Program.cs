@@ -263,10 +263,86 @@ void OptionThree()
 }
 
 // Feature 4
-static void OptionFour()
+void OptionFour()
 {
-    Console.WriteLine("Hello World");
+    /*Create a customer’s order
+ list the customers from the customers.csv
+
+ prompt user to select a customer and retrieve the selected customer
+ create an order object
+ prompt user to enter their ice cream order (option, scoops, flavours, toppings)
+ create the proper ice cream object with the information given
+ add the ice cream object to the order
+ prompt the user asking if they would like to add another ice cream to the order, repeating 
+the previous three steps if [Y] or continuing to the next step if [N]
+ link the new order to the customer’s current order
+ if the customer has a gold-tier Pointcard, append their order to the back of the gold 
+members order queue. Otherwise append the order to the back of the regular order queue
+ display a message to indicate order has been made successfully
+*/
+    Console.WriteLine($"{"Name",-8} {"MemberID",-12} {"DOB",-14} {"Status",-14} {"Points",-10} {"Punch Card",-10}");
+    Console.WriteLine($"{"----",-8} {"--------",-12} {"---",-14} {"------",-14} {"------",-10} {"----------",-10}");
+
+    foreach (Customer customer in customerDictionary.Values)
+    {
+        Console.WriteLine($"{customer.Name,-8} {customer.Memberid,-12} {customer.Dob.ToString("dd/MM/yyyy"),-14} {customer.Rewards.Tier,-14} {customer.Rewards.Points,-10} {customer.Rewards.PunchCard,-10}");
+    }
+
+    Console.WriteLine("Enter customer's member ID to select: ");
+    int memberid = Convert.ToInt32(Console.ReadLine());
+
+    Order newOrder = new Order();
+
+    Console.WriteLine($"{customerDictionary[memberid].Name}'s Order");
+    Console.WriteLine("------------------------------\n");
+
+    Console.WriteLine("Option: ");
+    string option = Console.ReadLine();
+
+    Console.WriteLine("Scoop(s): ");
+    int scoop = Convert.ToInt32(Console.ReadLine());
+
+    Console.WriteLine("Flavour(s): ");
+    string type = Console.ReadLine();
+    bool premium;
+    if (type == "Ube")
+
+
+    Console.WriteLine("Topping(s): ");
+    string toppings = Console.ReadLine();
+
+
+
+    IceCream iceCream = new IceCream(option, scoop, new Flavour(type, premium, scoop).ToList(), new Topping(toppings);
+    newOrder.AddIceCream(iceCream);
+
+    Console.Write("Add another ice cream to the order? (Y/N): ");
+    while (Console.ReadLine().Trim().ToUpper() == "Y") ;
+
+    // Link the new order to the customer’s current order
+    memberid.CurrentOrder = newOrder;
+
+    newOrder.ModifyIceCream(memberid);
+
+    // Append the order to the appropriate queue based on the customer's Pointcard tier
+    if (selectedCustomer.Rewards.Tier == "Gold")
+    {
+        goldMembersOrderQueue.Enqueue(newOrder);
+    }
+    else
+    {
+        regularOrderQueue.Enqueue(newOrder);
+    }
+
+    Console.WriteLine("\nOrder has been made successfully!");
 }
+
+
+
+
+
+
+
 // Feature 5
 static void OptionFive(Dictionary<int, Customer> customerDictionary, List<string[]> orderDetailsList, List<Order> orderList)
 {
