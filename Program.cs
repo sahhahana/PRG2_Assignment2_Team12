@@ -325,8 +325,8 @@ members order queue. Otherwise append the order to the back of the regular order
     toppingList.Add(toppingsObj);
 
 
-
-    IceCream iceCream = new IceCream(option, scoop, flavours, toppingList);
+    /*
+    IceCream iceCream = new IceCream(option, scoop, new Flavour(type, premium, scoop).ToList(), new Topping(toppings);
     newOrder.AddIceCream(iceCream);
 
     Console.Write("Add another ice cream to the order? (Y/N): ");
@@ -347,7 +347,7 @@ members order queue. Otherwise append the order to the back of the regular order
         regularOrderQueue.Enqueue(newOrder);
     }
 
-    Console.WriteLine("\nOrder has been made successfully!");
+    Console.WriteLine("\nOrder has been made successfully!");*/
 }
 
 
@@ -449,6 +449,7 @@ static void OptionSix(Dictionary<int, Customer> customerDictionary, List<string[
      * [3]: choose which iceCream to remove > remove iceCream from order 
      *      (if iceCream count == 1: "You cannot have 0 iceCreams in an order."
      * - display the new updated order      */
+
 }
 
 
