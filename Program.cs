@@ -325,7 +325,6 @@ members order queue. Otherwise append the order to the back of the regular order
     toppingList.Add(toppingsObj);
 
 
-    /*
     IceCream iceCream = new IceCream(option, scoop, new Flavour(type, premium, scoop).ToList(), new Topping(toppings);
     newOrder.AddIceCream(iceCream);
 
@@ -347,7 +346,7 @@ members order queue. Otherwise append the order to the back of the regular order
         regularOrderQueue.Enqueue(newOrder);
     }
 
-    Console.WriteLine("\nOrder has been made successfully!");*/
+    Console.WriteLine("\nOrder has been made successfully!");
 }
 
 
