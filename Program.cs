@@ -247,7 +247,7 @@ void OptionThree()
 
     string status = "Ordinary";
 
-    Customer newCustomer = new Customer(name, memberId, dob, status);
+    Customer newCustomer = new Customer(name, memberId, dob;
 
     PointCard newPointCard = new PointCard(0, 0, status);
     newCustomer.Rewards = newPointCard;
@@ -304,23 +304,36 @@ members order queue. Otherwise append the order to the back of the regular order
 
     Console.WriteLine("Flavour(s): ");
     string type = Console.ReadLine();
-    bool premium;
-    if (type == "Ube")
+    bool premium = false;
+    if (type == "Ube" || type == "Durian" || type == "Sea Salt")
+    {
+        premium = true;
+    }
+    
+    List<Flavour> flavours = new List<Flavour>();
+    Flavour flavour = new Flavour(type, premium, scoop); 
+    
+    flavours.Add(flavour);
 
 
     Console.WriteLine("Topping(s): ");
     string toppings = Console.ReadLine();
 
+    Topping toppingsObj = new Topping(toppings);
+    List<Topping> toppingList = new List<Topping>();
+
+    toppingList.Add(toppingsObj);
 
 
-    IceCream iceCream = new IceCream(option, scoop, new Flavour(type, premium, scoop).ToList(), new Topping(toppings);
+
+    IceCream iceCream = new IceCream(option, scoop, flavours, toppingList);
     newOrder.AddIceCream(iceCream);
 
     Console.Write("Add another ice cream to the order? (Y/N): ");
     while (Console.ReadLine().Trim().ToUpper() == "Y") ;
 
     // Link the new order to the customer’s current order
-    memberid.CurrentOrder = newOrder;
+    memberid.newOrder = newOrder;
 
     newOrder.ModifyIceCream(memberid);
 
