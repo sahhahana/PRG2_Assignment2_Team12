@@ -247,7 +247,7 @@ void OptionThree()
 
     string status = "Ordinary";
 
-    Customer newCustomer = new Customer(name, memberId, dob;
+    Customer newCustomer = new Customer(name, memberId, dob);
 
     PointCard newPointCard = new PointCard(0, 0, status);
     newCustomer.Rewards = newPointCard;
