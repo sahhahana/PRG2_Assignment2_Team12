@@ -38,7 +38,7 @@ using (StreamReader sr = new StreamReader("customers.csv")) //to read file 'cust
             string status = data[3];
 
             // Create Customer and PointCard objects
-            Customer customerData = new Customer(name, memberId, dob, status);
+            Customer customerData = new Customer(name, memberId, dob);
             PointCard pointCard = new PointCard(punchCard, points, status);
 
             // Link the PointCard to the Customer
@@ -168,11 +168,11 @@ static void OptionTwo(Dictionary<int, Customer> customerDictionary)
 
     foreach (Customer customer in customerDictionary.Values)
     {
-        if (customer.MembershipStatus == "Gold")
+        if (customer.Rewards.Tier == "Gold")
         {
             goldList.Add(customer);
         }
-        else if (customer.MembershipStatus == "Ordinary")
+        else if (customer.Rewards.Tier == "Ordinary")
         {
             nonGoldList.Add(customer);
         }
@@ -255,7 +255,7 @@ void OptionThree()
 
     using (StreamWriter sw = new StreamWriter("Customers.csv", true))
     {
-        sw.WriteLine($"\n{newCustomer.Name},{newCustomer.Memberid},{newCustomer.Dob.ToString("dd/MM/yyyy")},{newCustomer.MembershipStatus},{newCustomer.Rewards.Points},{newCustomer.Rewards.PunchCard}");
+        sw.WriteLine($"\n{newCustomer.Name},{newCustomer.Memberid},{newCustomer.Dob.ToString("dd/MM/yyyy")},{newCustomer.Rewards.Tier},{newCustomer.Rewards.Points},{newCustomer.Rewards.PunchCard}");
 
     }
     Console.WriteLine("\nCustomer is officially a member of I.C.Treats! Welcome:D\n");
@@ -265,89 +265,109 @@ void OptionThree()
 // Feature 4
 void OptionFour()
 {
-    /*Create a customer’s order
- list the customers from the customers.csv
-
- prompt user to select a customer and retrieve the selected customer
- create an order object
- prompt user to enter their ice cream order (option, scoops, flavours, toppings)
- create the proper ice cream object with the information given
- add the ice cream object to the order
- prompt the user asking if they would like to add another ice cream to the order, repeating 
-the previous three steps if [Y] or continuing to the next step if [N]
- link the new order to the customer’s current order
- if the customer has a gold-tier Pointcard, append their order to the back of the gold 
-members order queue. Otherwise append the order to the back of the regular order queue
- display a message to indicate order has been made successfully
-*/
     Console.WriteLine($"{"Name",-8} {"MemberID",-12} {"DOB",-14} {"Status",-14} {"Points",-10} {"Punch Card",-10}");
     Console.WriteLine($"{"----",-8} {"--------",-12} {"---",-14} {"------",-14} {"------",-10} {"----------",-10}");
 
-    foreach (Customer customer in customerDictionary.Values)
+    foreach (Customer existingCustomer in customerDictionary.Values)
     {
-        Console.WriteLine($"{customer.Name,-8} {customer.Memberid,-12} {customer.Dob.ToString("dd/MM/yyyy"),-14} {customer.Rewards.Tier,-14} {customer.Rewards.Points,-10} {customer.Rewards.PunchCard,-10}");
+        Console.WriteLine($"{existingCustomer.Name,-8} {existingCustomer.Memberid,-12} {existingCustomer.Dob.ToString("dd/MM/yyyy"),-14} {existingCustomer.Rewards.Tier,-14} {existingCustomer.Rewards.Points,-10} {existingCustomer.Rewards.PunchCard,-10}");
     }
 
     Console.WriteLine("Enter customer's member ID to select: ");
     int memberid = Convert.ToInt32(Console.ReadLine());
 
-    Order newOrder = new Order();
-
-    Console.WriteLine($"{customerDictionary[memberid].Name}'s Order");
-    Console.WriteLine("------------------------------\n");
-
-    Console.WriteLine("Option: ");
-    string option = Console.ReadLine();
-
-    Console.WriteLine("Scoop(s): ");
-    int scoop = Convert.ToInt32(Console.ReadLine());
-
-    Console.WriteLine("Flavour(s): ");
-    string type = Console.ReadLine();
-    bool premium = false;
-    if (type == "Ube" || type == "Durian" || type == "Sea Salt")
+    if (customerDictionary.ContainsKey(memberid))
     {
-        premium = true;
-    }
-    
-    List<Flavour> flavours = new List<Flavour>();
-    Flavour flavour = new Flavour(type, premium, scoop); 
-    
-    flavours.Add(flavour);
+        Customer customer = customerDictionary[memberid];
 
+        Console.WriteLine($"{customer.Name}'s Order");
+        Console.WriteLine("------------------------------\n");
 
-    Console.WriteLine("Topping(s): ");
-    string toppings = Console.ReadLine();
+        Console.WriteLine("Option (Cup/ Cone/ Waffle): ");
+        string option = Console.ReadLine().ToUpper();
 
-    Topping toppingsObj = new Topping(toppings);
-    List<Topping> toppingList = new List<Topping>();
+        Console.WriteLine("Scoop(s): ");
+        int scoop = Convert.ToInt32(Console.ReadLine());
 
-    toppingList.Add(toppingsObj);
+        Console.WriteLine("Flavour(s): ");
+        string type = Console.ReadLine();
+        bool premium = IsPremiumFlavour(type);
 
+        List<Flavour> flavoursList = new List<Flavour>();
+        Flavour flavour = new Flavour(type, premium, scoop);
+        flavoursList.Add(flavour);
 
-    IceCream iceCream = new IceCream(option, scoop, new Flavour(type, premium, scoop).ToList(), new Topping(toppings);
-    newOrder.AddIceCream(iceCream);
+        Console.WriteLine("Topping(s): ");
+        string toppings = Console.ReadLine();
 
-    Console.Write("Add another ice cream to the order? (Y/N): ");
-    while (Console.ReadLine().Trim().ToUpper() == "Y") ;
+        List<Topping> toppingList = new List<Topping>();
+        Topping toppingsObj = new Topping(toppings);
+        toppingList.Add(toppingsObj);
 
-    // Link the new order to the customer’s current order
-    memberid.newOrder = newOrder;
+        Order orderNew = customer.MakeOrder();
 
-    newOrder.ModifyIceCream(memberid);
+        IceCream newOrder;
 
-    // Append the order to the appropriate queue based on the customer's Pointcard tier
-    if (selectedCustomer.Rewards.Tier == "Gold")
-    {
-        goldMembersOrderQueue.Enqueue(newOrder);
+        if (option == "CUP")
+        {
+            newOrder = new Cup(option, scoop, flavoursList, toppingList);
+        }
+        else if (option == "CONE")
+        {
+            bool dipped = AskForChocolateDippedCone();
+            newOrder = new Cone(option, scoop, flavoursList, toppingList, dipped);
+        }
+        else if (option == "WAFFLE")
+        {
+            string waffleType = AskForWaffleType();
+            newOrder = new Waffle(option, scoop, flavoursList, toppingList, waffleType);
+        }
+        else
+        {
+            Console.WriteLine("Invalid option! Please enter Cup, Cone, or Waffle.");
+            return;
+        }
+
+        orderNew.AddIceCream(newOrder);
+        
+        customer.CurrentOrder = orderNew;
+
+        /* Append the order to the appropriate queue based on the customer's Pointcard tier
+        if (customer.Rewards.Tier == "Gold")
+        {
+            goldMembersOrderQueue.Enqueue(orderNew);
+        }
+        else
+        {
+            regularOrderQueue.Enqueue(orderNew);
+        }*/
+
+        Console.WriteLine("\nOrder has been made successfully!");
     }
     else
     {
-        regularOrderQueue.Enqueue(newOrder);
+        Console.WriteLine("Customer is not a member at I.C.Treats. Please ensure the correct Member ID was selected or register this customer by choosing option 3.");
     }
-
-    Console.WriteLine("\nOrder has been made successfully!");
 }
+
+bool IsPremiumFlavour(string flavour)
+{
+    List<string> premiumFlavours = new List<string> { "Durian", "Ube", "Sea Salt" };
+    return premiumFlavours.Contains(flavour);
+}
+
+bool AskForChocolateDippedCone()
+{
+    Console.WriteLine("Do you want a chocolate-dipped cone? (Y/N): ");
+    return Console.ReadLine().Trim().ToUpper() == "Y";
+}
+
+string AskForWaffleType()
+{
+    Console.WriteLine("Select Waffle Type (Red Velvet, Charcoal, or Pandan): ");
+    return Console.ReadLine();
+}
+
 
 
 

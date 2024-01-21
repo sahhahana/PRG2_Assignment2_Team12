@@ -164,6 +164,7 @@ namespace PRG2_Assignment2_Team12
             {
                 Console.WriteLine("No toppings requested.");
             }
+            
         }
 
         public void DeleteIceCream(int iceCreamIndex)
