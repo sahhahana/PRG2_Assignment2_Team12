@@ -8,6 +8,7 @@ using System;
 using System.ComponentModel.Design;
 using System.Linq;
 using System.Numerics;
+using System.Reflection.Metadata.Ecma335;
 
 
 //chloe - features 2,5 and 6
@@ -299,12 +300,23 @@ void OptionFour()
         Flavour flavour = new Flavour(type, premium, scoop);
         flavoursList.Add(flavour);
 
-        Console.WriteLine("Topping(s): ");
-        string toppings = Console.ReadLine().ToLower();
-
+        Console.WriteLine("Do you want topping(s)? (Y/N): ");
+        string toppings = Console.ReadLine().ToUpper();
         List<Topping> toppingList = new List<Topping>();
-        Topping toppingsObj = new Topping(toppings);
-        toppingList.Add(toppingsObj);
+
+        if (toppings == "N")
+        {
+            return;
+
+        }
+        else
+        {
+            
+            Topping toppingsObj = new Topping(toppings);
+            toppingList.Add(toppingsObj);
+        }
+
+        
 
         Order orderNew = customer.MakeOrder();
 
