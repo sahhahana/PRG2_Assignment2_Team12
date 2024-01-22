@@ -418,11 +418,6 @@ void OptionFour()
     // todo: add points and modify code -- add a orderid couonter, add topping methods, i need to add this order plus info from order in th eorder.csv file, add 1 flavour at a time
 }
 
-bool IsPremiumFlavour(string flavour)
-{
-    List<string> premiumFlavours = new List<string> { "durian", "ube", "sea salt" };
-    return premiumFlavours.Contains(flavour);
-}
 
 bool AskForChocolateDippedCone()
 {
