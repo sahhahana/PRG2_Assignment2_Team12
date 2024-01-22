@@ -13,7 +13,9 @@ using System.Numerics;
 //chloe - features 2,5 and 6
 //sahana- features 1, 3 ad 4
 
-// Read customers.csv separately because it is used throughout the whole program
+Queue<Order> regularOrderQueue = new Queue<Order>();
+Queue<Order> goldOrderQueue = new Queue<Order>();
+int orderIdCounter = 1;
 
 // Read customers.csv and create a dictionary to store customer data
 Dictionary<int, Customer> customerDictionary = new Dictionary<int, Customer>();
@@ -284,13 +286,13 @@ void OptionFour()
         Console.WriteLine("------------------------------\n");
 
         Console.WriteLine("Option (Cup/ Cone/ Waffle): ");
-        string option = Console.ReadLine().ToUpper();
+        string option = Console.ReadLine().ToLower();
 
         Console.WriteLine("Scoop(s): ");
-        int scoop = Convert.ToInt32(Console.ReadLine());
+        int scoop = Convert.ToInt32(Console.ReadLine().ToLower());
 
         Console.WriteLine("Flavour(s): ");
-        string type = Console.ReadLine();
+        string type = Console.ReadLine().ToLower();
         bool premium = IsPremiumFlavour(type);
 
         List<Flavour> flavoursList = new List<Flavour>();
@@ -298,7 +300,7 @@ void OptionFour()
         flavoursList.Add(flavour);
 
         Console.WriteLine("Topping(s): ");
-        string toppings = Console.ReadLine();
+        string toppings = Console.ReadLine().ToLower();
 
         List<Topping> toppingList = new List<Topping>();
         Topping toppingsObj = new Topping(toppings);
@@ -308,16 +310,16 @@ void OptionFour()
 
         IceCream newOrder;
 
-        if (option == "CUP")
+        if (option == "cup")
         {
             newOrder = new Cup(option, scoop, flavoursList, toppingList);
         }
-        else if (option == "CONE")
+        else if (option == "cone")
         {
             bool dipped = AskForChocolateDippedCone();
             newOrder = new Cone(option, scoop, flavoursList, toppingList, dipped);
         }
-        else if (option == "WAFFLE")
+        else if (option == "waffle")
         {
             string waffleType = AskForWaffleType();
             newOrder = new Waffle(option, scoop, flavoursList, toppingList, waffleType);
@@ -332,15 +334,15 @@ void OptionFour()
         
         customer.CurrentOrder = orderNew;
 
-        /* Append the order to the appropriate queue based on the customer's Pointcard tier
+        //Append the order to the appropriate queue based on the customer's Pointcard tier
         if (customer.Rewards.Tier == "Gold")
         {
-            goldMembersOrderQueue.Enqueue(orderNew);
+            goldOrderQueue.Enqueue(orderNew);
         }
         else
         {
             regularOrderQueue.Enqueue(orderNew);
-        }*/
+        }
 
         Console.WriteLine("\nOrder has been made successfully!");
     }
@@ -352,7 +354,7 @@ void OptionFour()
 
 bool IsPremiumFlavour(string flavour)
 {
-    List<string> premiumFlavours = new List<string> { "Durian", "Ube", "Sea Salt" };
+    List<string> premiumFlavours = new List<string> { "durian", "ube", "sea salt" };
     return premiumFlavours.Contains(flavour);
 }
 
@@ -364,7 +366,9 @@ bool AskForChocolateDippedCone()
 
 string AskForWaffleType()
 {
-    Console.WriteLine("Select Waffle Type (Red Velvet, Charcoal, or Pandan): ");
+    Console.WriteLine("Select Waffle Type (red velvet, charcoal, or pandan): ");
+    string wafflesType = Console.ReadLine().ToLower();
+    if(wafflesType)
     return Console.ReadLine();
 }
 
