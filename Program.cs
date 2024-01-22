@@ -366,14 +366,19 @@ bool AskForChocolateDippedCone()
 
 string AskForWaffleType()
 {
+    List<string> waffleFlavour = new List<string> { "red velvet", "charcoal", "pandan" };
     Console.WriteLine("Select Waffle Type (red velvet, charcoal, or pandan): ");
     string wafflesType = Console.ReadLine().ToLower();
-    if(wafflesType)
-    return Console.ReadLine();
-}
 
-
-
+    if (waffleFlavour.Contains(wafflesType))
+    {
+        return wafflesType;
+    }
+    else
+    {
+        Console.WriteLine("Please enter your waffle type.");
+        return "";
+    }
 
 
 
