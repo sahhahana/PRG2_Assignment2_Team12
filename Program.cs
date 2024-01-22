@@ -297,12 +297,10 @@ while (true)
             }
             Console.WriteLine("");
         }
-
         string FormatFlavour(string f1, string f2, string f3)
         {
             return $"{f1}{(string.IsNullOrWhiteSpace(f2) ? "" : $",{f2}")}{(string.IsNullOrWhiteSpace(f3) ? "" : $",{f3}")}";
         }
-
         string FormatToppings(string t1, string t2, string t3)
         {
             return $"{t1}{(string.IsNullOrWhiteSpace(t2) ? "" : $",{t2}")}{(string.IsNullOrWhiteSpace(t3) ? "" : $",{t3}")}";
