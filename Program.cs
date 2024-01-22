@@ -70,7 +70,6 @@ bool IsPremiumFlavour(string flavour)
 // Read orders.csv separately beacuse it is used throughout the whole program
 
 Customer customer = null;
-List<Order> orderList = new List<Order>();
 using (StreamReader sr=new StreamReader("orders.csv"))
 {
     string s = sr.ReadLine(); // Read heading
