@@ -185,7 +185,7 @@ while (true)
     }
     else if (option == "5")
     {
-        //OptionFive(customerDictionary,orderDetailsList,orderList);
+        OptionFive(customerDictionary);
     }
     else if (option == "6")
     {
@@ -453,9 +453,9 @@ while (true)
 
         Console.WriteLine($"{customer.CurrentOrder.Id},{customer.Memberid},{timeReceived.ToString("dd/MM/yyyy")},{timeFulfilled.ToString("dd/MM/yyyy")},{newOrder.Option},{newOrder.Scoops},{flavorFormat},{toppingFormat}");
 
-        foreach(IceCream i in IceCreamList)
+        foreach (IceCream iceCream in customer.CurrentOrder.IceCreamList)
         {
-            Console.WriteLine(i);
+            Console.WriteLine(iceCream);
         }
 
     }
@@ -520,68 +520,57 @@ void AskForToppings(List<Topping> toppingList)
 
 
     // Feature 5
-    static void OptionFive(Dictionary<int, Customer> customerDictionary, Dictionary<int, Order> orderDictionary)
-    {
-        /* list the customers
+    static void OptionFive(Dictionary<int, Customer> customerDictionary)
+{
+    /* list the customers
  prompt ottoo the robot to select a customer and retrieve the selected customer
  retrieve all the order objects of the customer, past and current -- using order history
  for each order, display all the details of the order including datetime received, datetime
 fulfilled(if applicable) and all ice cream details associated with the order*/
-        DisplayCustomerDictionary(customerDictionary);
+    DisplayCustomerDictionary(customerDictionary);
 
-        Console.Write("Enter the Member ID of the customer you want to view orders for:");
-        string inputId = Console.ReadLine();
-        int selectedMemberId;
+    Console.Write("Enter the Member ID of the customer you want to view orders for:");
+    string inputId = Console.ReadLine();
+    int selectedMemberId;
 
-        if (int.TryParse(inputId, out selectedMemberId) && customerDictionary.ContainsKey(selectedMemberId))
-        {
-            Customer selectedCustomer = customerDictionary[selectedMemberId];
-
-            Console.WriteLine($"\nOrders for {selectedCustomer.Name} (MemberID: {selectedCustomer.Memberid}):\n");
-
-            if (orderDictionary.ContainsKey(selectedMemberId))
-            {
-                Order order = orderDictionary[selectedMemberId];
-                DisplayOrderDetails(order);
-            }
-            else
-            {
-                Console.WriteLine("No orders found for the selected customer.");
-            }
-        }
-        else
-        {
-            Console.WriteLine("Customer not found or invalid input. Please enter a valid MemberID.");
-        }
-    }
-
-    static void DisplayOrderDetails(Order order)
+    if (int.TryParse(inputId, out selectedMemberId) && customerDictionary.ContainsKey(selectedMemberId))
     {
-        Console.WriteLine($"ID: {order.Id}\nTime Received: {order.TimeReceived}\nTime Fulfilled: {order.TimeFulfilled?.ToString() ?? "Not fulfilled"}");
-
-        foreach (var iceCream in order.IceCreamList)
+        Customer selectedCustomer = customerDictionary[selectedMemberId];
+        Console.WriteLine($"\nOrders for {selectedCustomer.Name} (MemberID: {selectedCustomer.Memberid}):\n");
+        List<Order> orderHistory = selectedCustomer.OrderHistory;
+        foreach (Order order in orderHistory)
         {
-            Console.WriteLine(iceCream.ToString());
+            DisplayOrderDetails(order);
+            Console.WriteLine();
         }
     }
-    static void DisplayCustomerDictionary(Dictionary<int, Customer> customers)
+    else
     {
-        Console.WriteLine("Customer List:");
-
-        foreach (var entry in customers)
-        {
-            Customer customer = entry.Value;
-
-            // Since we don't have MemberId in the Order class, let's just display customer information
-            Console.WriteLine($"MemberID: {customer.Memberid}, Name: {customer.Name}");
-        }
-
-        Console.WriteLine();
+        Console.WriteLine("Customer not found or invalid input. Please enter a valid MemberID.");
     }
+}
+static void DisplayOrderDetails(Order order)
+{
+    Console.WriteLine($"ID: {order.Id}\nTime Received: {order.TimeReceived}\nTime Fulfilled: {order.TimeFulfilled?.ToString("dd/MM/yyyy HH:mm") ?? "Not fulfilled"}");
+    foreach (var iceCream in order.IceCreamList)
+    {
+        Console.WriteLine(iceCream.ToString());
+    }
+}
+static void DisplayCustomerDictionary(Dictionary<int, Customer> customers)
+{
+    Console.WriteLine("Customer List:");
+    foreach (var entry in customers)
+    {
+        Customer customer = entry.Value;
+        Console.WriteLine($"MemberID: {customer.Memberid}, Name: {customer.Name}");
+    }
+    Console.WriteLine();
+}
 
 
-    // Feature 6
-    static void OptionSix(Dictionary<int, Customer> customerDictionary, Dictionary<int, Order> orderDictionary)
+// Feature 6
+static void OptionSix(Dictionary<int, Customer> customerDictionary, Dictionary<int, Order> orderDictionary)
     {
         /* - list customers
          * - user chooses a customer > get that customers order

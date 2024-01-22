@@ -57,7 +57,8 @@ namespace PRG2_Assignment2_Team12
         }
         public string ToString()
         {
-            return $"{base.ToString()}";
+            return $"Type: Cup\nNumber of Scoops: {Scoops}\nFlavours:\n{string.Join("\n", Flavours)}\n" +
+                   $"Toppings: {string.Join(", ", Toppings)}";
         }
     } 
 }
