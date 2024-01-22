@@ -14,6 +14,11 @@ using System.Reflection.Metadata.Ecma335;
 //chloe - features 2,5 and 6
 //sahana- features 1, 3 ad 4
 
+//current order
+//order history
+//icecream list
+//how does the queue system work and how it links to order id
+
 Queue<Order> regularOrderQueue = new Queue<Order>();
 Queue<Order> goldOrderQueue = new Queue<Order>();
 int orderIdCounter = 1;
