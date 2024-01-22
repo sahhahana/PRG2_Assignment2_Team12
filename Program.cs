@@ -181,6 +181,7 @@ while (true)
     {
          
         OptionFour();
+        
     }
     else if (option == "5")
     {
@@ -445,10 +446,19 @@ while (true)
             Console.WriteLine("\nOrder has been made successfully!");
         DateTime timeFulfilled = (DateTime)customer.CurrentOrder.TimeFulfilled;
         DateTime timeReceived = (DateTime)customer.CurrentOrder.TimeReceived;
-        
-        Console.WriteLine($"{customer.CurrentOrder.Id},{customer.Memberid},{timeReceived.ToString("dd/MM/yyyy")},{timeFulfilled.ToString("dd/MM/yyyy")},{newOrder.Option},{newOrder.Scoops},{newOrder.Flavours},{newOrder.Flavours}"); ;
 
+        int maxFlavors = 3;
+        int maxToppings = 4;
 
+        string flavorFormat = string.Join(",", Enumerable.Range(0, maxFlavors).Select(i => $"{{newOrder.Flavours[{i}]}}"));
+        string toppingFormat = string.Join(",", Enumerable.Range(0, maxToppings).Select(i => $"{{newOrder.Toppings[{i}]}}"));
+
+        Console.WriteLine($"{customer.CurrentOrder.Id},{customer.Memberid},{timeReceived.ToString("dd/MM/yyyy")},{timeFulfilled.ToString("dd/MM/yyyy")},{newOrder.Option},{newOrder.Scoops},{flavorFormat},{toppingFormat}");
+
+        foreach(IceCream i in IceCreamList)
+        {
+            Console.WriteLine(i);
+        }
 
     }
     else
