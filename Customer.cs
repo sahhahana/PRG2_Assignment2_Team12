@@ -22,7 +22,7 @@ namespace PRG2_Assignment2_Team12
         public string Name { get; set; }
         public int Memberid { get; set; }
         public DateTime Dob{ get; set; }
-        public Order CurrentOrder { get; set; }
+        public Order CurrentOrder { get; set; } // customer's latest order before being fulfilled
         public List<Order> OrderHistory { get; set; } = new List<Order>();
         public PointCard Rewards { get; set; } = new PointCard();
         public Customer() { }

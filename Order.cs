@@ -33,6 +33,7 @@ namespace PRG2_Assignment2_Team12
             if (iceCreamIndex >= 0 && iceCreamIndex < IceCreamList.Count)
             {
                 // Prompt user for modifications
+                // how to identify which order from the multi ice cream order do they want to modify
                 Console.WriteLine("Enter modified information for the ice cream.");
                 Console.Write("Enter the new option (cup, cone, waffle): ");
                 string newOption = Console.ReadLine();

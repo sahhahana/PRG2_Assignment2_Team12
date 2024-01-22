@@ -10,6 +10,7 @@ using System.Linq;
 using System.Numerics;
 using System.Reflection.Metadata.Ecma335;
 using System.Security.Cryptography.X509Certificates;
+using System.Xml.Linq;
 
 
 //chloe - features 2,5 and 6
@@ -60,9 +61,15 @@ using (StreamReader sr = new StreamReader("customers.csv")) //to read file 'cust
     }
 }
 
+bool IsPremiumFlavour(string flavour)
+{
+    List<string> premiumFlavours = new List<string> { "durian", "ube", "sea salt" };
+    return premiumFlavours.Contains(flavour);
+}
 
 // Read orders.csv separately beacuse it is used throughout the whole program
-List<string[]> orderDetailsList = new List<string[]>();
+
+Customer customer = null;
 List<Order> orderList = new List<Order>();
 using (StreamReader sr=new StreamReader("orders.csv"))
 {
@@ -77,18 +84,46 @@ using (StreamReader sr=new StreamReader("orders.csv"))
         // Order: id, time received
         int id = Convert.ToInt32(data[0]);
         int memberId = Convert.ToInt32(data[1]);
+        foreach(Customer findCustomer in customerDictionary.Values)
+        {
+            if(findCustomer.Memberid == id) 
+            { 
+                customer = findCustomer;
+            }
+        }
         DateTime timeReceived = Convert.ToDateTime(data[2]);
         DateTime timeFulfilled = Convert.ToDateTime(data[3]);
-        string option = data[4];
 
+        List<Order> ordersList = customer.OrderHistory;
+        Order order = new Order(id, timeReceived);
+        ordersList.Add(order);
+
+        string option = data[4];
         int scoops = Convert.ToInt32(data[5]);
-        bool
-        string flavour = data[8];
-        string topping = data[7];
+        bool dipped = Convert.ToBoolean(data[6]);
+        string waffleFlavour = data[7];
+
+        Flavour flavour1 = new Flavour(data[8], IsPremiumFlavour(data[8]), 1);
+        Flavour flavour2 = new Flavour(data[9], IsPremiumFlavour(data[9]), 1);
+        Flavour flavour3 = new Flavour(data[10], IsPremiumFlavour(data[10]), 1);
+
         List<Flavour> flavoursList = new List<Flavour>();
-        flavoursList.Add()
-        Order orderData = new Order(Convert.ToInt32(data[0]), Convert.ToDateTime(data[2]));
-        data[].Add(orderData);
+        flavoursList.Add(flavour1);
+        flavoursList.Add(flavour2);
+        flavoursList.Add(flavour3);
+
+        Topping topping1 = new Topping(data[11]);
+        Topping topping2 = new Topping(data[12]);
+        Topping topping3 = new Topping(data[13]);
+        Topping topping4 = new Topping(data[14]);
+
+        List<Topping> toppingsList = new List<Topping>();
+        toppingsList.Add(topping1);
+        toppingsList.Add(topping2);
+        toppingsList.Add(topping3);
+        toppingsList.Add(topping4);
+
+        
     }
 }
 
@@ -110,10 +145,6 @@ void DisplayOptions()
     Console.Write("Enter your option: ");
 }
 
-void DisplayMenu()
-{
-
-}
 
 
 
@@ -385,6 +416,7 @@ void OptionFour()
     {
         Console.WriteLine("Customer is not a member at I.C.Treats. Please ensure the correct Member ID was selected or register this customer by choosing option 3.");
     }
+    // todo: add points and modify code -- add a orderid couonter, add topping methods, i need to add this order plus info from order in th eorder.csv file, add 1 flavour at a time
 }
 
 bool IsPremiumFlavour(string flavour)
@@ -421,10 +453,15 @@ string AskForWaffleType()
 
     // Feature 5
 static void OptionFive(Dictionary<int, Customer> customerDictionary, Dictionary<int, Order> orderDictionary)
-    {
+            {
+                /* list the customers
+ prompt ottoo the robot to select a customer and retrieve the selected customer
+ retrieve all the order objects of the customer, past and current -- using order history
+ for each order, display all the details of the order including datetime received, datetime
+fulfilled(if applicable) and all ice cream details associated with the order*/
         DisplayCustomerDictionary(customerDictionary);
 
-        Console.WriteLine("Enter the Member ID of the customer you want to view orders for:");
+        Console.Write("Enter the Member ID of the customer you want to view orders for:");
         string inputId = Console.ReadLine();
         int selectedMemberId;
 
@@ -481,6 +518,8 @@ static void OptionFive(Dictionary<int, Customer> customerDictionary, Dictionary<
     /* - list customers
      * - user chooses a customer > get that customers order
      * - list all iceCream objects contained in the order
+     * need to use orderid to refernece all the ice cream orders referencing ice cream list 
+
      * - choose: [1] modify iceCream, [2] add new iceCream, [3] delete iceCream
      * [1]: choose which iceCream to modify > prompt for all the information > update accordingly
      * [2]: prompt for all the information > update accordingly (add to order)
