@@ -300,23 +300,8 @@ void OptionFour()
         Flavour flavour = new Flavour(type, premium, scoop);
         flavoursList.Add(flavour);
 
-        Console.WriteLine("Do you want topping(s)? (Y/N): ");
-        string toppings = Console.ReadLine().ToUpper();
         List<Topping> toppingList = new List<Topping>();
-
-        if (toppings == "N")
-        {
-            return;
-
-        }
-        else
-        {
-            
-            Topping toppingsObj = new Topping(toppings);
-            toppingList.Add(toppingsObj);
-        }
-
-        
+        AskForToppings(toppingList);
 
         Order orderNew = customer.MakeOrder();
 
@@ -391,6 +376,25 @@ string AskForWaffleType()
         Console.WriteLine("Please enter your waffle type.");
         return "";
     }
+}
+
+void AskForToppings(List<Topping> toppingList)
+{
+    Console.WriteLine("Do you want topping(s)? (Y/N): ");
+    string toppings = Console.ReadLine().ToUpper();
+
+
+    if (toppings == "N")
+    {
+        return;
+
+    }
+    else
+    {
+        Topping toppingsObj = new Topping(toppings);
+        toppingList.Add(toppingsObj);
+    }
+}
 
 
 
