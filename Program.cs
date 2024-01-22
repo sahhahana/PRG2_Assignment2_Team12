@@ -450,6 +450,7 @@ while (true)
 
         string flavorFormat = string.Join(",", Enumerable.Range(0, maxFlavors).Select(i => $"{{newOrder.Flavours[{i}]}}"));
         string toppingFormat = string.Join(",", Enumerable.Range(0, maxToppings).Select(i => $"{{newOrder.Toppings[{i}]}}"));
+        customer.CurrentOrder.Id += 1;
 
         Console.WriteLine($"{customer.CurrentOrder.Id},{customer.Memberid},{timeReceived.ToString("dd/MM/yyyy")},{timeFulfilled.ToString("dd/MM/yyyy")},{newOrder.Option},{newOrder.Scoops},{flavorFormat},{toppingFormat}");
 
@@ -533,22 +534,31 @@ fulfilled(if applicable) and all ice cream details associated with the order*/
     string inputId = Console.ReadLine();
     int selectedMemberId;
 
-    if (int.TryParse(inputId, out selectedMemberId) && customerDictionary.ContainsKey(selectedMemberId))
+    try
     {
-        Customer selectedCustomer = customerDictionary[selectedMemberId];
-        Console.WriteLine($"\nOrders for {selectedCustomer.Name} (MemberID: {selectedCustomer.Memberid}):\n");
-        List<Order> orderHistory = selectedCustomer.OrderHistory;
-        foreach (Order order in orderHistory)
+        selectedMemberId = Convert.ToInt32(inputId);
+        if (customerDictionary.ContainsKey(selectedMemberId))
         {
-            DisplayOrderDetails(order);
-            Console.WriteLine();
+            Customer selectedCustomer = customerDictionary[selectedMemberId];
+            Console.WriteLine($"\nOrders for {selectedCustomer.Name} (MemberID: {selectedCustomer.Memberid}):\n");
+            List<Order> orderHistory = selectedCustomer.OrderHistory;
+            foreach (Order order in orderHistory)
+            {
+                DisplayOrderDetails(order);
+                Console.WriteLine();
+            }
+        }
+        else
+        {
+            Console.WriteLine("Customer not found or invalid input. Please enter a valid MemberID.");
         }
     }
-    else
+    catch (FormatException)
     {
-        Console.WriteLine("Customer not found or invalid input. Please enter a valid MemberID.");
+        Console.WriteLine("Invalid input format. Please enter a valid integer for MemberID.");
     }
 }
+
 static void DisplayOrderDetails(Order order)
 {
     Console.WriteLine($"ID: {order.Id}\nTime Received: {order.TimeReceived}\nTime Fulfilled: {order.TimeFulfilled?.ToString("dd/MM/yyyy HH:mm") ?? "Not fulfilled"}");
