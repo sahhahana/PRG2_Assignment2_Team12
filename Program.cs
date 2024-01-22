@@ -356,12 +356,18 @@ while (true)
             Console.WriteLine($"{existingCustomer.Name,-8} {existingCustomer.Memberid,-12} {existingCustomer.Dob.ToString("dd/MM/yyyy"),-14} {existingCustomer.Rewards.Tier,-14} {existingCustomer.Rewards.Points,-10} {existingCustomer.Rewards.PunchCard,-10}");
         }
 
+
         Console.Write("Enter customer's member ID to select: ");
         int memberid = Convert.ToInt32(Console.ReadLine());
+
+
 
         if (customerDictionary.ContainsKey(memberid))
         {
             Customer customer = customerDictionary[memberid];
+
+            
+
 
             Console.WriteLine($"{customer.Name}'s Order");
             Console.WriteLine("------------------------------\n");
@@ -457,7 +463,14 @@ while (true)
 
         foreach(IceCream i in IceCreamList)
         {
-            Console.WriteLine(i);
+            foreach(Flavour flavour in i.Flavours)
+            {
+                foreach(Topping topping in i.Toppings)
+                {
+                    Console.WriteLine(i.Option, i.Scoops, flavour, topping);
+                }
+            }
+            
         }
 
     }
