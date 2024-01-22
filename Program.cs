@@ -9,10 +9,12 @@ using System.ComponentModel.Design;
 using System.Linq;
 using System.Numerics;
 using System.Reflection.Metadata.Ecma335;
+using System.Security.Cryptography.X509Certificates;
 
 
 //chloe - features 2,5 and 6
 //sahana- features 1, 3 ad 4
+
 
 Queue<Order> regularOrderQueue = new Queue<Order>();
 Queue<Order> goldOrderQueue = new Queue<Order>();
@@ -20,6 +22,7 @@ int orderIdCounter = 1;
 
 // Read customers.csv and create a dictionary to store customer data
 Dictionary<int, Customer> customerDictionary = new Dictionary<int, Customer>();
+
 
 using (StreamReader sr = new StreamReader("customers.csv")) //to read file 'customers.csv'
 {
@@ -55,8 +58,7 @@ using (StreamReader sr = new StreamReader("customers.csv")) //to read file 'cust
 
 
 // Read orders.csv separately beacuse it is used throughout the whole program
-List<string[]> orderDetailsList = new List<string[]>();
-List<Order> orderList = new List<Order>();
+
 using (StreamReader sr=new StreamReader("orders.csv"))
 {
     string s = sr.ReadLine(); //read heading
@@ -68,70 +70,101 @@ using (StreamReader sr=new StreamReader("orders.csv"))
     {
         string[] data = s.Split(",");
         // Order: id, time received
+        int id = Convert.ToInt32(data[0]);
+        int memberId = Convert.ToInt32(data[1]);
+        DateTime timeReceived = Convert.ToDateTime(data[2]);
+        DateTime timeFulfilled = Convert.ToDateTime(data[3]);
+        string option = data[4];
+
+        int scoops = Convert.ToInt32(data[5]);
+        bool 
+        string flavour = data[8];
+        string topping = data[7];
+        List <Flavour> flavoursList = new List<Flavour>();
+        flavoursList.Add()
         Order orderData = new Order(Convert.ToInt32(data[0]), Convert.ToDateTime(data[2]));
-        orderList.Add(orderData);
-        orderDetailsList.Add(data);
+        data[].Add(orderData);
+        
     }
 }
 
 //display menu
-static void DisplayMenu()
+void DisplayOptions()
 {
-    Console.WriteLine("========= Welcome to I.C.Treats! =========\nChoose your option:" +
-        "\n1. List all customers\n2. List all current orders\n3. Register a new customer" +
-        "\n4. Create a customer's order\n5. Display order details of a customer" +
-        "\n6. Modify order details\n7. Process an order and checkout" +
-        "\n8. Display monthly charged amounts breakdown & total charged amounts for the year" +
-        "\n0. Exit");
+    Console.WriteLine("========= Welcome to I.C.Treats! =========\n" +
+        "\n1. List all customers\n" +
+        "2. List all current orders\n" +
+        "3. Register a new customer\n" +
+        "4. Create a customer's order\n" +
+        "5. Display order details of a customer\n" +
+        "6. Modify order details\n" +
+        "7. Process an order and checkout\n" +
+        "8. Display monthly charged amounts breakdown & total charged amounts for the year\n" +
+        "0. Exit\n");
     Console.Write("Enter your option: ");
 }
-    // Run program
-    while (true)
-{
-    DisplayMenu();
-    string option = Console.ReadLine(); 
 
-    if (option == "1")
+void DisplayMenu()
+{
+
+}
+
+
+
+// Run program
+try
+{
+    while (true)
     {
-        OptionOne();
+        DisplayOptions();
+        string option = Console.ReadLine();
+
+        if (option == "1")
+        {
+            OptionOne();
+        }
+        else if (option == "2")
+        {
+            OptionTwo(customerDictionary);
+        }
+        else if (option == "3")
+        {
+            OptionThree();
+        }
+        else if (option == "4")
+        {
+            OptionFour();
+        }
+        else if (option == "5")
+        {
+            OptionFive(customerDictionary, orderDetailsList, orderList);
+        }
+        else if (option == "6")
+        {
+            OptionSix(customerDictionary, orderDetailsList, orderList);
+        }
+        else if (option == "7")
+        {
+            OptionSeven();
+        }
+        else if (option == "8")
+        {
+            //OptionEight();
+        }
+        else if (option == "0")
+        {
+            Console.WriteLine("Thank you for shopping with I.C.Treats!");
+            break;
+        }
+        else
+        {
+            Console.WriteLine("Invalid option! Please try agian.");
+        }
     }
-    else if (option == "2")
-    {
-        OptionTwo(customerDictionary);
-    }
-    else if (option == "3")
-    {
-        OptionThree();
-    }
-    else if (option == "4")
-    {
-        OptionFour();
-    }
-    else if (option == "5")
-    {
-        OptionFive(customerDictionary,orderDetailsList,orderList);
-    }
-    else if (option == "6")
-    {
-        OptionSix(customerDictionary,orderDetailsList,orderList);
-    }
-    else if (option == "7")
-    {
-        OptionSeven();
-    }
-    else if (option == "8")
-    {
-        //OptionEight();
-    }
-    else if (option == "0")
-    {
-        Console.WriteLine("Thank you for shopping with I.C.Treats!");
-        break;
-    }
-    else
-    {
-        Console.WriteLine("Invalid option! Please try agian.");
-    }
+}
+catch(Exception ex)
+{
+    Console.WriteLine(ex.ToString());
 }
 
 // Feature 1
@@ -164,7 +197,7 @@ void OptionOne()
 }
 
 // Feature 2
-static void OptionTwo(Dictionary<int, Customer> customerDictionary)
+void OptionTwo(Dictionary<int, Customer> customerDictionary)
 {
     List<Customer> goldList = new List<Customer>();
     List<Customer> nonGoldList = new List<Customer>();
@@ -242,8 +275,12 @@ void OptionThree()
     Console.Write("Enter your name: ");
     string name = Console.ReadLine();
 
-    Console.Write("Enter 6-digit member ID: ");
-    int memberId = Convert.ToInt32(Console.ReadLine());
+    Random random = new Random();
+
+    // Generate a random six-digit ID
+    int memberId = random.Next(100000, 1000000);
+
+    Console.WriteLine($"Your 6-digit member ID is {memberId} ");
 
     Console.Write("Enter your date of birth (dd/mm/yyyy): ");
     DateTime dob = Convert.ToDateTime(Console.ReadLine());
@@ -276,7 +313,7 @@ void OptionFour()
         Console.WriteLine($"{existingCustomer.Name,-8} {existingCustomer.Memberid,-12} {existingCustomer.Dob.ToString("dd/MM/yyyy"),-14} {existingCustomer.Rewards.Tier,-14} {existingCustomer.Rewards.Points,-10} {existingCustomer.Rewards.PunchCard,-10}");
     }
 
-    Console.WriteLine("Enter customer's member ID to select: ");
+    Console.Write("Enter customer's member ID to select: ");
     int memberid = Convert.ToInt32(Console.ReadLine());
 
     if (customerDictionary.ContainsKey(memberid))
@@ -286,13 +323,13 @@ void OptionFour()
         Console.WriteLine($"{customer.Name}'s Order");
         Console.WriteLine("------------------------------\n");
 
-        Console.WriteLine("Option (Cup/ Cone/ Waffle): ");
+        Console.Write("Option (Cup/ Cone/ Waffle): ");
         string option = Console.ReadLine().ToLower();
 
-        Console.WriteLine("Scoop(s): ");
+        Console.Write("Scoop(s): ");
         int scoop = Convert.ToInt32(Console.ReadLine().ToLower());
 
-        Console.WriteLine("Flavour(s): ");
+        Console.Write("Flavour(s): ");
         string type = Console.ReadLine().ToLower();
         bool premium = IsPremiumFlavour(type);
 
@@ -357,25 +394,29 @@ bool IsPremiumFlavour(string flavour)
 
 bool AskForChocolateDippedCone()
 {
-    Console.WriteLine("Do you want a chocolate-dipped cone? (Y/N): ");
+    Console.Write("Do you want a chocolate-dipped cone? (Y/N): ");
     return Console.ReadLine().Trim().ToUpper() == "Y";
 }
 
 string AskForWaffleType()
 {
     List<string> waffleFlavour = new List<string> { "red velvet", "charcoal", "pandan" };
-    Console.WriteLine("Select Waffle Type (red velvet, charcoal, or pandan): ");
-    string wafflesType = Console.ReadLine().ToLower();
+    while(true)
+    {
+        Console.Write("Select Waffle Type (red velvet, charcoal, or pandan): ");
+        string wafflesType = Console.ReadLine().ToLower();
 
-    if (waffleFlavour.Contains(wafflesType))
-    {
-        return wafflesType;
+        if (waffleFlavour.Contains(wafflesType))
+        {
+            return wafflesType;
+            break;
+        }
+        else
+        {
+            Console.Write("We only have red velvet, charcoal and pandan waffles available: ");
+        }
     }
-    else
-    {
-        Console.WriteLine("Please enter your waffle type.");
-        return "";
-    }
+    
 }
 
 void AskForToppings(List<Topping> toppingList)
