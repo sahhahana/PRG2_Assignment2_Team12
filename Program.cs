@@ -75,9 +75,20 @@ using (StreamReader sr=new StreamReader("orders.csv"))
     {
         string[] data = s.Split(",");
         // Order: id, time received
+        int id = Convert.ToInt32(data[0]);
+        int memberId = Convert.ToInt32(data[1]);
+        DateTime timeReceived = Convert.ToDateTime(data[2]);
+        DateTime timeFulfilled = Convert.ToDateTime(data[3]);
+        string option = data[4];
+
+        int scoops = Convert.ToInt32(data[5]);
+        bool
+        string flavour = data[8];
+        string topping = data[7];
+        List<Flavour> flavoursList = new List<Flavour>();
+        flavoursList.Add()
         Order orderData = new Order(Convert.ToInt32(data[0]), Convert.ToDateTime(data[2]));
-        orderList.Add(orderData);
-        orderDetailsList.Add(data);
+        data[].Add(orderData);
     }
 }
 
