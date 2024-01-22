@@ -182,15 +182,15 @@ try
     }
     else if (option == "5")
     {
-        OptionFive(customerDictionary,orderDetailsList,orderList);
+        //OptionFive(customerDictionary,orderDetailsList,orderList);
     }
     else if (option == "6")
     {
-        OptionSix(customerDictionary,orderDetailsList,orderList);
+        //OptionSix(customerDictionary,orderDetailsList,orderList);
     }
     else if (option == "7")
     {
-        OptionSeven();
+        //OptionSeven();
     }
     else if (option == "8")
     {
