@@ -70,61 +70,70 @@ bool IsPremiumFlavour(string flavour)
 // Read orders.csv separately beacuse it is used throughout the whole program
 
 Customer customer = null;
-using (StreamReader sr=new StreamReader("orders.csv"))
+
+using (StreamReader sr = new StreamReader("orders.csv"))
 {
     string s = sr.ReadLine(); // Read heading
     if (s != null)
     {
         string[] headings = s.Split(","); // Headings
     }
+
     while ((s = sr.ReadLine()) != null)
     {
         string[] data = s.Split(",");
-        // Order: id, time received
-        int id = Convert.ToInt32(data[0]);
+
+        int orderId = Convert.ToInt32(data[0]);
         int memberId = Convert.ToInt32(data[1]);
-        foreach(Customer findCustomer in customerDictionary.Values)
+
+        // Find the customer based on memberId
+        if (customerDictionary.TryGetValue(memberId, out Customer foundCustomer))
         {
-            if(findCustomer.Memberid == id) 
-            { 
-                customer = findCustomer;
-            }
+            customer = foundCustomer;
         }
+
         DateTime timeReceived = Convert.ToDateTime(data[2]);
         DateTime timeFulfilled = Convert.ToDateTime(data[3]);
 
-        List<Order> ordersList = customer.OrderHistory;
-        Order order = new Order(id, timeReceived);
-        ordersList.Add(order);
+        // Create a new order and add it to the customer's order history
+        Order order = new Order(orderId, timeReceived);
+        customer?.OrderHistory.Add(order);
 
-        string option = data[4];
-        int scoops = Convert.ToInt32(data[5]);
-        bool dipped = Convert.ToBoolean(data[6]);
-        string waffleFlavour = data[7];
+        // Simplify the creation of Flavour and Topping instances
+        List<Flavour> flavoursList = CreateFlavoursList(data, 8, 10);
+        List<Topping> toppingsList = CreateToppingsList(data, 11, 14);
 
-        Flavour flavour1 = new Flavour(data[8], IsPremiumFlavour(data[8]), 1);
-        Flavour flavour2 = new Flavour(data[9], IsPremiumFlavour(data[9]), 1);
-        Flavour flavour3 = new Flavour(data[10], IsPremiumFlavour(data[10]), 1);
-
-        List<Flavour> flavoursList = new List<Flavour>();
-        flavoursList.Add(flavour1);
-        flavoursList.Add(flavour2);
-        flavoursList.Add(flavour3);
-
-        Topping topping1 = new Topping(data[11]);
-        Topping topping2 = new Topping(data[12]);
-        Topping topping3 = new Topping(data[13]);
-        Topping topping4 = new Topping(data[14]);
-
-        List<Topping> toppingsList = new List<Topping>();
-        toppingsList.Add(topping1);
-        toppingsList.Add(topping2);
-        toppingsList.Add(topping3);
-        toppingsList.Add(topping4);
-
-        
+        // Do something with the lists (e.g., add them to the order)
     }
 }
+
+// Helper method to create a list of Flavour instances
+ List<Flavour> CreateFlavoursList(string[] data, int startIndex, int endIndex)
+{
+    List<Flavour> flavoursList = new List<Flavour>();
+
+    for (int i = startIndex; i <= endIndex; i++)
+    {
+        Flavour flavour = new Flavour(data[i], IsPremiumFlavour(data[i]), 1);
+        flavoursList.Add(flavour);
+    }
+    return flavoursList;
+}
+
+// Helper method to create a list of Topping instances
+ List<Topping> CreateToppingsList(string[] data, int startIndex, int endIndex)
+{
+    List<Topping> toppingsList = new List<Topping>();
+
+    for (int i = startIndex; i <= endIndex; i++)
+    {
+        Topping topping = new Topping(data[i]);
+        toppingsList.Add(topping);
+    }
+
+    return toppingsList;
+}
+
 
 
 
@@ -418,6 +427,11 @@ void OptionFour()
     // todo: add points and modify code -- add a orderid couonter, add topping methods, i need to add this order plus info from order in th eorder.csv file, add 1 flavour at a time
 }
 
+bool IsPremiumFlavour(string flavour)
+{
+    List<string> premiumFlavours = new List<string> { "durian", "ube", "sea salt" };
+    return premiumFlavours.Contains(flavour);
+}
 
 bool AskForChocolateDippedCone()
 {
