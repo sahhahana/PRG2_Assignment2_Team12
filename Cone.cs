@@ -55,7 +55,7 @@ namespace PRG2_Assignment2_Team12
                 toppingCount += 1;
             }
             price += (toppingCount * 1);
-            if (Dipped = true)
+            if (Dipped == true)
             {
                 price += 2;
             }

@@ -15,6 +15,10 @@ using System.Security.Cryptography.X509Certificates;
 //chloe - features 2,5 and 6
 //sahana- features 1, 3 ad 4
 
+//current order
+//order history
+//icecream list
+//how does the queue system work and how it links to order id
 
 Queue<Order> regularOrderQueue = new Queue<Order>();
 Queue<Order> goldOrderQueue = new Queue<Order>();
@@ -58,35 +62,26 @@ using (StreamReader sr = new StreamReader("customers.csv")) //to read file 'cust
 
 
 // Read orders.csv separately beacuse it is used throughout the whole program
-
+List<string[]> orderDetailsList = new List<string[]>();
+List<Order> orderList = new List<Order>();
 using (StreamReader sr=new StreamReader("orders.csv"))
 {
-    string s = sr.ReadLine(); //read heading
+    string s = sr.ReadLine(); // Read heading
     if (s != null)
     {
-        string[] headings = s.Split(",");//headings
+        string[] headings = s.Split(","); // Headings
     }
     while ((s = sr.ReadLine()) != null)
     {
         string[] data = s.Split(",");
         // Order: id, time received
-        int id = Convert.ToInt32(data[0]);
-        int memberId = Convert.ToInt32(data[1]);
-        DateTime timeReceived = Convert.ToDateTime(data[2]);
-        DateTime timeFulfilled = Convert.ToDateTime(data[3]);
-        string option = data[4];
-
-        int scoops = Convert.ToInt32(data[5]);
-        bool 
-        string flavour = data[8];
-        string topping = data[7];
-        List <Flavour> flavoursList = new List<Flavour>();
-        flavoursList.Add()
         Order orderData = new Order(Convert.ToInt32(data[0]), Convert.ToDateTime(data[2]));
-        data[].Add(orderData);
-        
+        orderList.Add(orderData);
+        orderDetailsList.Add(data);
     }
 }
+
+
 
 //display menu
 void DisplayOptions()
@@ -119,52 +114,47 @@ try
         DisplayOptions();
         string option = Console.ReadLine();
 
-        if (option == "1")
-        {
-            OptionOne();
-        }
-        else if (option == "2")
-        {
-            OptionTwo(customerDictionary);
-        }
-        else if (option == "3")
-        {
-            OptionThree();
-        }
-        else if (option == "4")
-        {
-            OptionFour();
-        }
-        else if (option == "5")
-        {
-            OptionFive(customerDictionary, orderDetailsList, orderList);
-        }
-        else if (option == "6")
-        {
-            OptionSix(customerDictionary, orderDetailsList, orderList);
-        }
-        else if (option == "7")
-        {
-            OptionSeven();
-        }
-        else if (option == "8")
-        {
-            //OptionEight();
-        }
-        else if (option == "0")
-        {
-            Console.WriteLine("Thank you for shopping with I.C.Treats!");
-            break;
-        }
-        else
-        {
-            Console.WriteLine("Invalid option! Please try agian.");
-        }
+    if (option == "1")
+    {
+        OptionOne();
     }
-}
-catch(Exception ex)
-{
-    Console.WriteLine(ex.ToString());
+    else if (option == "2")
+    {
+        OptionTwo(customerDictionary);
+    }
+    else if (option == "3")
+    {
+        OptionThree();
+    }
+    else if (option == "4")
+    {
+        OptionFour();
+    }
+    else if (option == "5")
+    {
+        OptionFive(customerDictionary,orderDetailsList,orderList);
+    }
+    else if (option == "6")
+    {
+        OptionSix(customerDictionary,orderDetailsList,orderList);
+    }
+    else if (option == "7")
+    {
+        OptionSeven();
+    }
+    else if (option == "8")
+    {
+        //OptionEight();
+    }
+    else if (option == "0")
+    {
+        Console.WriteLine("Thank you for shopping with I.C.Treats!");
+        break;
+    }
+    else
+    {
+        Console.WriteLine("Invalid option! Please try agian.");
+    }
 }
 
 // Feature 1
@@ -406,124 +396,76 @@ string AskForWaffleType()
         Console.Write("Select Waffle Type (red velvet, charcoal, or pandan): ");
         string wafflesType = Console.ReadLine().ToLower();
 
-        if (waffleFlavour.Contains(wafflesType))
+    if (waffleFlavour.Contains(wafflesType))
+    {
+        return wafflesType;
+    }
+    else
+    {
+        Console.WriteLine("Please enter your waffle type.");
+        return "";
+    }
+
+
+
+    // Feature 5
+static void OptionFive(Dictionary<int, Customer> customerDictionary, Dictionary<int, Order> orderDictionary)
+    {
+        DisplayCustomerDictionary(customerDictionary);
+
+        Console.WriteLine("Enter the Member ID of the customer you want to view orders for:");
+        string inputId = Console.ReadLine();
+        int selectedMemberId;
+
+        if (int.TryParse(inputId, out selectedMemberId) && customerDictionary.ContainsKey(selectedMemberId))
         {
-            return wafflesType;
-            break;
+            Customer selectedCustomer = customerDictionary[selectedMemberId];
+
+            Console.WriteLine($"\nOrders for {selectedCustomer.Name} (MemberID: {selectedCustomer.Memberid}):\n");
+
+            if (orderDictionary.ContainsKey(selectedMemberId))
+            {
+                Order order = orderDictionary[selectedMemberId];
+                DisplayOrderDetails(order);
+            }
+            else
+            {
+                Console.WriteLine("No orders found for the selected customer.");
+            }
         }
         else
         {
-            Console.Write("We only have red velvet, charcoal and pandan waffles available: ");
+            Console.WriteLine("Customer not found or invalid input. Please enter a valid MemberID.");
         }
     }
-    
-}
 
-void AskForToppings(List<Topping> toppingList)
-{
-    Console.WriteLine("Do you want topping(s)? (Y/N): ");
-    string toppings = Console.ReadLine().ToUpper();
-
-
-    if (toppings == "N")
+    static void DisplayOrderDetails(Order order)
     {
-        return;
+        Console.WriteLine($"ID: {order.Id}\nTime Received: {order.TimeReceived}\nTime Fulfilled: {order.TimeFulfilled?.ToString() ?? "Not fulfilled"}");
 
-    }
-    else
-    {
-        Topping toppingsObj = new Topping(toppings);
-        toppingList.Add(toppingsObj);
-    }
-}
-
-
-
-
-
-// Feature 5
-static void OptionFive(Dictionary<int, Customer> customerDictionary, List<string[]> orderDetailsList, List<Order> orderList)
-{
-    DisplayCustomerDictionary(customerDictionary);
-
-    Console.WriteLine("Enter the Member ID of the customer you want to view orders for:");
-    string inputId = Console.ReadLine();
-    int selectedMemberId;
-
-    if (int.TryParse(inputId, out selectedMemberId) && customerDictionary.ContainsKey(selectedMemberId))
-    {
-        Customer selectedCustomer = customerDictionary[selectedMemberId];
-
-        Console.WriteLine($"\nOrders for {selectedCustomer.Name} (MemberID: {selectedCustomer.Memberid}):\n");
-
-        foreach (string[] orderDetails in orderDetailsList)
+        foreach (var iceCream in order.IceCreamList)
         {
-            int orderMemberId = Convert.ToInt32(orderDetails[1]);
-            if (orderMemberId == selectedMemberId)
-            {
-                Console.WriteLine($"Order ID: {orderDetails[1]}, Time Received: {orderDetails[2]}");
-                DisplayOrderDetails(orderDetails);
-                Console.WriteLine("\n");
-            }
+            Console.WriteLine(iceCream.ToString());
         }
     }
-    else
+    static void DisplayCustomerDictionary(Dictionary<int, Customer> customers)
     {
-        Console.WriteLine("Customer not found or invalid input. Please enter a valid MemberID.");
-    }
-}
+        Console.WriteLine("Customer List:");
 
-static void DisplayOrderDetails(string[] orderDetails)
-{
-    Console.WriteLine($"ID: {orderDetails[0]}\nMember ID: {orderDetails[1]}\nTime Received: {orderDetails[2]}\nTime Fulfilled: {orderDetails[3]}" +
-        $"\nOption: {orderDetails[4]}\nScoops: {orderDetails[5]}");
-
-    if (orderDetails[4] == "Cone")
-    {
-        Console.WriteLine("Dipped: {0}", orderDetails[6]);
-    }
-    if (orderDetails[4] == "Waffle")
-    {
-        Console.WriteLine("Waffle Flavour: {0}", orderDetails[7]);
-    }
-    if (orderDetails[4] == "Cup" || orderDetails[4] == "Cone" || orderDetails[4] == "Waffle")
-    {
-        string flavours = string.Join(", ", GetNonNullOrWhiteSpaceValues(orderDetails, 8, 10));
-        Console.WriteLine("Flavours: {0}", flavours);
-
-        string toppings = string.Join(", ", GetNonNullOrWhiteSpaceValues(orderDetails, 11, 13));
-        Console.WriteLine("Toppings: {0}", toppings);
-    }
-}
-static void DisplayCustomerDictionary(Dictionary<int, Customer> customers)
-{
-    Console.WriteLine("Customer List:");
-    foreach (var entry in customers)
-    {
-        Customer customer = entry.Value;
-
-        // Since I used "Celeste" as my test run experiments, I will remove them from the dictionary
-        // This is because "Celeste" is (unfortunately) now part of the dict permanantly
-        // If this code is removed "Celeste" values will re-appear
-        if (customer.Name != "Celeste")
+        foreach (var entry in customers)
         {
+            Customer customer = entry.Value;
+
+            // Since we don't have MemberId in the Order class, let's just display customer information
             Console.WriteLine($"MemberID: {customer.Memberid}, Name: {customer.Name}");
         }
+
+        Console.WriteLine();
     }
-    Console.WriteLine();
-}
-static IEnumerable<string> GetNonNullOrWhiteSpaceValues(string[] array, int startIndex, int endIndex)
-{
-    for (int i = startIndex; i <= endIndex; i++)
-    {
-        if (!string.IsNullOrWhiteSpace(array[i]))
-        {
-            yield return array[i];
-        }
-    }
-}
-// Feature 6
-static void OptionSix(Dictionary<int, Customer> customerDictionary, List<string[]> orderDetailsList, List<Order> orderList)
+
+
+    // Feature 6
+    static void OptionSix(Dictionary<int, Customer> customerDictionary, Dictionary<int, Order> orderDictionary)
 {
     /* - list customers
      * - user chooses a customer > get that customers order
