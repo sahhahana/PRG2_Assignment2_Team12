@@ -185,7 +185,7 @@ while (true)
     }
     else if (option == "5")
     {
-        //OptionFive(customerDictionary,orderDetailsList,orderList);
+        OptionFive(customerDictionary);
     }
     else if (option == "6")
     {
@@ -297,12 +297,10 @@ while (true)
             }
             Console.WriteLine("");
         }
-
         string FormatFlavour(string f1, string f2, string f3)
         {
             return $"{f1}{(string.IsNullOrWhiteSpace(f2) ? "" : $",{f2}")}{(string.IsNullOrWhiteSpace(f3) ? "" : $",{f3}")}";
         }
-
         string FormatToppings(string t1, string t2, string t3)
         {
             return $"{t1}{(string.IsNullOrWhiteSpace(t2) ? "" : $",{t2}")}{(string.IsNullOrWhiteSpace(t3) ? "" : $",{t3}")}";
@@ -458,19 +456,13 @@ while (true)
 
         string flavorFormat = string.Join(",", Enumerable.Range(0, maxFlavors).Select(i => $"{{newOrder.Flavours[{i}]}}"));
         string toppingFormat = string.Join(",", Enumerable.Range(0, maxToppings).Select(i => $"{{newOrder.Toppings[{i}]}}"));
+        customer.CurrentOrder.Id += 1;
 
         Console.WriteLine($"{customer.CurrentOrder.Id},{customer.Memberid},{timeReceived.ToString("dd/MM/yyyy")},{timeFulfilled.ToString("dd/MM/yyyy")},{newOrder.Option},{newOrder.Scoops},{flavorFormat},{toppingFormat}");
 
-        foreach(IceCream i in IceCreamList)
+        foreach (IceCream iceCream in customer.CurrentOrder.IceCreamList)
         {
-            foreach(Flavour flavour in i.Flavours)
-            {
-                foreach(Topping topping in i.Toppings)
-                {
-                    Console.WriteLine(i.Option, i.Scoops, flavour, topping);
-                }
-            }
-            
+            Console.WriteLine(i);
         }
 
     }
@@ -535,33 +527,31 @@ void AskForToppings(List<Topping> toppingList)
 
 
     // Feature 5
-    static void OptionFive(Dictionary<int, Customer> customerDictionary, Dictionary<int, Order> orderDictionary)
-    {
-        /* list the customers
+    static void OptionFive(Dictionary<int, Customer> customerDictionary)
+{
+    /* list the customers
  prompt ottoo the robot to select a customer and retrieve the selected customer
  retrieve all the order objects of the customer, past and current -- using order history
  for each order, display all the details of the order including datetime received, datetime
 fulfilled(if applicable) and all ice cream details associated with the order*/
-        DisplayCustomerDictionary(customerDictionary);
+    DisplayCustomerDictionary(customerDictionary);
 
-        Console.Write("Enter the Member ID of the customer you want to view orders for:");
-        string inputId = Console.ReadLine();
-        int selectedMemberId;
+    Console.Write("Enter the Member ID of the customer you want to view orders for:");
+    string inputId = Console.ReadLine();
+    int selectedMemberId;
 
-        if (int.TryParse(inputId, out selectedMemberId) && customerDictionary.ContainsKey(selectedMemberId))
+    try
+    {
+        selectedMemberId = Convert.ToInt32(inputId);
+        if (customerDictionary.ContainsKey(selectedMemberId))
         {
             Customer selectedCustomer = customerDictionary[selectedMemberId];
-
             Console.WriteLine($"\nOrders for {selectedCustomer.Name} (MemberID: {selectedCustomer.Memberid}):\n");
-
-            if (orderDictionary.ContainsKey(selectedMemberId))
+            List<Order> orderHistory = selectedCustomer.OrderHistory;
+            foreach (Order order in orderHistory)
             {
-                Order order = orderDictionary[selectedMemberId];
                 DisplayOrderDetails(order);
-            }
-            else
-            {
-                Console.WriteLine("No orders found for the selected customer.");
+                Console.WriteLine();
             }
         }
         else
@@ -569,34 +559,34 @@ fulfilled(if applicable) and all ice cream details associated with the order*/
             Console.WriteLine("Customer not found or invalid input. Please enter a valid MemberID.");
         }
     }
-
-    static void DisplayOrderDetails(Order order)
+    catch (FormatException)
     {
-        Console.WriteLine($"ID: {order.Id}\nTime Received: {order.TimeReceived}\nTime Fulfilled: {order.TimeFulfilled?.ToString() ?? "Not fulfilled"}");
-
-        foreach (var iceCream in order.IceCreamList)
-        {
-            Console.WriteLine(iceCream.ToString());
-        }
+        Console.WriteLine("Invalid input format. Please enter a valid integer for MemberID.");
     }
-    static void DisplayCustomerDictionary(Dictionary<int, Customer> customers)
+}
+
+static void DisplayOrderDetails(Order order)
+{
+    Console.WriteLine($"ID: {order.Id}\nTime Received: {order.TimeReceived}\nTime Fulfilled: {order.TimeFulfilled?.ToString("dd/MM/yyyy HH:mm") ?? "Not fulfilled"}");
+    foreach (var iceCream in order.IceCreamList)
     {
-        Console.WriteLine("Customer List:");
-
-        foreach (var entry in customers)
-        {
-            Customer customer = entry.Value;
-
-            // Since we don't have MemberId in the Order class, let's just display customer information
-            Console.WriteLine($"MemberID: {customer.Memberid}, Name: {customer.Name}");
-        }
-
-        Console.WriteLine();
+        Console.WriteLine(iceCream.ToString());
     }
+}
+static void DisplayCustomerDictionary(Dictionary<int, Customer> customers)
+{
+    Console.WriteLine("Customer List:");
+    foreach (var entry in customers)
+    {
+        Customer customer = entry.Value;
+        Console.WriteLine($"MemberID: {customer.Memberid}, Name: {customer.Name}");
+    }
+    Console.WriteLine();
+}
 
 
-    // Feature 6
-    static void OptionSix(Dictionary<int, Customer> customerDictionary, Dictionary<int, Order> orderDictionary)
+// Feature 6
+static void OptionSix(Dictionary<int, Customer> customerDictionary, Dictionary<int, Order> orderDictionary)
     {
         /* - list customers
          * - user chooses a customer > get that customers order
