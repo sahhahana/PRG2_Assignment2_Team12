@@ -147,7 +147,7 @@ namespace PRG2_Assignment2_Team12
         {
             // Update the ice cream with the modified information
             IceCreamList.Add(iceCream);
-            //printing out added order
+            /*printing out added order
             Console.WriteLine("Order added. This is your order: \nType: {0}\\nNumber of Scoops: {1}\\nFlavours:", iceCream.Option, iceCream.Scoops);
             foreach (Flavour flavour in iceCream.Flavours)
             {
@@ -164,7 +164,7 @@ namespace PRG2_Assignment2_Team12
             else if (iceCream.Toppings.Count == 0) //if no toppings requested
             {
                 Console.WriteLine("No toppings requested.");
-            }
+            }*/
             
         }
 
