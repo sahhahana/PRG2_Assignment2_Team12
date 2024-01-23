@@ -583,7 +583,7 @@ static void DisplayCustomerDictionary(Dictionary<int, Customer> customers)
 
 
 // Feature 6
-static void OptionSix(Dictionary<int, Customer> customerDictionary, Dictionary<int, Order> orderDictionary)
+static void OptionSix()
     {
         /* - list customers
          * - user chooses a customer > get that customers order
