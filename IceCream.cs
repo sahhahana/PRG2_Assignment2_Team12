@@ -32,7 +32,7 @@ namespace PRG2_Assignment2_Team12
             string flavoursString = string.Join(", ", Flavours);
             string toppingsString = string.Join(", ", Toppings);
 
-            return $"Option: {Option}, Number of Scoops: {Scoops}\nFlavours: {flavoursString}\nToppings: {toppingsString}";
+            return $"Option: {Option}\nNumber of Scoops: {Scoops}\n--------\nFlavours: {flavoursString}--------\nToppings: {toppingsString}";
         }
     }
 

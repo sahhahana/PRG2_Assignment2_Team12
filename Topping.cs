@@ -22,7 +22,7 @@ namespace PRG2_Assignment2_Team12
         }
         public override string ToString()
         {
-            return $"Type: {Type}";
+            return $"Type: {Type}\n";
         }
     }
 }

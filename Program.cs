@@ -470,7 +470,10 @@ while (true)
     }
 
 
-
+void WriteIntoCSV()
+{
+    using (StreamWriter sw = new StreamWriter) {};
+}
 
 
 bool AskForChocolateDippedCone()
