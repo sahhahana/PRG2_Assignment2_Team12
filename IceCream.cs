@@ -52,16 +52,46 @@ namespace PRG2_Assignment2_Team12
             // Use the FormatToppings method to concatenate the topping names
             return FormatToppings(toppingNames.ToArray());
         }
-
         string FormatFlavour(string[] flavours)
         {
-            return $"{flavours[0]}{(string.IsNullOrWhiteSpace(flavours[1]) ? "" : $",{flavours[1]}")}{(string.IsNullOrWhiteSpace(flavours[2]) ? "" : $",{flavours[2]}")}";
+            if (flavours == null || flavours.Length == 0)
+            {
+                return string.Empty; // or any other default value
+            }
+
+            string formattedFlavours = flavours[0];
+
+            for (int i = 1; i < flavours.Length && i < 3; i++)
+            {
+                if (!string.IsNullOrWhiteSpace(flavours[i]))
+                {
+                    formattedFlavours += $",{flavours[i]}";
+                }
+            }
+
+            return formattedFlavours;
         }
 
         string FormatToppings(string[] toppings)
         {
-            return $"{toppings[0]}{(string.IsNullOrWhiteSpace(toppings[1]) ? "" : $",{toppings[1]}")}{(string.IsNullOrWhiteSpace(toppings[2]) ? "" : $",{toppings[2]}")}";
+            if (toppings == null || toppings.Length == 0)
+            {
+                return string.Empty; // or any other default value
+            }
+
+            string formattedToppings = toppings[0];
+
+            for (int i = 1; i < toppings.Length && i < 3; i++)
+            {
+                if (!string.IsNullOrWhiteSpace(toppings[i]))
+                {
+                    formattedToppings += $",{toppings[i]}";
+                }
+            }
+
+            return formattedToppings;
         }
+
 
     }
 
