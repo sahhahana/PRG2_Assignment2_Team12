@@ -32,11 +32,7 @@ namespace PRG2_Assignment2_Team12
         {
             if (iceCreamIndex >= 0 && iceCreamIndex < IceCreamList.Count)
             {
-                // Prompt user for modifications
-                // how to identify which order from the multi ice cream order do they want to modify
                 Console.WriteLine("Enter modified information for the ice cream.");
-                Console.Write("Enter the new option (cup, cone, waffle): ");
-                string newOption = Console.ReadLine();
 
                 Console.Write("Enter the new numebr of scoops: ");
                 int newScoopsInput = Convert.ToInt32(Console.ReadLine());
@@ -57,11 +53,6 @@ namespace PRG2_Assignment2_Team12
                     {
                         premiumFlavour = false;
                     }
-                    Console.WriteLine("How much of this flavour do you want?\nEnter the quantity of scoops of this flavour: ");
-                    int scoopQuantity = Convert.ToInt32(Console.ReadLine());
-                    flavourQuantity += scoopQuantity;
-                    Flavour newFlavour = new Flavour(flavour, premiumFlavour, scoopQuantity);
-                    newFlavourList.Add(newFlavour);
                 }
 
                 List<Topping> newToppingList = new List<Topping>();
@@ -80,10 +71,6 @@ namespace PRG2_Assignment2_Team12
                         }
                     }
                 }
-                else if (Console.ReadLine() == "No")
-                {
-                    Topping newTopping = new Topping(null);
-                    newToppingList.Add(newTopping);
                 }
                 // Update the ice cream with the modified information
                 if (newOption == "Cup")
