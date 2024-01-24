@@ -1012,12 +1012,42 @@ static void OptionSix(Dictionary<int, Customer> customerDictionary)
 // Advanced (a)- Feature 7
 static void OptionSeven()
     {
+    /* Process an order and checkout
+ dequeue the first order in the queue
+ display all the ice creams in the order
+ display the total bill amount
+ display the membership status & points of the customer
+ check if it is the customer’s birthday, and if it is, calculate the final bill while having the 
+most expensive ice cream in the order cost $0.00
+ check if the customer has completed their punch card. If so, then calculate the final bill 
+while having the first ice cream in their order cost $0.00 and reset their punch card back 
+to 0
+ check Pointcard status to determine if the customer can redeem points. If they cannot, 
+skip to displaying the final bill amount
+     if the customer is silver tier or above, prompt user asking how many of their points they 
+want to use to offset their final bill
+ redeem points, if necessary
+ display the final total bill amount
+ prompt user to press any key to make payment
+ increment the punch card for every ice cream in the order (if it goes above 10 just set it 
+back down to 10)
+ earn points
+ while earning points, upgrade the member status accordingly
+ mark the order as fulfilled with the current datetime
+ add this fulfilled order object to the customer’s order history
+    */
         Console.WriteLine("Hello World");
     }
 
 // Advanced (b)- Feature 8
 static void OptionEight()
 {
+    /*
+     *  prompt the user for the year
+ retrieve all order objects that were successfully fulfilled within the inputted year
+ compute and display the monthly charged amounts breakdown & the total charged
+amounts for the input year
+    */
     Console.WriteLine("Hello World");
 }
 
