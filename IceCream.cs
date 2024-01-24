@@ -27,13 +27,42 @@ namespace PRG2_Assignment2_Team12
             Toppings = toppings;
         }
         public abstract double CalculatePrice();
-        public string ToString()
+        public virtual string ToString()
         {
-            string flavoursString = string.Join(", ", Flavours);
-            string toppingsString = string.Join(", ", Toppings);
+            string flavoursString = FormatFlavour(Flavours);
+            string toppingsString = FormatToppings(Toppings);
 
-            return $"Option: {Option}\nNumber of Scoops: {Scoops}\n--------\nFlavours: {flavoursString}--------\nToppings: {toppingsString}";
+            return $"Option: {Option}\nNumber of Scoops: {Scoops}\nFlavours: {flavoursString}\nToppings: {toppingsString}";
         }
+
+        string FormatFlavour(List<Flavour> flavours)
+        {
+            // Extract the flavour names from the list
+            List<string> flavourNames = flavours.Select(flavour => flavour.Type).ToList();
+
+            // Use the FormatFlavour method to concatenate the flavour names
+            return FormatFlavour(flavourNames.ToArray());
+        }
+
+        string FormatToppings(List<Topping> toppings)
+        {
+            // Extract the topping names from the list
+            List<string> toppingNames = toppings.Select(topping => topping.Type).ToList();
+
+            // Use the FormatToppings method to concatenate the topping names
+            return FormatToppings(toppingNames.ToArray());
+        }
+
+        string FormatFlavour(string[] flavours)
+        {
+            return $"{flavours[0]}{(string.IsNullOrWhiteSpace(flavours[1]) ? "" : $",{flavours[1]}")}{(string.IsNullOrWhiteSpace(flavours[2]) ? "" : $",{flavours[2]}")}";
+        }
+
+        string FormatToppings(string[] toppings)
+        {
+            return $"{toppings[0]}{(string.IsNullOrWhiteSpace(toppings[1]) ? "" : $",{toppings[1]}")}{(string.IsNullOrWhiteSpace(toppings[2]) ? "" : $",{toppings[2]}")}";
+        }
+
     }
 
 }

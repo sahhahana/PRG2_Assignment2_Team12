@@ -61,7 +61,7 @@ namespace PRG2_Assignment2_Team12
             }
             return price;
         }
-        public string ToString()
+        public override string ToString()
         {
             return $"{base.ToString()}\nDipped: {Dipped}";
         }

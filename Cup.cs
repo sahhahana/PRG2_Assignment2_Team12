@@ -55,10 +55,9 @@ namespace PRG2_Assignment2_Team12
             }
             return price + (toppingCount * 1);
         }
-        public string ToString()
+        public override string ToString()
         {
-            return $"Type: Cup\nNumber of Scoops: {Scoops}\nFlavours:\n{string.Join("\n", Flavours)}\n" +
-                   $"Toppings: {string.Join(", ", Toppings)}";
+            return base.ToString();
         }
     } 
 }

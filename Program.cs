@@ -106,6 +106,28 @@ using (StreamReader sr = new StreamReader("orders.csv"))
         List<Topping> toppingsList = CreateToppingsList(data, 11, 14);
 
         // Do something with the lists (e.g., add them to the order)
+
+        // Now, create an IceCream object and add it to the order's IceCreamList
+        string option = data[4];
+        int scoops = Convert.ToInt32(data[5]);
+
+        if (option == "Cup")
+        {
+            IceCream iceCream = new Cup(option, scoops, flavoursList, toppingsList);
+            order.IceCreamList.Add(iceCream);
+        }
+        else if (option == "Cone")
+        {
+            bool dipped = Convert.ToBoolean(data[6]);
+            IceCream iceCream = new Cone(option, scoops, flavoursList, toppingsList,dipped);
+            order.IceCreamList.Add(iceCream);
+        }
+        else if (option == "Waffle")
+        {
+            string waffleFlavour = data[7];
+            IceCream iceCream = new Waffle(option, scoops, flavoursList, toppingsList,waffleFlavour);
+            order.IceCreamList.Add(iceCream);
+        }
     }
 }
 
@@ -189,7 +211,7 @@ while (true)
     }
     else if (option == "6")
     {
-        //OptionSix(customerDictionary,orderDetailsList,orderList);
+        OptionSix(customerDictionary);
     }
     else if (option == "7")
     {
@@ -345,20 +367,20 @@ while (true)
 
     // Feature 4
     void OptionFour()
+{
+    // list customer details
+    Console.WriteLine($"{"Name",-8} {"MemberID",-12} {"DOB",-14} {"Status",-14} {"Points",-10} {"Punch Card",-10}");
+    Console.WriteLine($"{"----",-8} {"--------",-12} {"---",-14} {"------",-14} {"------",-10} {"----------",-10}");
+
+    foreach (Customer existingCustomer in customerDictionary.Values)
     {
-        // list customer details
-        Console.WriteLine($"{"Name",-8} {"MemberID",-12} {"DOB",-14} {"Status",-14} {"Points",-10} {"Punch Card",-10}");
-        Console.WriteLine($"{"----",-8} {"--------",-12} {"---",-14} {"------",-14} {"------",-10} {"----------",-10}");
+        Console.WriteLine($"{existingCustomer.Name,-8} {existingCustomer.Memberid,-12} {existingCustomer.Dob.ToString("dd/MM/yyyy"),-14} {existingCustomer.Rewards.Tier,-14} {existingCustomer.Rewards.Points,-10} {existingCustomer.Rewards.PunchCard,-10}");
+    }
 
-        foreach (Customer existingCustomer in customerDictionary.Values)
-        {
-            Console.WriteLine($"{existingCustomer.Name,-8} {existingCustomer.Memberid,-12} {existingCustomer.Dob.ToString("dd/MM/yyyy"),-14} {existingCustomer.Rewards.Tier,-14} {existingCustomer.Rewards.Points,-10} {existingCustomer.Rewards.PunchCard,-10}");
-        }
-
-        Customer customer;
-        string anotherIceCream = null;
-        while (anotherIceCream == "Y")
-        {
+    Customer customer;
+    string anotherIceCream = null;
+    while (anotherIceCream == "Y")
+    {
         // prompt user to select a customer
         Console.Write("Enter customer's member ID to select: ");
         int memberid = Convert.ToInt32(Console.ReadLine());
@@ -477,7 +499,7 @@ while (true)
 
             }
         }
-    else
+        else
         {
             Console.WriteLine("Customer is not a member at I.C.Treats. Please ensure the correct Member ID was selected or register this customer by choosing option 3.");
         }
@@ -485,11 +507,12 @@ while (true)
         //Id,MemberId,TimeReceived,TimeFulfilled,Option,Scoops,Dipped,WaffleFlavour,Flavour1,Flavour2,Flavour3,Topping1,Topping2,Topping3,Topping4
     }
 
-
-void WriteIntoCSV()
-{
-    using (StreamWriter sw = new StreamWriter) {};
-}
+    /*
+    void WriteIntoCSV()
+    {
+        using (StreamWriter sw = new StreamWriter) {};
+    }
+    */
 
     bool AskForChocolateDippedCone()
     {
@@ -535,9 +558,10 @@ void WriteIntoCSV()
             toppingList.Add(toppingsObj);
         }
     }
+}
 
 
-        // Feature 5
+    // Feature 5
     static void OptionFive(Dictionary<int, Customer> customerDictionary)
     {
         /* list the customers
@@ -578,8 +602,9 @@ void WriteIntoCSV()
 
     static void DisplayOrderDetails(Order order)
     {
-        Console.WriteLine($"ID: {order.Id}\nTime Received: {order.TimeReceived}\nTime Fulfilled: {order.TimeFulfilled?.ToString("dd/MM/yyyy HH:mm") ?? "Not fulfilled"}");
-        foreach (var iceCream in order.IceCreamList)
+    Console.WriteLine($"ID: {order.Id}\nTime Received: {order.TimeReceived}\nTime Fulfilled: {order.TimeFulfilled?.ToString("dd/MM/yyyy HH:mm") ?? "Not fulfilled"}");
+
+    foreach (var iceCream in order.IceCreamList)
         {
             Console.WriteLine(iceCream.ToString());
         }
@@ -597,21 +622,48 @@ void WriteIntoCSV()
 
 
 // Feature 6
-static void OptionSix()
+static void OptionSix(Dictionary<int, Customer> customerDictionary)
     {
-        /* - list customers
-         * - user chooses a customer > get that customers order
-         * - list all iceCream objects contained in the order
-         * need to use orderid to refernece all the ice cream orders referencing ice cream list 
+    /* - list customers
+     * - user chooses a customer > get that customers order
+     * - list all iceCream objects contained in the order
+     * need to use orderid to refernece all the ice cream orders referencing ice cream list 
 
-         * - choose: [1] modify iceCream, [2] add new iceCream, [3] delete iceCream
-         * [1]: choose which iceCream to modify > prompt for all the information > update accordingly
-         * [2]: prompt for all the information > update accordingly (add to order)
-         * [3]: choose which iceCream to remove > remove iceCream from order 
-         *      (if iceCream count == 1: "You cannot have 0 iceCreams in an order."
-         * - display the new updated order      */
+     * - choose: [1] modify iceCream, [2] add new iceCream, [3] delete iceCream
+     * [1]: choose which iceCream to modify > prompt for all the information > update accordingly
+     * [2]: prompt for all the information > update accordingly (add to order)
+     * [3]: choose which iceCream to remove > remove iceCream from order 
+     *      (if iceCream count == 1: "You cannot have 0 iceCreams in an order."
+     * - display the new updated order      */
+    DisplayCustomerDictionary(customerDictionary);
+    Console.Write("Enter the Member ID of the customer you want to view orders for:");
+    string inputId = Console.ReadLine();
+    int selectedMemberId;
 
+    try
+    {
+        selectedMemberId = Convert.ToInt32(inputId);
+        if (customerDictionary.ContainsKey(selectedMemberId))
+        {
+            Customer selectedCustomer = customerDictionary[selectedMemberId];
+            Console.WriteLine($"\nOrders for {selectedCustomer.Name} (MemberID: {selectedCustomer.Memberid}):\n");
+            List<Order> orderHistory = selectedCustomer.OrderHistory;
+            foreach (Order order in orderHistory)
+            {
+                DisplayOrderDetails(order);
+                Console.WriteLine();
+            }
+        }
+        else
+        {
+            Console.WriteLine("Customer not found or invalid input. Please enter a valid MemberID.");
+        }
     }
+    catch (FormatException)
+    {
+        Console.WriteLine("Invalid input format. Please enter a valid integer for MemberID.");
+    }
+}
 
 
     // Advanced (a)- Feature 7
