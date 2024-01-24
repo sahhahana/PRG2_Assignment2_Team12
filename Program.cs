@@ -18,6 +18,7 @@ using static System.Formats.Asn1.AsnWriter;
 //chloe - features 2,5 and 6
 //sahana- features 1, 3 ad 4
 
+// todo:
 //current order
 //order history
 //icecream list
@@ -25,7 +26,7 @@ using static System.Formats.Asn1.AsnWriter;
 
 Queue<Order> regularOrderQueue = new Queue<Order>();
 Queue<Order> goldOrderQueue = new Queue<Order>();
-int orderIdCounter = 1;
+
 
 // Read customers.csv and create a dictionary to store customer data
 Dictionary<int, Customer> customerDictionary = new Dictionary<int, Customer>();
@@ -119,20 +120,20 @@ using (StreamReader sr = new StreamReader("orders.csv"))
         else if (option == "Cone")
         {
             bool dipped = Convert.ToBoolean(data[6]);
-            IceCream iceCream = new Cone(option, scoops, flavoursList, toppingsList,dipped);
+            IceCream iceCream = new Cone(option, scoops, flavoursList, toppingsList, dipped);
             order.IceCreamList.Add(iceCream);
         }
         else if (option == "Waffle")
         {
             string waffleFlavour = data[7];
-            IceCream iceCream = new Waffle(option, scoops, flavoursList, toppingsList,waffleFlavour);
+            IceCream iceCream = new Waffle(option, scoops, flavoursList, toppingsList, waffleFlavour);
             order.IceCreamList.Add(iceCream);
         }
     }
 }
 
 // Helper method to create a list of Flavour instances
- List<Flavour> CreateFlavoursList(string[] data, int startIndex, int endIndex)
+List<Flavour> CreateFlavoursList(string[] data, int startIndex, int endIndex)
 {
     List<Flavour> flavoursList = new List<Flavour>();
 
@@ -145,7 +146,7 @@ using (StreamReader sr = new StreamReader("orders.csv"))
 }
 
 // Helper method to create a list of Topping instances
- List<Topping> CreateToppingsList(string[] data, int startIndex, int endIndex)
+List<Topping> CreateToppingsList(string[] data, int startIndex, int endIndex)
 {
     List<Topping> toppingsList = new List<Topping>();
 
@@ -201,9 +202,9 @@ while (true)
     }
     else if (option == "4")
     {
-         
+
         OptionFour();
-        
+
     }
     else if (option == "5")
     {
@@ -219,7 +220,7 @@ while (true)
     }
     else if (option == "8")
     {
-       // OptionEight();
+        // OptionEight();
     }
     else if (option == "0")
     {
@@ -232,141 +233,162 @@ while (true)
     }
 }
 
-    // Feature 1
-    void OptionOne()
+// Feature 1
+void OptionOne()
+{
+    //In this case, i (chloe) used "Celeste" as a test to test if the program worked
+    //So here I have to remove all "Celeste" Values to show only the values taken from the .csv file
+    //Just know that this part works :>
+
+    Console.WriteLine($"{"Name",-8} {"MemberID",-12} {"DOB",-14} {"Status",-14} {"Points",-10} {"Punch Card",-10}");
+    Console.WriteLine($"{"----",-8} {"--------",-12} {"---",-14} {"------",-14} {"------",-10} {"----------",-10}");
+
+    List<int> membersToRemove = new List<int>();
+
+    foreach (var entry in customerDictionary)
     {
-        //In this case, i (chloe) used "Celeste" as a test to test if the program worked
-        //So here I have to remove all "Celeste" Values to show only the values taken from the .csv file
-        //Just know that this part works :>
+        Customer customer = entry.Value;
+        // Since I used "Celeste" as my test run experiments, I will remove them from the dictionary
+        // This is because "Celeste" is (unfortunately) now part of the dict permanantly
+        // If this code is removed "Celeste" values will re-appear
 
-        Console.WriteLine($"{"Name",-8} {"MemberID",-12} {"DOB",-14} {"Status",-14} {"Points",-10} {"Punch Card",-10}");
-        Console.WriteLine($"{"----",-8} {"--------",-12} {"---",-14} {"------",-14} {"------",-10} {"----------",-10}");
-
-        List<int> membersToRemove = new List<int>();
-
-        foreach (var entry in customerDictionary)
+        if (customer.Name != "Celeste")
         {
-            Customer customer = entry.Value;
-            // Since I used "Celeste" as my test run experiments, I will remove them from the dictionary
-            // This is because "Celeste" is (unfortunately) now part of the dict permanantly
-            // If this code is removed "Celeste" values will re-appear
+            Console.WriteLine($"{customer.Name,-8} {customer.Memberid,-12} {customer.Dob.ToString("dd/MM/yyyy"),-14} {customer.Rewards.Tier,-14} {customer.Rewards.Points,-10} {customer.Rewards.PunchCard,-10}");
+        }
+    }
+    Console.WriteLine("");
 
-            if (customer.Name != "Celeste")
+
+}
+
+// Feature 2
+void OptionTwo(Dictionary<int, Customer> customerDictionary)
+{
+    List<Customer> goldList = new List<Customer>();
+    List<Customer> nonGoldList = new List<Customer>();
+
+    foreach (Customer customer in customerDictionary.Values)
+    {
+        if (customer.Rewards.Tier == "Gold")
+        {
+            goldList.Add(customer);
+        }
+        else if (customer.Rewards.Tier == "Ordinary")
+        {
+            nonGoldList.Add(customer);
+        }
+    }
+
+    using (StreamReader sr = new StreamReader("orders.csv"))
+    {
+        string s = sr.ReadLine();
+        if (s != null)
+        {
+            string[] headings = s.Split(",");
+            Console.WriteLine("{0,-5}  {1,-10}  {2,-20} {3,-20} {4,-10}" +
+                "{5,-10}  {6,-10} {7,-15} {8,-30} {9,-10}",
+                headings[0], headings[1], headings[2], headings[3],
+                headings[4], headings[5], headings[6], headings[7], "Flavour", "Toppings");
+            Console.WriteLine("{0,-5}  {1,-10}  {2,-20} {3,-20} {4,-10}" +
+                "{5,-10}  {6,-10} {7,-15} {8,-30} {9,-10}",
+                "--", "--------", "------------", "------------",
+                "------", "------", "------", "-------------", "-------", "--------");
+        }
+
+        while ((s = sr.ReadLine()) != null)
+        {
+            string[] data = s.Split(",");
+
+            int custId = Convert.ToInt32(data[1]);
+
+            // Check if the Customer with the specified MemberId is in the goldList
+            if (goldList.Any(c => c.Memberid == custId))
             {
-                Console.WriteLine($"{customer.Name,-8} {customer.Memberid,-12} {customer.Dob.ToString("dd/MM/yyyy"),-14} {customer.Rewards.Tier,-14} {customer.Rewards.Points,-10} {customer.Rewards.PunchCard,-10}");
+                Console.WriteLine("{0,-5}  {1,-10}  {2,-20} {3,-20} {4,-10}" +
+                  "{5,-10}  {6,-10} {7,-15} {8,-30} {9,-10}", data[0], data[1], data[2], data[3], data[4],
+                  data[5], data[6], data[7], FormatFlavour(data[8], data[9], data[10]), FormatToppings(data[11], data[12], data[13]));
+            }
+
+            // Check if Customer with the specified MemberID is in the nonGoldList
+            else if (nonGoldList.Any(c => c.Memberid == custId))
+            {
+                Console.WriteLine("{0,-5}  {1,-10}  {2,-20} {3,-20} {4,-10}" +
+                  "{5,-10}  {6,-10} {7,-15} {8,-30} {9,-10}", data[0], data[1], data[2], data[3], data[4],
+                  data[5], data[6], data[7], FormatFlavour(data[8], data[9], data[10]), FormatToppings(data[11], data[12], data[13]));
             }
         }
         Console.WriteLine("");
-
-
     }
-
-    // Feature 2
-    void OptionTwo(Dictionary<int, Customer> customerDictionary)
+    string FormatFlavour(string f1, string f2, string f3)
     {
-        List<Customer> goldList = new List<Customer>();
-        List<Customer> nonGoldList = new List<Customer>();
-
-        foreach (Customer customer in customerDictionary.Values)
-        {
-            if (customer.Rewards.Tier == "Gold")
-            {
-                goldList.Add(customer);
-            }
-            else if (customer.Rewards.Tier == "Ordinary")
-            {
-                nonGoldList.Add(customer);
-            }
-        }
-
-        using (StreamReader sr = new StreamReader("orders.csv"))
-        {
-            string s = sr.ReadLine();
-            if (s != null)
-            {
-                string[] headings = s.Split(",");
-                Console.WriteLine("{0,-5}  {1,-10}  {2,-20} {3,-20} {4,-10}" +
-                    "{5,-10}  {6,-10} {7,-15} {8,-30} {9,-10}",
-                    headings[0], headings[1], headings[2], headings[3],
-                    headings[4], headings[5], headings[6], headings[7], "Flavour", "Toppings");
-                Console.WriteLine("{0,-5}  {1,-10}  {2,-20} {3,-20} {4,-10}" +
-                    "{5,-10}  {6,-10} {7,-15} {8,-30} {9,-10}",
-                    "--", "--------", "------------", "------------",
-                    "------", "------", "------", "-------------", "-------", "--------");
-            }
-
-            while ((s = sr.ReadLine()) != null)
-            {
-                string[] data = s.Split(",");
-
-                int custId = Convert.ToInt32(data[1]);
-
-                // Check if the Customer with the specified MemberId is in the goldList
-                if (goldList.Any(c => c.Memberid == custId))
-                {
-                    Console.WriteLine("{0,-5}  {1,-10}  {2,-20} {3,-20} {4,-10}" +
-                      "{5,-10}  {6,-10} {7,-15} {8,-30} {9,-10}", data[0], data[1], data[2], data[3], data[4],
-                      data[5], data[6], data[7], FormatFlavour(data[8], data[9], data[10]), FormatToppings(data[11], data[12], data[13]));
-                }
-
-                // Check if Customer with the specified MemberID is in the nonGoldList
-                else if (nonGoldList.Any(c => c.Memberid == custId))
-                {
-                    Console.WriteLine("{0,-5}  {1,-10}  {2,-20} {3,-20} {4,-10}" +
-                      "{5,-10}  {6,-10} {7,-15} {8,-30} {9,-10}", data[0], data[1], data[2], data[3], data[4],
-                      data[5], data[6], data[7], FormatFlavour(data[8], data[9], data[10]), FormatToppings(data[11], data[12], data[13]));
-                }
-            }
-            Console.WriteLine("");
-        }
-        string FormatFlavour(string f1, string f2, string f3)
-        {
-            return $"{f1}{(string.IsNullOrWhiteSpace(f2) ? "" : $",{f2}")}{(string.IsNullOrWhiteSpace(f3) ? "" : $",{f3}")}";
-        }
-        string FormatToppings(string t1, string t2, string t3)
-        {
-            return $"{t1}{(string.IsNullOrWhiteSpace(t2) ? "" : $",{t2}")}{(string.IsNullOrWhiteSpace(t3) ? "" : $",{t3}")}";
-        }
+        return $"{f1}{(string.IsNullOrWhiteSpace(f2) ? "" : $",{f2}")}{(string.IsNullOrWhiteSpace(f3) ? "" : $",{f3}")}";
     }
-
-
-    // Feature 3
-    void OptionThree()
+    string FormatToppings(string t1, string t2, string t3)
     {
-        Console.WriteLine("\nNew Customer\n\r" +
+        return $"{t1}{(string.IsNullOrWhiteSpace(t2) ? "" : $",{t2}")}{(string.IsNullOrWhiteSpace(t3) ? "" : $",{t3}")}";
+    }
+}
+
+
+// Feature 3
+void OptionThree()
+{
+    while (true)
+    {
+        try
+        {
+            Console.WriteLine("\nNew Customer\n\r" +
                           "------------");
-        Console.Write("Enter your name: ");
-        string name = Console.ReadLine();
+            Console.Write("Enter your name: ");
+            string name = Console.ReadLine();
 
-        Random random = new Random();
+            Random random = new Random();
 
-        // Generate a random six-digit ID
-        int memberId = random.Next(100000, 1000000);
+            // Generate a random six-digit ID
+            int memberId = random.Next(100000, 1000000);
 
-        Console.WriteLine($"Your 6-digit member ID is {memberId} ");
+            Console.WriteLine($"Your 6-digit member ID is {memberId} ");
 
-        Console.Write("Enter your date of birth (dd/mm/yyyy): ");
-        DateTime dob = Convert.ToDateTime(Console.ReadLine());
+            Console.Write("Enter your date of birth (dd/mm/yyyy): ");
+            DateTime dob = Convert.ToDateTime(Console.ReadLine());
+            if (dob >= DateTime.Today)
+            {
+                throw new Exception("Date of Birth cannot later than today!");
+            }
 
-        string status = "Ordinary";
+            string status = "Ordinary";
 
-        Customer newCustomer = new Customer(name, memberId, dob);
+            Customer newCustomer = new Customer(name, memberId, dob);
 
-        PointCard newPointCard = new PointCard(0, 0, status);
-        newCustomer.Rewards = newPointCard;
-        customerDictionary.Add(memberId, newCustomer);
+            PointCard newPointCard = new PointCard(0, 0, status);
+            newCustomer.Rewards = newPointCard;
+            customerDictionary.Add(memberId, newCustomer);
 
-        using (StreamWriter sw = new StreamWriter("Customers.csv", true))
-        {
-            sw.WriteLine($"\n{newCustomer.Name},{newCustomer.Memberid},{newCustomer.Dob.ToString("dd/MM/yyyy")},{newCustomer.Rewards.Tier},{newCustomer.Rewards.Points},{newCustomer.Rewards.PunchCard}");
+            using (StreamWriter sw = new StreamWriter("Customers.csv", true))
+            {
+                sw.WriteLine($"{newCustomer.Name},{newCustomer.Memberid},{newCustomer.Dob.ToString("dd/MM/yyyy")},{newCustomer.Rewards.Tier},{newCustomer.Rewards.Points},{newCustomer.Rewards.PunchCard}");
+
+            }
+            Console.WriteLine("\nCustomer is officially a member of I.C.Treats! Welcome:D\n");
+            break;
 
         }
-        Console.WriteLine("\nCustomer is officially a member of I.C.Treats! Welcome:D\n");
+        catch (FormatException ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
 
     }
 
-    // Feature 4
-    void OptionFour()
+}
+
+// Feature 4
+void OptionFour()
 {
     // list customer details
     Console.WriteLine($"{"Name",-8} {"MemberID",-12} {"DOB",-14} {"Status",-14} {"Points",-10} {"Punch Card",-10}");
@@ -378,13 +400,13 @@ while (true)
     }
 
     Customer customer;
-    string anotherIceCream = null;
+    string anotherIceCream = "Y";
+
+    // prompt user to select a customer
+    Console.Write("Enter customer's member ID to select: ");
+    int memberid = Convert.ToInt32(Console.ReadLine());
     while (anotherIceCream == "Y")
     {
-        // prompt user to select a customer
-        Console.Write("Enter customer's member ID to select: ");
-        int memberid = Convert.ToInt32(Console.ReadLine());
-
 
         // retreive selected customer
         if (customerDictionary.ContainsKey(memberid))
@@ -462,7 +484,15 @@ while (true)
             customer.CurrentOrder = orderNew;
 
             Console.Write("Would you like to add another ice cream to the order? (Y/N): ");
-            anotherIceCream = Console.ReadLine();
+            anotherIceCream = Console.ReadLine().ToUpper();
+            if (anotherIceCream == "N")
+            {
+                break;
+            }
+            else
+            {
+                continue;
+            }
 
             //Append the order to the appropriate queue based on the customer's Pointcard tier
             if (customer.Rewards.Tier == "Gold")
@@ -534,14 +564,14 @@ while (true)
             }
             else
             {
-                Console.WriteLine("Please enter your waffle type.");
+                Console.Write("Please choose among red velvet, charcoal or pandan waffle type.");
                 return "";
             }
         }
     }
     void AskForToppings(List<Topping> toppingList)
     {
-        Console.WriteLine("Do you want topping(s)? (Y/N): ");
+        Console.Write("Do you want topping(s)? (Y/N): ");
         string yesOrNo = Console.ReadLine().ToUpper();
 
 
@@ -561,69 +591,69 @@ while (true)
 }
 
 
-    // Feature 5
-    static void OptionFive(Dictionary<int, Customer> customerDictionary)
+// Feature 5
+static void OptionFive(Dictionary<int, Customer> customerDictionary)
+{
+    /* list the customers
+ prompt ottoo the robot to select a customer and retrieve the selected customer
+ retrieve all the order objects of the customer, past and current -- using order history
+ for each order, display all the details of the order including datetime received, datetime
+fulfilled(if applicable) and all ice cream details associated with the order*/
+    DisplayCustomerDictionary(customerDictionary);
+
+    Console.Write("Enter the Member ID of the customer you want to view orders for:");
+    string inputId = Console.ReadLine();
+    int selectedMemberId;
+
+    try
     {
-        /* list the customers
-     prompt ottoo the robot to select a customer and retrieve the selected customer
-     retrieve all the order objects of the customer, past and current -- using order history
-     for each order, display all the details of the order including datetime received, datetime
-    fulfilled(if applicable) and all ice cream details associated with the order*/
-        DisplayCustomerDictionary(customerDictionary);
-
-        Console.Write("Enter the Member ID of the customer you want to view orders for:");
-        string inputId = Console.ReadLine();
-        int selectedMemberId;
-
-        try
+        selectedMemberId = Convert.ToInt32(inputId);
+        if (customerDictionary.ContainsKey(selectedMemberId))
         {
-            selectedMemberId = Convert.ToInt32(inputId);
-            if (customerDictionary.ContainsKey(selectedMemberId))
+            Customer selectedCustomer = customerDictionary[selectedMemberId];
+            Console.WriteLine($"\nOrders for {selectedCustomer.Name} (MemberID: {selectedCustomer.Memberid}):\n");
+            List<Order> orderHistory = selectedCustomer.OrderHistory;
+            foreach (Order order in orderHistory)
             {
-                Customer selectedCustomer = customerDictionary[selectedMemberId];
-                Console.WriteLine($"\nOrders for {selectedCustomer.Name} (MemberID: {selectedCustomer.Memberid}):\n");
-                List<Order> orderHistory = selectedCustomer.OrderHistory;
-                foreach (Order order in orderHistory)
-                {
-                    DisplayOrderDetails(order);
-                    Console.WriteLine();
-                }
-            }
-            else
-            {
-                Console.WriteLine("Customer not found or invalid input. Please enter a valid MemberID.");
+                DisplayOrderDetails(order);
+                Console.WriteLine();
             }
         }
-        catch (FormatException)
+        else
         {
-            Console.WriteLine("Invalid input format. Please enter a valid integer for MemberID.");
+            Console.WriteLine("Customer not found or invalid input. Please enter a valid MemberID.");
         }
     }
-
-    static void DisplayOrderDetails(Order order)
+    catch (FormatException)
     {
+        Console.WriteLine("Invalid input format. Please enter a valid integer for MemberID.");
+    }
+}
+
+static void DisplayOrderDetails(Order order)
+{
     Console.WriteLine($"ID: {order.Id}\nTime Received: {order.TimeReceived}\nTime Fulfilled: {order.TimeFulfilled?.ToString("dd/MM/yyyy HH:mm") ?? "Not fulfilled"}");
 
     foreach (var iceCream in order.IceCreamList)
-        {
-            Console.WriteLine(iceCream.ToString());
-        }
-    }
-    static void DisplayCustomerDictionary(Dictionary<int, Customer> customers)
     {
-        Console.WriteLine("Customer List:");
-        foreach (var entry in customers)
-        {
-            Customer customer = entry.Value;
-            Console.WriteLine($"MemberID: {customer.Memberid}, Name: {customer.Name}");
-        }
-        Console.WriteLine();
+        Console.WriteLine(iceCream.ToString());
     }
+}
+static void DisplayCustomerDictionary(Dictionary<int, Customer> customers)
+{
+    Console.WriteLine("Customer List:");
+    foreach (var entry in customers)
+    {
+        Customer customer = entry.Value;
+        Console.WriteLine($"MemberID: {customer.Memberid}, Name: {customer.Name}");
+    }
+    Console.WriteLine();
+}
 
 
 // Feature 6
 static void OptionSix(Dictionary<int, Customer> customerDictionary)
-    {
+{
     /* - list customers
      * - user chooses a customer > get that customers order
      * - list all iceCream objects contained in the order
@@ -666,17 +696,17 @@ static void OptionSix(Dictionary<int, Customer> customerDictionary)
 }
 
 
-    // Advanced (a)- Feature 7
-    static void OptionSeven()
-    {
-        Console.WriteLine("Hello World");
-    }
+// Advanced (a)- Feature 7
+static void OptionSeven()
+{
+    Console.WriteLine("Hello World");
+}
 
-    // Advanced (b)- Feature 8
-    static void OptionEight()
-    {
-        Console.WriteLine("Hello World");
-    }
+// Advanced (b)- Feature 8
+static void OptionEight()
+{
+    Console.WriteLine("Hello World");
+}
 
 
 // Advanced (c)- GUI
