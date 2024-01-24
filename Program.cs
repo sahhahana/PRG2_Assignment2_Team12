@@ -406,9 +406,6 @@ while (true)
                 flavoursList.Add(flavour);
 
             }
-
-
-
             List<Topping> toppingList = new List<Topping>();
             AskForToppings(toppingList);
 
@@ -445,10 +442,6 @@ while (true)
             Console.Write("Would you like to add another ice cream to the order? (Y/N): ");
             anotherIceCream = Console.ReadLine();
 
-
-
-
-
             //Append the order to the appropriate queue based on the customer's Pointcard tier
             if (customer.Rewards.Tier == "Gold")
             {
@@ -470,8 +463,6 @@ while (true)
             string toppingFormat = string.Join(",", Enumerable.Range(0, maxToppings).Select(i => $"{{newOrder.Toppings[{i}]}}"));
             customer.CurrentOrder.Id += 1;
 
-
-
             foreach (IceCream iceCream in customer.CurrentOrder.IceCreamList)
             {
                 for (int i = 0; i < iceCream.Flavours.Count; i++)
@@ -485,11 +476,6 @@ while (true)
                 }
 
             }
-        
-
-
-        
-
         }
     else
         {
@@ -497,7 +483,6 @@ while (true)
         }
         // todo: add points and modify code -- add a orderid couonter, add topping methods, i need to add this order plus info from order in th eorder.csv file, add 1 flavour at a time
         //Id,MemberId,TimeReceived,TimeFulfilled,Option,Scoops,Dipped,WaffleFlavour,Flavour1,Flavour2,Flavour3,Topping1,Topping2,Topping3,Topping4
-
     }
 
 
@@ -505,7 +490,6 @@ void WriteIntoCSV()
 {
     using (StreamWriter sw = new StreamWriter) {};
 }
-
 
     bool AskForChocolateDippedCone()
     {
@@ -551,7 +535,6 @@ void WriteIntoCSV()
             toppingList.Add(toppingsObj);
         }
     }
-
 
 
         // Feature 5
