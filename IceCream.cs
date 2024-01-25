@@ -37,21 +37,28 @@ namespace PRG2_Assignment2_Team12
 
         string FormatFlavour(List<Flavour> flavours)
         {
-            // Extract the flavour names from the list
+            if (flavours == null || flavours.Count == 0)
+            {
+                return string.Empty; // or any other default value
+            }
+
             List<string> flavourNames = flavours.Select(flavour => flavour.Type).ToList();
 
-            // Use the FormatFlavour method to concatenate the flavour names
             return FormatFlavour(flavourNames.ToArray());
         }
 
         string FormatToppings(List<Topping> toppings)
         {
-            // Extract the topping names from the list
+            if (toppings == null || toppings.Count == 0)
+            {
+                return string.Empty; // or any other default value
+            }
+
             List<string> toppingNames = toppings.Select(topping => topping.Type).ToList();
 
-            // Use the FormatToppings method to concatenate the topping names
             return FormatToppings(toppingNames.ToArray());
         }
+
         string FormatFlavour(string[] flavours)
         {
             if (flavours == null || flavours.Length == 0)
@@ -59,17 +66,17 @@ namespace PRG2_Assignment2_Team12
                 return string.Empty; // or any other default value
             }
 
-            string formattedFlavours = flavours[0];
+            StringBuilder formattedFlavours = new StringBuilder(flavours[0]);
 
             for (int i = 1; i < flavours.Length && i < 3; i++)
             {
                 if (!string.IsNullOrWhiteSpace(flavours[i]))
                 {
-                    formattedFlavours += $",{flavours[i]}";
+                    formattedFlavours.Append($",{flavours[i]}");
                 }
             }
 
-            return formattedFlavours;
+            return formattedFlavours.ToString();
         }
 
         string FormatToppings(string[] toppings)
@@ -79,18 +86,19 @@ namespace PRG2_Assignment2_Team12
                 return string.Empty; // or any other default value
             }
 
-            string formattedToppings = toppings[0];
+            StringBuilder formattedToppings = new StringBuilder(toppings[0]);
 
             for (int i = 1; i < toppings.Length && i < 3; i++)
             {
                 if (!string.IsNullOrWhiteSpace(toppings[i]))
                 {
-                    formattedToppings += $",{toppings[i]}";
+                    formattedToppings.Append($",{toppings[i]}");
                 }
             }
 
-            return formattedToppings;
+            return formattedToppings.ToString();
         }
+
 
 
     }
