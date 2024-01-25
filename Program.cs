@@ -531,18 +531,12 @@ void OptionFour()
         }
         else
         {
-            Console.WriteLine("Customer is not a member at I.C.Treats. Please ensure the correct Member ID was selected or register this customer by choosing option 3.");
+            Console.WriteLine("Customer is not a member at I.C.Treats.\nPlease ensure the correct Member ID was selected or register this customer by choosing option 3.");
+            break;
         }
         // todo: add points and modify code -- add a orderid couonter, add topping methods, i need to add this order plus info from order in th eorder.csv file, add 1 flavour at a time
         //Id,MemberId,TimeReceived,TimeFulfilled,Option,Scoops,Dipped,WaffleFlavour,Flavour1,Flavour2,Flavour3,Topping1,Topping2,Topping3,Topping4
     }
-
-    /*
-    void WriteIntoCSV()
-    {
-        using (StreamWriter sw = new StreamWriter) {};
-    }
-    */
 
     bool AskForChocolateDippedCone()
     {
@@ -632,15 +626,13 @@ fulfilled(if applicable) and all ice cream details associated with the order*/
 
 static void DisplayOrderDetails(Order order)
 {
-    Console.WriteLine($"ID: {order.Id}\nTime Received: {order.TimeReceived}\nTime Fulfilled: {order.TimeFulfilled?.ToString("dd/MM/yyyy HH:mm") ?? "Not fulfilled"}");
-
     foreach (var iceCream in order.IceCreamList)
-        {
+    {
         Console.WriteLine($"ID: {order.Id}\nTime Received: {order.TimeReceived}\nTime Fulfilled: {order.TimeFulfilled?.ToString("dd/MM/yyyy HH:mm") ?? "Not fulfilled"}");
         Console.WriteLine(iceCream.ToString());
-        }
     }
-    static void DisplayCustomerDictionary(Dictionary<int, Customer> customers)
+}
+static void DisplayCustomerDictionary(Dictionary<int, Customer> customers)
     {
         Console.WriteLine("Customer List:");
         foreach (var entry in customers)
@@ -690,7 +682,7 @@ static void OptionSix(Dictionary<int, Customer> customerDictionary)
                 Console.Write("Enter the Order ID you want to modify: ");
                 int orderIdToModify = Convert.ToInt32(Console.ReadLine());
 
-                Order selectedOrder = customer.OrderHistory.FirstOrDefault(order => order.Id == orderIdToModify);
+                Order selectedOrder = selectedCustomer.OrderHistory.FirstOrDefault(order => order.Id == orderIdToModify);
 
                 if (selectedOrder != null)
                 {
