@@ -428,6 +428,9 @@ void OptionFour()
             {
                 for (int i = 1; i < scoop + 1; i++)
                 {
+                    Console.WriteLine("Flavours:\n{0,-13}{1,-13}", "Regular", "Premium");
+                    Console.WriteLine("{0,-13}{1,-13}\n{2,-13}{3,-13}\n{4,-13}{5,-13}\n", "Vanilla", "Durian",
+                        "Chocolate", "Ube", "Strawberry", "Sea Salt");
                     Console.Write($"Flavour for scoop {i}: ");
                     string type = Console.ReadLine().ToLower();
                     bool premium = IsPremiumFlavour(type);
@@ -441,6 +444,9 @@ void OptionFour()
             }
             else
             {
+                Console.WriteLine("Flavours:\n{0,-13}{1,-13}", "Regular", "Premium");
+                Console.WriteLine("{0,-13}{1,-13}\n{2,-13}{3,-13}\n{4,-13}{5,-13}\n", "Vanilla", "Durian",
+                    "Chocolate", "Ube", "Strawberry", "Sea Salt");
                 Console.Write("Flavour: ");
                 string type = Console.ReadLine().ToLower();
                 bool premium = IsPremiumFlavour(type);
@@ -576,6 +582,7 @@ void OptionFour()
         }
         else
         {
+            Console.WriteLine("Toppings: Sprinkles, Mochi, Sago, Oreos\n");
             Console.Write("Enter topping(s): ");
             string toppings = Console.ReadLine();
             Topping toppingsObj = new Topping(toppings);
