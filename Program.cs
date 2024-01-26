@@ -690,7 +690,7 @@ static void OptionSix(Dictionary<int, Customer> customerDictionary)
                 Console.Write("Enter the Order ID you want to modify: ");
                 int orderIdToModify = Convert.ToInt32(Console.ReadLine());
 
-                Order selectedOrder = customer.OrderHistory.FirstOrDefault(order => order.Id == orderIdToModify);
+                Order selectedOrder = selectedCustomer.OrderHistory.FirstOrDefault(order => order.Id == orderIdToModify);
 
                 if (selectedOrder != null)
                 {
