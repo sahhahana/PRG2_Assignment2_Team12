@@ -999,34 +999,121 @@ static void OptionSix(Dictionary<int, Customer> customerDictionary)
 
 
 // Advanced (a)- Feature 7
-static void OptionSeven()
+void OptionSeven()
+{
+        /* Process an order and checkout
+     dequeue the first order in the queue
+     display all the ice creams in the order
+     display the total bill amount
+     display the membership status & points of the customer
+     check if it is the customer’s birthday, and if it is, calculate the final bill while having the 
+    most expensive ice cream in the order cost $0.00
+     check if the customer has completed their punch card. If so, then calculate the final bill 
+    while having the first ice cream in their order cost $0.00 and reset their punch card back 
+    to 0
+     check Pointcard status to determine if the customer can redeem points. If they cannot, 
+    skip to displaying the final bill amount
+         if the customer is silver tier or above, prompt user asking how many of their points they 
+    want to use to offset their final bill
+     redeem points, if necessary
+     display the final total bill amount
+     prompt user to press any key to make payment
+     increment the punch card for every ice cream in the order (if it goes above 10 just set it 
+    back down to 10)
+     earn points
+     while earning points, upgrade the member status accordingly
+     mark the order as fulfilled with the current datetime
+     add this fulfilled order object to the customer’s order history
+        */
+
+
+    
+    // Check both regular and gold queues
+    ProcessOrderQueue(regularOrderQueue);
+    ProcessOrderQueue(goldOrderQueue);
+    
+
+    void ProcessOrderQueue(Queue<Order> orderQueue)
     {
-    /* Process an order and checkout
- dequeue the first order in the queue
- display all the ice creams in the order
- display the total bill amount
- display the membership status & points of the customer
- check if it is the customer’s birthday, and if it is, calculate the final bill while having the 
-most expensive ice cream in the order cost $0.00
- check if the customer has completed their punch card. If so, then calculate the final bill 
-while having the first ice cream in their order cost $0.00 and reset their punch card back 
-to 0
- check Pointcard status to determine if the customer can redeem points. If they cannot, 
-skip to displaying the final bill amount
-     if the customer is silver tier or above, prompt user asking how many of their points they 
-want to use to offset their final bill
- redeem points, if necessary
- display the final total bill amount
- prompt user to press any key to make payment
- increment the punch card for every ice cream in the order (if it goes above 10 just set it 
-back down to 10)
- earn points
- while earning points, upgrade the member status accordingly
- mark the order as fulfilled with the current datetime
- add this fulfilled order object to the customer’s order history
-    */
-        Console.WriteLine("Hello World");
+        if (orderQueue.Count == 0)
+        {
+            Console.WriteLine($"{orderQueue} has no pending orders to process.");
+            return;
+        }
+
+        // Dequeue the first order
+        Order currentOrder = orderQueue.Dequeue();
+
+        // Display all ice creams in the order
+        //DisplayIceCreams(currentOrder);
+
+        // Display the total bill amount
+        double totalBill = currentOrder.CalculateTotal();
+
+        // Display membership status & points of the customer
+        //DisplayMembershipInfo(currentOrder.AssociatedCustomer);
+
+        // Check if it's the customer's birthday
+        if (currentOrder.AssociatedCustomer.IsBirthday())
+        {
+            // Calculate the final bill with the most expensive ice cream costing $0.00
+            totalBill = currentOrder.CalculateTotal();
+        }
+
+        // Check if the customer has completed their punch card
+        if (currentOrder.AssociatedCustomer.Rewards.PunchCard == 10)
+        {
+            // Calculate the final bill with the first ice cream costing $0.00
+            totalBill = currentOrder.CalculateTotal();
+
+            // Reset punch card back to 0
+            currentOrder.AssociatedCustomer.Rewards.PunchCard = 0;
+        }
+
+        // Check Pointcard status to determine if the customer can redeem points
+        if (currentOrder.AssociatedCustomer.Rewards.Points > 0)
+        {
+            // If the customer is silver tier or above, prompt to offset the final bill with points
+            if (currentOrder.AssociatedCustomer.Rewards.Tier == "Silver" || currentOrder.AssociatedCustomer.Rewards.Tier == "Gold")
+            {
+                Console.Write("How many points would you like to use to offset the final bill? ");
+                int pointsToOffset = Convert.ToInt32(Console.ReadLine());
+                totalBill -= pointsToOffset;
+            }
+
+            // Redeem points
+            currentOrder.AssociatedCustomer.Rewards.RedeemPoints(currentOrder.AssociatedCustomer.Rewards.Points);
+        }
+
+        // Display the final total bill amount
+        Console.WriteLine($"Final Total Bill Amount: {totalBill:C}");
+
+        // Prompt user to press any key to make payment
+        Console.WriteLine("Press any key to make payment...");
+        Console.ReadKey();
+
+        // Increment the punch card for every ice cream in the order (if it goes above 10, set it back down to 10)
+        foreach (var iceCream in currentOrder.IceCreamList)
+        {
+            currentOrder.AssociatedCustomer.Rewards.Punch();
+        }
+
+        // Earn points
+        currentOrder.AssociatedCustomer.Rewards.AddPoints(Convert.ToInt32(totalBill));
+
+        // Upgrade member status accordingly
+        currentOrder.AssociatedCustomer.Rewards.UpdateTier();
+
+        // Mark the order as fulfilled with the current datetime
+        currentOrder.TimeFulfilled = DateTime.Now;
+
+        // Add this fulfilled order object to the customer’s order history
+        currentOrder.AssociatedCustomer.OrderHistory.Add(currentOrder);
     }
+}
+
+
+    
 
 // Advanced (b)- Feature 8
 static void OptionEight()
