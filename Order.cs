@@ -29,7 +29,7 @@ namespace PRG2_Assignment2_Team12
         {
             Id = id;
             TimeReceived = timeReceived;
-            TimeFulfilled = DateTime.MinValue;
+            TimeFulfilled = null;
         }
         public void ModifyIceCream(int iceCreamIndex)
         {

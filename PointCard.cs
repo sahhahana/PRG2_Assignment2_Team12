@@ -37,7 +37,7 @@ namespace PRG2_Assignment2_Team12
         }
         public void RedeemPoints(int pointsToRedeem)
         {
-            if (tier == "Silver" || tier == "Gold") // || should refer to 'or'
+            if (Tier == "Silver" || Tier == "Gold") // || should refer to 'or'
             {
                 points -= pointsToRedeem;
                 UpdateTier();
@@ -56,7 +56,7 @@ namespace PRG2_Assignment2_Team12
                 punchCard = 0; // Reset punch card
             }
         }
-        private void UpdateTier() //for easier reference to update the tier regularly instead of constantly re-coding it out
+        public void UpdateTier() //for easier reference to update the tier regularly instead of constantly re-coding it out
         {
             if (Points >= 100)
             {

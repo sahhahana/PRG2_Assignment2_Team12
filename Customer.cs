@@ -43,7 +43,7 @@ namespace PRG2_Assignment2_Team12
 
         public bool IsBirthday()
         {
-            if (Dob == DateTime.Today) 
+            if (Dob.Month == DateTime.Today.Month && Dob.Day == DateTime.Today.Day) 
             { 
                 return true;
             }
@@ -51,7 +51,7 @@ namespace PRG2_Assignment2_Team12
         }
         public override string ToString()
         {
-            return $"{base.ToString()} Name: {Name} Member ID: {Memberid} DOB: {Dob}";
+            return $"{base.ToString()} Name: {Name}, Member ID: {Memberid}, DOB: {Dob:dd/MM/yyyy}";
         }
     }
 }
