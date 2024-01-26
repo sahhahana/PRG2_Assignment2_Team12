@@ -417,71 +417,93 @@ void OptionFour()
             Console.Write("Scoop(s): ");
             int scoop = Convert.ToInt32(Console.ReadLine().ToLower());
             int scoopNo = 1;
+            List<string> availableFlavours = new List<string> { "vanilla", "durian", "chocolate", "ube", "strawberry", "sea salt" };
             List<Flavour> flavoursList = new List<Flavour>();
             if (scoop > 1)
             {
                 for (int i = 1; i < scoop + 1; i++)
                 {
+                    string type;
+                    bool premium = false;
+
+                    while (true)
+                    {
+                        Console.WriteLine("Flavours:\n{0,-13}{1,-13}", "Regular", "Premium");
+                        Console.WriteLine("{0,-13}{1,-13}\n{2,-13}{3,-13}\n{4,-13}{5,-13}\n", "Vanilla", "Durian",
+                            "Chocolate", "Ube", "Strawberry", "Sea Salt");
+                        Console.Write($"Flavour for scoop {i}: ");
+                        type = Console.ReadLine().ToLower();
+
+                        if (availableFlavours.Contains(type))
+                        {
+                            premium = IsPremiumFlavour(type);
+                            break; // exit the loop if the input is a valid flavour
+                        }
+                        else
+                        {
+                            Console.WriteLine("Invalid flavour. Please choose from the available flavours.");
+                        }
+                    }
+                }
+            }
+            else
+            {
+                while (true)
+                {
                     Console.WriteLine("Flavours:\n{0,-13}{1,-13}", "Regular", "Premium");
+
                     Console.WriteLine("{0,-13}{1,-13}\n{2,-13}{3,-13}\n{4,-13}{5,-13}\n", "Vanilla", "Durian",
-                        "Chocolate", "Ube", "Strawberry", "Sea Salt");
-                    Console.Write($"Flavour for scoop {i}: ");
+                    "Chocolate", "Ube", "Strawberry", "Sea Salt");
+                    Console.Write("Flavour: ");
                     string type = Console.ReadLine().ToLower();
                     bool premium = IsPremiumFlavour(type);
 
+                    if (availableFlavours.Contains(type))
+                    {
+                        premium = IsPremiumFlavour(type);
+                        break; // exit the loop if the input is a valid flavour
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid flavour. Please choose from the available flavours.");
+                    }
 
                     Flavour flavour = new Flavour(type, premium, scoop);
                     flavoursList.Add(flavour);
 
                 }
+                List<Topping> toppingList = new List<Topping>();
+                AskForToppings(toppingList);
 
-            }
-            else
-            {
-                Console.WriteLine("Flavours:\n{0,-13}{1,-13}", "Regular", "Premium");
-                Console.WriteLine("{0,-13}{1,-13}\n{2,-13}{3,-13}\n{4,-13}{5,-13}\n", "Vanilla", "Durian",
-                    "Chocolate", "Ube", "Strawberry", "Sea Salt");
-                Console.Write("Flavour: ");
-                string type = Console.ReadLine().ToLower();
-                bool premium = IsPremiumFlavour(type);
+                Order orderNew = customer.MakeOrder();
+                List<IceCream> IceCreamList = orderNew.IceCreamList;
+                IceCream newOrder;
 
+                // create ice cream object 
+                if (option == "cup")
+                {
+                    newOrder = new Cup(option, scoop, flavoursList, toppingList);
+                }
+                else if (option == "cone")
+                {
+                    bool dipped = AskForChocolateDippedCone();
+                    newOrder = new Cone(option, scoop, flavoursList, toppingList, dipped);
+                }
+                else if (option == "waffle")
+                {
+                    string waffleType = AskForWaffleType();
+                    newOrder = new Waffle(option, scoop, flavoursList, toppingList, waffleType);
+                }
+                else
+                {
+                    Console.WriteLine("Invalid option! Please enter Cup, Cone, or Waffle.");
+                    return;
+                }
 
-                Flavour flavour = new Flavour(type, premium, scoop);
-                flavoursList.Add(flavour);
+                // add ice cream object to order
+                orderNew.AddIceCream(newOrder);
 
-            }
-            List<Topping> toppingList = new List<Topping>();
-            AskForToppings(toppingList);
-
-            Order orderNew = customer.MakeOrder();
-            List<IceCream> IceCreamList = orderNew.IceCreamList;
-            IceCream newOrder;
-
-            // create ice cream object 
-            if (option == "cup")
-            {
-                newOrder = new Cup(option, scoop, flavoursList, toppingList);
-            }
-            else if (option == "cone")
-            {
-                bool dipped = AskForChocolateDippedCone();
-                newOrder = new Cone(option, scoop, flavoursList, toppingList, dipped);
-            }
-            else if (option == "waffle")
-            {
-                string waffleType = AskForWaffleType();
-                newOrder = new Waffle(option, scoop, flavoursList, toppingList, waffleType);
-            }
-            else
-            {
-                Console.WriteLine("Invalid option! Please enter Cup, Cone, or Waffle.");
-                return;
-            }
-
-            // add ice cream object to order
-            orderNew.AddIceCream(newOrder);
-
-            customer.CurrentOrder = orderNew;
+                customer.CurrentOrder = orderNew;
 
 
             Console.Write("Would you like to add another ice cream to the order? (Y/N): ");
