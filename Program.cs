@@ -446,7 +446,7 @@ void OptionFour()
                     }
                 }
             }
-            else
+            else if (scoop < 1)
             {
                 while (true)
                 {
@@ -506,54 +506,46 @@ void OptionFour()
                 customer.CurrentOrder = orderNew;
 
 
-            Console.Write("Would you like to add another ice cream to the order? (Y/N): ");
-            anotherIceCream = Console.ReadLine().ToUpper();
+                Console.Write("Would you like to add another ice cream to the order? (Y/N): ");
+                anotherIceCream = Console.ReadLine().ToUpper();
 
-            if (anotherIceCream == "N")
-            {
-                Console.WriteLine("\nOrder has been made successfully!");
-                DateTime timeFulfilled = (DateTime)customer.CurrentOrder.TimeFulfilled;
-                DateTime timeReceived = (DateTime)customer.CurrentOrder.TimeReceived;
-
-                int maxFlavors = 3;
-                int maxToppings = 4;
-
-                string flavorFormat = string.Join(",", Enumerable.Range(0, maxFlavors).Select(i => $"{{newOrder.Flavours[{i}]}}"));
-                string toppingFormat = string.Join(",", Enumerable.Range(0, maxToppings).Select(i => $"{{newOrder.Toppings[{i}]}}"));
-                customer.CurrentOrder.Id += 1;
-
-                using (StreamWriter sw = new StreamWriter("orders.csv", true))
+                if (anotherIceCream == "N")
                 {
-                    foreach (var iceCream in orderNew.IceCreamList)
+                    Console.WriteLine("\nOrder has been made successfully!");
+                    DateTime timeFulfilled = (DateTime)customer.CurrentOrder.TimeFulfilled;
+                    DateTime timeReceived = (DateTime)customer.CurrentOrder.TimeReceived;
+
+                    int maxFlavors = 3;
+                    int maxToppings = 4;
+
+                    string flavorFormat = string.Join(",", Enumerable.Range(0, maxFlavors).Select(i => $"{{newOrder.Flavours[{i}]}}"));
+                    string toppingFormat = string.Join(",", Enumerable.Range(0, maxToppings).Select(i => $"{{newOrder.Toppings[{i}]}}"));
+                    customer.CurrentOrder.Id += 1;
+
+                    using (StreamWriter sw = new StreamWriter("orders.csv", true))
                     {
-                        sw.WriteLine($"{customer.CurrentOrder.Id},{customer.Memberid},{timeReceived.ToString("dd/MM/yyyy HH:mm")},{timeFulfilled.ToString("dd/MM/yyyy HH:mm")},{iceCream.Option},{iceCream.Scoops},{(iceCream is Cone ? ((Cone)iceCream).Dipped.ToString() : "")},{(iceCream is Waffle ? ((Waffle)iceCream).WaffleFlavour : "")},{flavorFormat},{toppingFormat}");
+                        foreach (var iceCream in orderNew.IceCreamList)
+                        {
+                            sw.WriteLine($"{customer.CurrentOrder.Id},{customer.Memberid},{timeReceived.ToString("dd/MM/yyyy HH:mm")},{timeFulfilled.ToString("dd/MM/yyyy HH:mm")},{iceCream.Option},{iceCream.Scoops},{(iceCream is Cone ? ((Cone)iceCream).Dipped.ToString() : "")},{(iceCream is Waffle ? ((Waffle)iceCream).WaffleFlavour : "")},{flavorFormat},{toppingFormat}");
+                        }
                     }
+
+                    break; // Exit the loop if the user enters "N"
                 }
-
-                break; // Exit the loop if the user enters "N"
-
+                else
+                {
+                    continue;
+                }
             }
             else
             {
-                continue;
+                Console.WriteLine("Customer is not a member at I.C.Treats.\nPlease ensure the correct Member ID was selected or register this customer by choosing option 3.");
+                break;
             }
-
         }
-        
-        else
-        {
-            Console.WriteLine("Customer is not a member at I.C.Treats.\nPlease ensure the correct Member ID was selected or register this customer by choosing option 3.");
-            break;
-        }
-
-      
-        
-        
     }
-
-    
-        // todo: add points and modify code -- add a orderid couonter, add topping methods, i need to add this order plus info from order in th eorder.csv file, add 1 flavour at a time
-        //Id,MemberId,TimeReceived,TimeFulfilled,Option,Scoops,Dipped,WaffleFlavour,Flavour1,Flavour2,Flavour3,Topping1,Topping2,Topping3,Topping4
+    // todo: add points and modify code -- add a orderid couonter, add topping methods, i need to add this order plus info from order in th eorder.csv file, add 1 flavour at a time
+    //Id,MemberId,TimeReceived,TimeFulfilled,Option,Scoops,Dipped,WaffleFlavour,Flavour1,Flavour2,Flavour3,Topping1,Topping2,Topping3,Topping4
 }
 
     bool AskForChocolateDippedCone()
