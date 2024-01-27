@@ -382,6 +382,7 @@ void OptionThree()
 
 }
 
+
 // Feature 4
 void OptionFour()
 {
@@ -437,6 +438,8 @@ void OptionFour()
                         if (availableFlavours.Contains(type))
                         {
                             premium = IsPremiumFlavour(type);
+                            Flavour flavour = new Flavour(type, premium, scoop);
+                            flavoursList.Add(flavour);
                             break; // exit the loop if the input is a valid flavour
                         }
                         else
@@ -446,7 +449,7 @@ void OptionFour()
                     }
                 }
             }
-            else if (scoop < 1)
+            else
             {
                 while (true)
                 {
@@ -461,92 +464,91 @@ void OptionFour()
                     if (availableFlavours.Contains(type))
                     {
                         premium = IsPremiumFlavour(type);
+                        Flavour flavour = new Flavour(type, premium, scoop);
+                        flavoursList.Add(flavour);
                         break; // exit the loop if the input is a valid flavour
                     }
                     else
                     {
                         Console.WriteLine("Invalid flavour. Please choose from the available flavours.");
                     }
-
-                    Flavour flavour = new Flavour(type, premium, scoop);
-                    flavoursList.Add(flavour);
-
                 }
-                List<Topping> toppingList = new List<Topping>();
-                AskForToppings(toppingList);
+            }
+            List<Topping> toppingList = new List<Topping>();
+            AskForToppings(toppingList);
 
-                Order orderNew = customer.MakeOrder();
-                List<IceCream> IceCreamList = orderNew.IceCreamList;
-                IceCream newOrder;
+            Order orderNew = customer.MakeOrder();
+            List<IceCream> IceCreamList = orderNew.IceCreamList;
+            IceCream newOrder;
 
-                // create ice cream object 
-                if (option == "cup")
-                {
-                    newOrder = new Cup(option, scoop, flavoursList, toppingList);
-                }
-                else if (option == "cone")
-                {
-                    bool dipped = AskForChocolateDippedCone();
-                    newOrder = new Cone(option, scoop, flavoursList, toppingList, dipped);
-                }
-                else if (option == "waffle")
-                {
-                    string waffleType = AskForWaffleType();
-                    newOrder = new Waffle(option, scoop, flavoursList, toppingList, waffleType);
-                }
-                else
-                {
-                    Console.WriteLine("Invalid option! Please enter Cup, Cone, or Waffle.");
-                    return;
-                }
-
-                // add ice cream object to order
-                orderNew.AddIceCream(newOrder);
-
-                customer.CurrentOrder = orderNew;
-
-
-                Console.Write("Would you like to add another ice cream to the order? (Y/N): ");
-                anotherIceCream = Console.ReadLine().ToUpper();
-
-                if (anotherIceCream == "N")
-                {
-                    Console.WriteLine("\nOrder has been made successfully!");
-                    DateTime timeFulfilled = (DateTime)customer.CurrentOrder.TimeFulfilled;
-                    DateTime timeReceived = (DateTime)customer.CurrentOrder.TimeReceived;
-
-                    int maxFlavors = 3;
-                    int maxToppings = 4;
-
-                    string flavorFormat = string.Join(",", Enumerable.Range(0, maxFlavors).Select(i => $"{{newOrder.Flavours[{i}]}}"));
-                    string toppingFormat = string.Join(",", Enumerable.Range(0, maxToppings).Select(i => $"{{newOrder.Toppings[{i}]}}"));
-                    customer.CurrentOrder.Id += 1;
-
-                    using (StreamWriter sw = new StreamWriter("orders.csv", true))
-                    {
-                        foreach (var iceCream in orderNew.IceCreamList)
-                        {
-                            sw.WriteLine($"{customer.CurrentOrder.Id},{customer.Memberid},{timeReceived.ToString("dd/MM/yyyy HH:mm")},{timeFulfilled.ToString("dd/MM/yyyy HH:mm")},{iceCream.Option},{iceCream.Scoops},{(iceCream is Cone ? ((Cone)iceCream).Dipped.ToString() : "")},{(iceCream is Waffle ? ((Waffle)iceCream).WaffleFlavour : "")},{flavorFormat},{toppingFormat}");
-                        }
-                    }
-
-                    break; // Exit the loop if the user enters "N"
-                }
-                else
-                {
-                    continue;
-                }
+            // create ice cream object 
+            if (option == "cup")
+            {
+                newOrder = new Cup(option, scoop, flavoursList, toppingList);
+            }
+            else if (option == "cone")
+            {
+                bool dipped = AskForChocolateDippedCone();
+                newOrder = new Cone(option, scoop, flavoursList, toppingList, dipped);
+            }
+            else if (option == "waffle")
+            {
+                string waffleType = AskForWaffleType();
+                newOrder = new Waffle(option, scoop, flavoursList, toppingList, waffleType);
             }
             else
             {
-                Console.WriteLine("Customer is not a member at I.C.Treats.\nPlease ensure the correct Member ID was selected or register this customer by choosing option 3.");
-                break;
+                Console.WriteLine("Invalid option! Please enter Cup, Cone, or Waffle.");
+                return;
+            }
+
+            // add ice cream object to order
+            orderNew.AddIceCream(newOrder);
+
+            customer.CurrentOrder = orderNew;
+
+
+            Console.Write("Would you like to add another ice cream to the order? (Y/N): ");
+            anotherIceCream = Console.ReadLine().ToUpper();
+
+            if (anotherIceCream == "N")
+            {
+                Console.WriteLine("\nOrder has been made successfully!");
+                DateTime timeFulfilled = (DateTime)customer.CurrentOrder.TimeFulfilled;
+                DateTime timeReceived = (DateTime)customer.CurrentOrder.TimeReceived;
+
+                int maxFlavors = 3;
+                int maxToppings = 4;
+
+                string flavorFormat = string.Join(",", Enumerable.Range(0, maxFlavors).Select(i => $"{{newOrder.Flavours[{i}]}}"));
+                string toppingFormat = string.Join(",", Enumerable.Range(0, maxToppings).Select(i => $"{{newOrder.Toppings[{i}]}}"));
+                customer.CurrentOrder.Id += 1;
+
+                using (StreamWriter sw = new StreamWriter("orders.csv", true))
+                {
+                    foreach (var iceCream in orderNew.IceCreamList)
+                    {
+                        sw.WriteLine($"{customer.CurrentOrder.Id},{customer.Memberid},{timeReceived.ToString("dd/MM/yyyy HH:mm")},{timeFulfilled.ToString("dd/MM/yyyy HH:mm")},{iceCream.Option},{iceCream.Scoops},{(iceCream is Cone ? ((Cone)iceCream).Dipped.ToString() : "")},{(iceCream is Waffle ? ((Waffle)iceCream).WaffleFlavour : "")},{flavorFormat},{toppingFormat}");
+                    }
+                }
+
+                break; // Exit the loop if the user enters "N"
+            }
+            else
+            {
+                continue;
             }
         }
+        else
+        {
+            Console.WriteLine("Customer is not a member at I.C.Treats.\nPlease ensure the correct Member ID was selected or register this customer by choosing option 3.");
+            break;
+        }
     }
+}
     // todo: add points and modify code -- add a orderid couonter, add topping methods, i need to add this order plus info from order in th eorder.csv file, add 1 flavour at a time
     //Id,MemberId,TimeReceived,TimeFulfilled,Option,Scoops,Dipped,WaffleFlavour,Flavour1,Flavour2,Flavour3,Topping1,Topping2,Topping3,Topping4
-}
+
 
     bool AskForChocolateDippedCone()
     {
