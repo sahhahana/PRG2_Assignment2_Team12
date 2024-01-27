@@ -262,7 +262,6 @@ namespace PRG2_Assignment2_Team12
                 double price = iceCream.CalculatePrice();
                 total += price;
             }
-            Console.WriteLine("Total amount to pay: {0}", total);
             return total;
         }
     }
