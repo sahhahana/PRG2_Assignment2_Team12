@@ -233,7 +233,7 @@ namespace PRG2_Assignment2_Team12
         {
             // Update the ice cream with the modified information
             IceCreamList.Add(iceCream);
-            Console.WriteLine("Ice Cream added.");
+            Console.WriteLine("\nOrder has been made successfully!");
         }
 
         public void DeleteIceCream(int iceCreamIndex)
@@ -262,7 +262,7 @@ namespace PRG2_Assignment2_Team12
                 double price = iceCream.CalculatePrice();
                 total += price;
             }
-            Console.WriteLine("Total amount to pay: {0}", total);
+            Console.WriteLine("Total amount to pay: ${0:0.00}", total);
             return total;
         }
     }

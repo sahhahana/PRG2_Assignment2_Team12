@@ -211,7 +211,7 @@ while (true)
     }
     else if (option == "7")
     {
-        //OptionSeven();
+        OptionSeven(regularOrderQueue, goldOrderQueue);
     }
     else if (option == "8")
     {
@@ -416,7 +416,7 @@ void OptionFour()
             string option = Console.ReadLine().ToLower();
 
             Console.Write("Scoop(s): ");
-            int scoop = Convert.ToInt32(Console.ReadLine().ToLower());
+            int scoop = Convert.ToInt32(Console.ReadLine());
             int scoopNo = 1;
             List<string> availableFlavours = new List<string> { "vanilla", "durian", "chocolate", "ube", "strawberry", "sea salt" };
             List<Flavour> flavoursList = new List<Flavour>();
@@ -513,7 +513,15 @@ void OptionFour()
 
             if (anotherIceCream == "N")
             {
-                Console.WriteLine("\nOrder has been made successfully!");
+                if (customer.Rewards.Tier == "Gold")
+                {
+                    goldOrderQueue.Enqueue(orderNew);
+                }
+                else
+                {
+                    regularOrderQueue.Enqueue(orderNew);
+                }
+                
                 DateTime timeFulfilled = (DateTime)customer.CurrentOrder.TimeFulfilled;
                 DateTime timeReceived = (DateTime)customer.CurrentOrder.TimeReceived;
 
@@ -531,7 +539,7 @@ void OptionFour()
                         sw.WriteLine($"{customer.CurrentOrder.Id},{customer.Memberid},{timeReceived.ToString("dd/MM/yyyy HH:mm")},{timeFulfilled.ToString("dd/MM/yyyy HH:mm")},{iceCream.Option},{iceCream.Scoops},{(iceCream is Cone ? ((Cone)iceCream).Dipped.ToString() : "")},{(iceCream is Waffle ? ((Waffle)iceCream).WaffleFlavour : "")},{flavorFormat},{toppingFormat}");
                     }
                 }
-
+                // todo: add multiple orders under the same ORder id
                 break; // Exit the loop if the user enters "N"
             }
             else
@@ -1015,59 +1023,84 @@ static void OptionSix(Dictionary<int, Customer> customerDictionary)
 
 
 // Advanced (a)- Feature 7
-void OptionSeven()
+void OptionSeven(Queue<Order> RegularOrderQueue, Queue<Order> GoldOrderQueue)
 {
-        /* Process an order and checkout
-     dequeue the first order in the queue
-     display all the ice creams in the order
-     display the total bill amount
-     display the membership status & points of the customer
-     check if it is the customer’s birthday, and if it is, calculate the final bill while having the 
-    most expensive ice cream in the order cost $0.00
-     check if the customer has completed their punch card. If so, then calculate the final bill 
-    while having the first ice cream in their order cost $0.00 and reset their punch card back 
-    to 0
-     check Pointcard status to determine if the customer can redeem points. If they cannot, 
-    skip to displaying the final bill amount
-         if the customer is silver tier or above, prompt user asking how many of their points they 
-    want to use to offset their final bill
-     redeem points, if necessary
-     display the final total bill amount
-     prompt user to press any key to make payment
-     increment the punch card for every ice cream in the order (if it goes above 10 just set it 
-    back down to 10)
-     earn points
-     while earning points, upgrade the member status accordingly
-     mark the order as fulfilled with the current datetime
-     add this fulfilled order object to the customer’s order history
-        */
+    /* Process an order and checkout
+///dequeue the first order in the queue
 
+ display all the ice creams in the order
+ display the total bill amount
+ display the membership status & points of the customer
+ check if it is the customer’s birthday, and if it is, calculate the final bill while having the 
+most expensive ice cream in the order cost $0.00
+ check if the customer has completed their punch card. If so, then calculate the final bill 
+while having the first ice cream in their order cost $0.00 and reset their punch card back 
+to 0
+ check Pointcard status to determine if the customer can redeem points. If they cannot, 
+skip to displaying the final bill amount
+     if the customer is silver tier or above, prompt user asking how many of their points they 
+want to use to offset their final bill
+ redeem points, if necessary
+ display the final total bill amount
+ prompt user to press any key to make payment
+ increment the punch card for every ice cream in the order (if it goes above 10 just set it 
+back down to 10)
+ earn points
+ while earning points, upgrade the member status accordingly
+ mark the order as fulfilled with the current datetime
+ add this fulfilled order object to the customer’s order history
+    */
 
-    
-    // Check both regular and gold queues
-    ProcessOrderQueue(regularOrderQueue);
-    ProcessOrderQueue(goldOrderQueue);
-    
-
-    void ProcessOrderQueue(Queue<Order> orderQueue)
+    if (GoldOrderQueue.Count == 0)
     {
-        if (orderQueue.Count == 0)
-        {
-            Console.WriteLine($"{orderQueue} has no pending orders to process.");
-            return;
-        }
-
-        // Dequeue the first order
-        Order currentOrder = orderQueue.Dequeue();
-
         // Display all ice creams in the order
-        //DisplayIceCreams(currentOrder);
+        foreach (Order order in RegularOrderQueue)
+        {
+            foreach (IceCream iceCream in order.IceCreamList)
+            {
+                Console.WriteLine(iceCream.ToString());
+            }
+
+        }
+        // Dequeue the first order
+        Order currentOrderRegular = RegularOrderQueue.Dequeue();
+        ProcessOrderQueue(currentOrderRegular);
+    }
+    else
+    {
+        // Display all ice creams in the order
+        foreach (Order order in GoldOrderQueue)
+        {
+            foreach (IceCream iceCream in order.IceCreamList)
+            {
+                Console.WriteLine(iceCream.ToString());
+            }
+
+        }
+        Order currentOrderGold = GoldOrderQueue.Dequeue();
+        ProcessOrderQueue(currentOrderGold);
+    }
+    if (RegularOrderQueue.Count == 0)
+    {
+        Console.WriteLine($"No pending orders to process.");
+        return;
+    }
+
+
+    // Check both regular and gold queues
+
+
+
+
+
+    void ProcessOrderQueue(Order currentOrder)
+    {
 
         // Display the total bill amount
         double totalBill = currentOrder.CalculateTotal();
 
         // Display membership status & points of the customer
-        //DisplayMembershipInfo(currentOrder.AssociatedCustomer);
+       // Console.Write(currentOrder.AssociatedCustomer.Name);
 
         // Check if it's the customer's birthday
         if (currentOrder.AssociatedCustomer.IsBirthday())
@@ -1089,16 +1122,13 @@ void OptionSeven()
         // Check Pointcard status to determine if the customer can redeem points
         if (currentOrder.AssociatedCustomer.Rewards.Points > 0)
         {
-            // If the customer is silver tier or above, prompt to offset the final bill with points
-            if (currentOrder.AssociatedCustomer.Rewards.Tier == "Silver" || currentOrder.AssociatedCustomer.Rewards.Tier == "Gold")
-            {
-                Console.Write("How many points would you like to use to offset the final bill? ");
-                int pointsToOffset = Convert.ToInt32(Console.ReadLine());
-                totalBill -= pointsToOffset;
-            }
-
+            
+            Console.Write("How many points would you like to use to offset the final bill? ");
+            int pointsToOffset = Convert.ToInt32(Console.ReadLine());
             // Redeem points
-            currentOrder.AssociatedCustomer.Rewards.RedeemPoints(currentOrder.AssociatedCustomer.Rewards.Points);
+            currentOrder.AssociatedCustomer.Rewards.RedeemPoints(pointsToOffset);
+            totalBill -= (pointsToOffset * 0.02);
+
         }
 
         // Display the final total bill amount

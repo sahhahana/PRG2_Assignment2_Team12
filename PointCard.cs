@@ -39,7 +39,7 @@ namespace PRG2_Assignment2_Team12
         {
             if (Tier == "Silver" || Tier == "Gold") // || should refer to 'or'
             {
-                points -= pointsToRedeem;
+                Points -= pointsToRedeem;
                 UpdateTier();
             }
             else
