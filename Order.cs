@@ -25,11 +25,12 @@ namespace PRG2_Assignment2_Team12
         // Reference to the associated customer
         public Customer AssociatedCustomer { get; set; }
         public Order() { }
-        public Order(int id, DateTime timeReceived)
+        public Order(int id, DateTime timeReceived, Customer associatedCustomer)
         {
             Id = id;
             TimeReceived = timeReceived;
-            TimeFulfilled = DateTime.MaxValue;
+            TimeFulfilled = DateTime.MinValue;
+            AssociatedCustomer = associatedCustomer; // Link the order to the customer
         }
         public void ModifyIceCream(int iceCreamIndex)
         {

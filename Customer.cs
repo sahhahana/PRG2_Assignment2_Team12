@@ -32,10 +32,10 @@ namespace PRG2_Assignment2_Team12
             Memberid = memberid;
             Dob = dob;
         }
-        public Order MakeOrder()
+        public Order MakeOrder( Customer customer)
         {
             int ID = OrderHistory.Count + 1;
-            Order newOrder = new Order(ID, DateTime.Now);
+            Order newOrder = new Order(ID, DateTime.Now, customer);
             CurrentOrder = newOrder;  // Link the new order to the customer's current order
             OrderHistory.Add(newOrder);  // Add the new order to the customer's order history
             return newOrder;

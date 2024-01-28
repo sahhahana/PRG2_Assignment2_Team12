@@ -94,7 +94,7 @@ using (StreamReader sr = new StreamReader("orders.csv"))
         DateTime timeFulfilled = Convert.ToDateTime(data[3]);
 
         // Create a new order and add it to the customer's order history
-        Order order = new Order(orderId, timeReceived);
+        Order order = new Order(orderId, timeReceived, foundCustomer);
         customer?.OrderHistory.Add(order);
 
         // Simplify the creation of Flavour and Topping instances
@@ -477,7 +477,7 @@ void OptionFour()
             List<Topping> toppingList = new List<Topping>();
             AskForToppings(toppingList);
 
-            Order orderNew = customer.MakeOrder();
+            Order orderNew = customer.MakeOrder(customer);
             List<IceCream> IceCreamList = orderNew.IceCreamList;
             IceCream newOrder;
 
@@ -532,13 +532,13 @@ void OptionFour()
                 string toppingFormat = string.Join(",", Enumerable.Range(0, maxToppings).Select(i => $"{{newOrder.Toppings[{i}]}}"));
                 customer.CurrentOrder.Id += 1;
 
-                using (StreamWriter sw = new StreamWriter("orders.csv", true))
+                /*using (StreamWriter sw = new StreamWriter("orders.csv", true))
                 {
                     foreach (var iceCream in orderNew.IceCreamList)
                     {
                         sw.WriteLine($"{customer.CurrentOrder.Id},{customer.Memberid},{timeReceived.ToString("dd/MM/yyyy HH:mm")},{timeFulfilled.ToString("dd/MM/yyyy HH:mm")},{iceCream.Option},{iceCream.Scoops},{(iceCream is Cone ? ((Cone)iceCream).Dipped.ToString() : "")},{(iceCream is Waffle ? ((Waffle)iceCream).WaffleFlavour : "")},{flavorFormat},{toppingFormat}");
                     }
-                }
+                }*/
                 // todo: add multiple orders under the same ORder id
                 break; // Exit the loop if the user enters "N"
             }
@@ -802,7 +802,7 @@ static void OptionSix(Dictionary<int, Customer> customerDictionary)
 
         if (selectedOrder == null)
         {
-            selectedOrder = new Order(orderIdToAddIceCream, DateTime.Now);
+            selectedOrder = new Order(orderIdToAddIceCream, DateTime.Now, selectedCustomer);
             customer.OrderHistory.Add(selectedOrder);
         }
 
@@ -911,7 +911,7 @@ static void OptionSix(Dictionary<int, Customer> customerDictionary)
         List<Topping> toppingList = new List<Topping>();
         AskForToppings(toppingList);
 
-        Order orderNew = customer.MakeOrder();
+        Order orderNew = customer.MakeOrder(customer);
         List<IceCream> IceCreamList = orderNew.IceCreamList;
         IceCream newOrder;
 
@@ -1025,141 +1025,106 @@ static void OptionSix(Dictionary<int, Customer> customerDictionary)
 // Advanced (a)- Feature 7
 void OptionSeven(Queue<Order> RegularOrderQueue, Queue<Order> GoldOrderQueue)
 {
-    /* Process an order and checkout
-///dequeue the first order in the queue
-
- display all the ice creams in the order
- display the total bill amount
- display the membership status & points of the customer
- check if it is the customer’s birthday, and if it is, calculate the final bill while having the 
-most expensive ice cream in the order cost $0.00
- check if the customer has completed their punch card. If so, then calculate the final bill 
-while having the first ice cream in their order cost $0.00 and reset their punch card back 
-to 0
- check Pointcard status to determine if the customer can redeem points. If they cannot, 
-skip to displaying the final bill amount
-     if the customer is silver tier or above, prompt user asking how many of their points they 
-want to use to offset their final bill
- redeem points, if necessary
- display the final total bill amount
- prompt user to press any key to make payment
- increment the punch card for every ice cream in the order (if it goes above 10 just set it 
-back down to 10)
- earn points
- while earning points, upgrade the member status accordingly
- mark the order as fulfilled with the current datetime
- add this fulfilled order object to the customer’s order history
-    */
-
-    if (GoldOrderQueue.Count == 0)
+    if (RegularOrderQueue.Count == 0 && GoldOrderQueue.Count == 0)
     {
-        // Display all ice creams in the order
-        foreach (Order order in RegularOrderQueue)
-        {
-            foreach (IceCream iceCream in order.IceCreamList)
-            {
-                Console.WriteLine(iceCream.ToString());
-            }
-
-        }
-        // Dequeue the first order
-        Order currentOrderRegular = RegularOrderQueue.Dequeue();
-        ProcessOrderQueue(currentOrderRegular);
-    }
-    else
-    {
-        // Display all ice creams in the order
-        foreach (Order order in GoldOrderQueue)
-        {
-            foreach (IceCream iceCream in order.IceCreamList)
-            {
-                Console.WriteLine(iceCream.ToString());
-            }
-
-        }
-        Order currentOrderGold = GoldOrderQueue.Dequeue();
-        ProcessOrderQueue(currentOrderGold);
-    }
-    if (RegularOrderQueue.Count == 0)
-    {
-        Console.WriteLine($"No pending orders to process.");
+        Console.WriteLine("No pending orders to process.");
         return;
     }
 
+    Queue<Order> currentQueue;
+    Order currentOrder;
 
-    // Check both regular and gold queues
-
-
-
-
-
-    void ProcessOrderQueue(Order currentOrder)
+    if (GoldOrderQueue.Count > 0)
     {
-
-        // Display the total bill amount
-        double totalBill = currentOrder.CalculateTotal();
-
-        // Display membership status & points of the customer
-       // Console.Write(currentOrder.AssociatedCustomer.Name);
-
-        // Check if it's the customer's birthday
-        if (currentOrder.AssociatedCustomer.IsBirthday())
-        {
-            // Calculate the final bill with the most expensive ice cream costing $0.00
-            totalBill = currentOrder.CalculateTotal();
-        }
-
-        // Check if the customer has completed their punch card
-        if (currentOrder.AssociatedCustomer.Rewards.PunchCard == 10)
-        {
-            // Calculate the final bill with the first ice cream costing $0.00
-            totalBill = currentOrder.CalculateTotal();
-
-            // Reset punch card back to 0
-            currentOrder.AssociatedCustomer.Rewards.PunchCard = 0;
-        }
-
-        // Check Pointcard status to determine if the customer can redeem points
-        if (currentOrder.AssociatedCustomer.Rewards.Points > 0)
-        {
-            
-            Console.Write("How many points would you like to use to offset the final bill? ");
-            int pointsToOffset = Convert.ToInt32(Console.ReadLine());
-            // Redeem points
-            currentOrder.AssociatedCustomer.Rewards.RedeemPoints(pointsToOffset);
-            totalBill -= (pointsToOffset * 0.02);
-
-        }
-
-        // Display the final total bill amount
-        Console.WriteLine($"Final Total Bill Amount: {totalBill:C}");
-
-        // Prompt user to press any key to make payment
-        Console.WriteLine("Press any key to make payment...");
-        Console.ReadKey();
-
-        // Increment the punch card for every ice cream in the order (if it goes above 10, set it back down to 10)
-        foreach (var iceCream in currentOrder.IceCreamList)
-        {
-            currentOrder.AssociatedCustomer.Rewards.Punch();
-        }
-
-        // Earn points
-        currentOrder.AssociatedCustomer.Rewards.AddPoints(Convert.ToInt32(totalBill));
-
-        // Upgrade member status accordingly
-        currentOrder.AssociatedCustomer.Rewards.UpdateTier();
-
-        // Mark the order as fulfilled with the current datetime
-        currentOrder.TimeFulfilled = DateTime.Now;
-
-        // Add this fulfilled order object to the customer’s order history
-        currentOrder.AssociatedCustomer.OrderHistory.Add(currentOrder);
+        currentQueue = GoldOrderQueue;
     }
+    else
+    {
+        currentQueue = RegularOrderQueue;
+    }
+
+    // Display all ice creams in the order
+    foreach (Order order in currentQueue)
+    {
+        foreach (IceCream iceCream in order.IceCreamList)
+        {
+            Console.WriteLine(iceCream.ToString());
+        }
+    }
+
+    // Dequeue the first order
+    currentOrder = currentQueue.Dequeue();
+
+    ProcessOrderQueue(currentOrder);
+}
+
+void ProcessOrderQueue(Order currentOrder)
+{
+    
+    
+
+    // Display the total bill amount
+    double totalBill = currentOrder.CalculateTotal();
+
+    // Display membership status & points of the customer
+    Console.Write(currentOrder.AssociatedCustomer.Name);
+
+    // Check if it's the customer's birthday
+    if (currentOrder.AssociatedCustomer.IsBirthday())
+    {
+        // Calculate the final bill with the most expensive ice cream costing $0.00
+        totalBill = currentOrder.CalculateTotal();
+    }
+
+    // Check if the customer has completed their punch card
+    if (currentOrder.AssociatedCustomer.Rewards.PunchCard == 10)
+    {
+        // Calculate the final bill with the first ice cream costing $0.00
+        totalBill = currentOrder.CalculateTotal();
+
+        // Reset punch card back to 0
+        currentOrder.AssociatedCustomer.Rewards.PunchCard = 0;
+    }
+
+    // Check Pointcard status to determine if the customer can redeem points
+    if (currentOrder.AssociatedCustomer.Rewards.Points > 0)
+    {
+        Console.Write("How many points would you like to use to offset the final bill? ");
+        int pointsToOffset = Convert.ToInt32(Console.ReadLine());
+
+        // Redeem points
+        currentOrder.AssociatedCustomer.Rewards.RedeemPoints(pointsToOffset);
+        totalBill -= (pointsToOffset * 0.02);
+    }
+
+    // Display the final total bill amount
+    Console.WriteLine($"Final Total Bill Amount: {totalBill:C}");
+
+    // Prompt user to press any key to make payment
+    Console.WriteLine("Press any key to make payment...");
+    Console.ReadKey();
+
+    // Increment the punch card for every ice cream in the order (if it goes above 10, set it back down to 10)
+    foreach (var iceCream in currentOrder.IceCreamList)
+    {
+        currentOrder.AssociatedCustomer.Rewards.Punch();
+    }
+
+    // Earn points
+    currentOrder.AssociatedCustomer.Rewards.AddPoints(Convert.ToInt32(totalBill));
+
+    // Upgrade member status accordingly
+    currentOrder.AssociatedCustomer.Rewards.UpdateTier();
+
+    // Mark the order as fulfilled with the current datetime
+    currentOrder.TimeFulfilled = DateTime.Now;
+
+    // Add this fulfilled order object to the customer’s order history
+    currentOrder.AssociatedCustomer.OrderHistory.Add(currentOrder);
 }
 
 
-    
+
 
 // Advanced (b)- Feature 8
 static void OptionEight()
