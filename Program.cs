@@ -106,8 +106,6 @@ using (StreamReader sr = new StreamReader("orders.csv"))
         List<Flavour> flavoursList = CreateFlavoursList(data, 8, 10);
         List<Topping> toppingsList = CreateToppingsList(data, 11, 14);
 
-        // Do something with the lists (e.g., add them to the order)
-
         // Now, create an IceCream object and add it to the order's IceCreamList
         string option = data[4];
         int scoops = Convert.ToInt32(data[5]);
@@ -1241,25 +1239,73 @@ amounts for the input year
     }
     List<object[]> orderForYear = GetOrders(timeFulfilledList, year);
 
-    foreach (object[] orderData in orderForYear)
+    int monthIndex = 0;
+    double yearlyTotal = 0;
+/*
+    Dictionary<string, double> monthlyTotals = new Dictionary<string, double>();
+
+    foreach (Customer customer in customerDictionary.Values)
     {
-        int orderId = (int)orderData[0];
-        DateTime timeFulfilled = (DateTime)orderData[1];
-
-        double totalPrice = 0;
-
-        // Check if TimeFulfilled has a value before accessing its properties
-        if (timeFulfilled != DateTime.MaxValue)
+        foreach (Order order in customer.OrderHistory)
         {
-            int monthIndex = timeFulfilled.Month;
-            string monthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(monthIndex);
+            // Display order details
+            {
+                monthIndex = order.TimeFulfilled.Value.Month;
+                string monthName = CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(monthIndex);
 
-            // Assuming orderData is an array containing the necessary information for CalculateTotal
-            //totalPrice = CalculateTotal(orderData); // Adjust this line according to your actual implementation
-            Console.WriteLine("{0,-10}{1,-15}{2,-10}", monthName.Substring(0,3) + " " + year + ":", timeFulfilled.ToString(), totalPrice);
+                // Assuming CalculateTotal() is a method of the Order class
+                double totalPrice = order.CalculateTotal();
+
+                // Update monthly total
+                string monthAndYear = monthName.Substring(0, 3) + " " + year;
+                if (!monthlyTotals.ContainsKey(monthAndYear))
+                {
+                    monthlyTotals[monthAndYear] = 0;
+                }
+                monthlyTotals[monthAndYear] += totalPrice;
+
+                Console.WriteLine("{0,-10}{1,-20} ${2,-10:F2}", monthAndYear + ":", order.TimeFulfilled.ToString(), totalPrice);
+            }
         }
     }
 
+    // Print the monthly totals
+    foreach (var entry in monthlyTotals)
+    {
+        Console.WriteLine("{0,-8}: ${1,-10:F2}", entry.Key, entry.Value);
+    }
+
+    // Move yearlyTotal calculation outside the loop over customers
+    foreach (var entry in monthlyTotals)
+    {
+        yearlyTotal += entry.Value;
+    }
+
+    // Print the total for the year
+    Console.WriteLine("Total: ${0,-10:F2}", yearlyTotal);
+*/
+
+
+    
+       foreach (object[] orderData in orderForYear)
+       {
+           int orderId = (int)orderData[0];
+           DateTime timeFulfilled = (DateTime)orderData[1];
+
+           double totalPrice = 0;
+
+           // Check if TimeFulfilled has a value before accessing its properties
+           if (timeFulfilled != DateTime.MaxValue)
+           {
+               monthIndex = timeFulfilled.Month;
+               string monthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(monthIndex);
+
+               // Assuming orderData is an array containing the necessary information for CalculateTotal
+               //totalPrice = CalculateTotal(orderData); // Adjust this line according to your actual implementation
+               Console.WriteLine("{0,-10}{1,-15}{2,-10}", monthName.Substring(0,3) + " " + year + ":", timeFulfilled.ToString(), totalPrice);
+           }
+       }
+    
 
     string GetMonthName(int monthIndex)
     {
