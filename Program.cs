@@ -216,7 +216,7 @@ while (true)
     }
     else if (option == "7")
     {
-        //OptionSeven();
+        OptionSeven(regularOrderQueue, goldOrderQueue);
     }
     else if (option == "8")
     {
@@ -454,7 +454,7 @@ void OptionFour()
                     }
                 }
             }
-            else
+            else if (scoop == 1)
             {
                 while (true)
                 {
@@ -478,6 +478,10 @@ void OptionFour()
                         Console.WriteLine("Invalid flavour. Please choose from the available flavours.");
                     }
                 }
+            }
+            else
+            {
+                Console.WriteLine("3 scoops maximum.");
             }
             List<Topping> toppingList = new List<Topping>();
             AskForToppings(toppingList);
@@ -530,22 +534,88 @@ void OptionFour()
                 DateTime timeFulfilled = (DateTime)customer.CurrentOrder.TimeFulfilled;
                 DateTime timeReceived = (DateTime)customer.CurrentOrder.TimeReceived;
 
-                timeFulfilledList.Add(new object[] { customer.CurrentOrder.Id, timeReceived, timeFulfilled });
-
-                int maxFlavors = 3;
                 int maxToppings = 4;
+                int maxFlavours = 3;
 
-                string flavorFormat = string.Join(",", Enumerable.Range(0, maxFlavors).Select(i => $"{{newOrder.Flavours[{i}]}}"));
-                string toppingFormat = string.Join(",", Enumerable.Range(0, maxToppings).Select(i => $"{{newOrder.Toppings[{i}]}}"));
-                customer.CurrentOrder.Id += 1;
+                //customer.CurrentOrder.Id += 1;
 
-                /*using (StreamWriter sw = new StreamWriter("orders.csv", true))
+                string information = $"{customer.CurrentOrder.Id},{customer.Memberid},{timeReceived.ToString("dd/MM/yyyy HH:mm")},";
+
+                // Check if the order is fulfilled
+                if (timeFulfilled != DateTime.MinValue)
                 {
-                    foreach (var iceCream in orderNew.IceCreamList)
+                    information += $"{timeFulfilled.ToString("dd/MM/yyyy HH:mm")},";
+                }
+                else
+                {
+                    information += ",";
+                }
+
+                foreach (IceCream iceCream in orderNew.IceCreamList)
+                {
+                    string type = iceCream.Option;
+
+                    // Add common information for each ice cream
+                    information += $"{type},{iceCream.Scoops},";
+
+                    // For Cone option, check if it's a dipped cone
+                    if (option == "cone")
                     {
-                        sw.WriteLine($"{customer.CurrentOrder.Id},{customer.Memberid},{timeReceived.ToString("dd/MM/yyyy HH:mm")},{timeFulfilled.ToString("dd/MM/yyyy HH:mm")},{iceCream.Option},{iceCream.Scoops},{(iceCream is Cone ? ((Cone)iceCream).Dipped.ToString() : "")},{(iceCream is Waffle ? ((Waffle)iceCream).WaffleFlavour : "")},{flavorFormat},{toppingFormat}");
+                        Cone cone = (Cone)iceCream; // Assuming IceCream has a property named "Dipped"
+                        information += $"{(cone.Dipped ? "True" : "False")},";
                     }
-                }*/
+                    else
+                    {
+                        information += ",";
+                    }
+
+                    // For Waffle option, add waffle flavour
+                    if (option == "waffle")
+                    {
+                        Waffle waffle = (Waffle)iceCream; // Assuming IceCream has a property named "WaffleFlavour"
+                        information += $"{waffle.WaffleFlavour},";
+                    }
+                    else
+                    {
+                        information += ",";
+                    }
+
+                    // Add flavours
+                    for (int i = 0; i < maxFlavours; i++)
+                    {
+                        if (i < iceCream.Flavours.Count)
+                        {
+                            information += $"{iceCream.Flavours[i].Type},";
+                        }
+                        else
+                        {
+                            information += ",";
+                        }
+                    }
+
+                    // Add toppings
+                    for (int i = 0; i < maxToppings; i++)
+                    {
+                        if (i < iceCream.Toppings.Count)
+                        {
+                            information += $"{iceCream.Toppings[i].Type},";
+                        }
+                        else
+                        {
+                            information += ",";
+                        }
+                    }
+                }
+
+                // Remove the trailing comma at the end
+                information = information.TrimEnd(',');
+
+                Console.WriteLine(information);
+
+
+
+
+
                 // todo: add multiple orders under the same ORder id
                 break; // Exit the loop if the user enters "N"
             }
