@@ -216,7 +216,7 @@ while (true)
     }
     else if (option == "7")
     {
-        //OptionSeven();
+        OptionSeven();
     }
     else if (option == "8")
     {
@@ -1190,8 +1190,8 @@ amounts for the input year
             string monthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(monthIndex);
 
             // Assuming orderData is an array containing the necessary information for CalculateTotal
-            totalPrice = CalculateTotal(orderData); // Adjust this line according to your actual implementation
-            Console.WriteLine("{0,-10}{1,-15}{2,-10}", monthName + " " + year + ":", timeFulfilled.ToString(), totalPrice);
+            //totalPrice = CalculateTotal(orderData); // Adjust this line according to your actual implementation
+            Console.WriteLine("{0,-10}{1,-15}{2,-10}", monthName.Substring(0,3) + " " + year + ":", timeFulfilled.ToString(), totalPrice);
         }
     }
 
