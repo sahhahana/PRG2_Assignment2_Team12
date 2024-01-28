@@ -106,8 +106,6 @@ using (StreamReader sr = new StreamReader("orders.csv"))
         List<Flavour> flavoursList = CreateFlavoursList(data, 8, 10);
         List<Topping> toppingsList = CreateToppingsList(data, 11, 14);
 
-        // Do something with the lists (e.g., add them to the order)
-
         // Now, create an IceCream object and add it to the order's IceCreamList
         string option = data[4];
         int scoops = Convert.ToInt32(data[5]);
@@ -1250,30 +1248,19 @@ amounts for the input year
     {
         int orderId = (int)orderData[0];
         DateTime timeFulfilled = (DateTime)orderData[1];
-        int monthIndex = timeFulfilled.Month;
-        string monthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(monthIndex);
 
-        double totalPrice = 0;
+           double totalPrice = 0;
 
         // Check if TimeFulfilled has a value before accessing its properties
         if (timeFulfilled != DateTime.MaxValue)
         {
-            
+            int monthIndex = timeFulfilled.Month;
+            string monthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(monthIndex);
 
             // Assuming orderData is an array containing the necessary information for CalculateTotal
-            foreach(Customer c in  customerDictionary.Values)
-            {
-                foreach (Order order in c.OrderHistory)
-                {
-                    totalPrice += order.CalculateTotal(); // Adjust this line according to your actual implementation
-
-
-                }
-
-            }
+            //totalPrice = CalculateTotal(orderData); // Adjust this line according to your actual implementation
+            Console.WriteLine("{0,-10}{1,-15}{2,-10}", monthName.Substring(0,3) + " " + year + ":", timeFulfilled.ToString(), totalPrice);
         }
-        Console.WriteLine("{0,-10}{1,-15}", monthName.Substring(0, 3) + " " + year + ":", totalPrice);
-
     }
 
 
