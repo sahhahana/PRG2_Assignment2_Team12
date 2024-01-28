@@ -406,65 +406,45 @@ void OptionFour()
     // prompt user to select a customer
     Console.Write("Enter customer's member ID to select: ");
     int memberid = Convert.ToInt32(Console.ReadLine());
+    if (customerDictionary.ContainsKey(memberid))
+    {
+        customer = customerDictionary[memberid];
+    }
+    else
+    {
+        Console.WriteLine("Customer is not a member at I.C.Treats.\nPlease ensure the correct Member ID was selected or register this customer by choosing option 3.");
+        return;
+    }
+
+    Order orderNew = customer.MakeOrder(customer);
     while (anotherIceCream == "Y")
     {
-        // retrieve selected customer
-        if (customerDictionary.ContainsKey(memberid))
+        // prompt user to enter their ice cream order
+        Console.WriteLine($"{customer.Name}'s Order");
+        Console.WriteLine("------------------------------\n");
+
+        Console.Write("Option (Cup/ Cone/ Waffle): ");
+        string option = Console.ReadLine().ToLower();
+
+        Console.Write("Scoop(s): ");
+        int scoop = Convert.ToInt32(Console.ReadLine());
+        int scoopNo = 1;
+        List<string> availableFlavours = new List<string> { "vanilla", "durian", "chocolate", "ube", "strawberry", "sea salt" };
+        List<Flavour> flavoursList = new List<Flavour>();
+        if (scoop > 1)
         {
-            customer = customerDictionary[memberid];
-
-            // prompt user to enter their ice cream order
-            Console.WriteLine($"{customer.Name}'s Order");
-            Console.WriteLine("------------------------------\n");
-
-            Console.Write("Option (Cup/ Cone/ Waffle): ");
-            string option = Console.ReadLine().ToLower();
-
-            Console.Write("Scoop(s): ");
-            int scoop = Convert.ToInt32(Console.ReadLine());
-            int scoopNo = 1;
-            List<string> availableFlavours = new List<string> { "vanilla", "durian", "chocolate", "ube", "strawberry", "sea salt" };
-            List<Flavour> flavoursList = new List<Flavour>();
-            if (scoop > 1)
+            for (int i = 1; i < scoop + 1; i++)
             {
-                for (int i = 1; i < scoop + 1; i++)
-                {
-                    string type;
-                    bool premium = false;
+                string type;
+                bool premium = false;
 
-                    while (true)
-                    {
-                        Console.WriteLine("Flavours:\n{0,-13}{1,-13}", "Regular", "Premium");
-                        Console.WriteLine("{0,-13}{1,-13}\n{2,-13}{3,-13}\n{4,-13}{5,-13}\n", "Vanilla", "Durian",
-                            "Chocolate", "Ube", "Strawberry", "Sea Salt");
-                        Console.Write($"Flavour for scoop {i}: ");
-                        type = Console.ReadLine().ToLower();
-
-                        if (availableFlavours.Contains(type))
-                        {
-                            premium = IsPremiumFlavour(type);
-                            Flavour flavour = new Flavour(type, premium, scoop);
-                            flavoursList.Add(flavour);
-                            break; // exit the loop if the input is a valid flavour
-                        }
-                        else
-                        {
-                            Console.WriteLine("Invalid flavour. Please choose from the available flavours.");
-                        }
-                    }
-                }
-            }
-            else if (scoop == 1)
-            {
                 while (true)
                 {
                     Console.WriteLine("Flavours:\n{0,-13}{1,-13}", "Regular", "Premium");
-
                     Console.WriteLine("{0,-13}{1,-13}\n{2,-13}{3,-13}\n{4,-13}{5,-13}\n", "Vanilla", "Durian",
-                    "Chocolate", "Ube", "Strawberry", "Sea Salt");
-                    Console.Write("Flavour: ");
-                    string type = Console.ReadLine().ToLower();
-                    bool premium = IsPremiumFlavour(type);
+                        "Chocolate", "Ube", "Strawberry", "Sea Salt");
+                    Console.Write($"Flavour for scoop {i}: ");
+                    type = Console.ReadLine().ToLower();
 
                     if (availableFlavours.Contains(type))
                     {
@@ -479,156 +459,181 @@ void OptionFour()
                     }
                 }
             }
-            else
+        }
+        else if (scoop == 1)
+        {
+            while (true)
             {
-                Console.WriteLine("3 scoops maximum.");
-            }
-            List<Topping> toppingList = new List<Topping>();
-            AskForToppings(toppingList);
+                Console.WriteLine("Flavours:\n{0,-13}{1,-13}", "Regular", "Premium");
 
-            Order orderNew = customer.MakeOrder(customer);
-            List<IceCream> IceCreamList = orderNew.IceCreamList;
-            IceCream newOrder;
+                Console.WriteLine("{0,-13}{1,-13}\n{2,-13}{3,-13}\n{4,-13}{5,-13}\n", "Vanilla", "Durian",
+                "Chocolate", "Ube", "Strawberry", "Sea Salt");
+                Console.Write("Flavour: ");
+                string type = Console.ReadLine().ToLower();
+                bool premium = IsPremiumFlavour(type);
 
-            // create ice cream object 
-            if (option == "cup")
-            {
-                newOrder = new Cup(option, scoop, flavoursList, toppingList);
-            }
-            else if (option == "cone")
-            {
-                bool dipped = AskForChocolateDippedCone();
-                newOrder = new Cone(option, scoop, flavoursList, toppingList, dipped);
-            }
-            else if (option == "waffle")
-            {
-                string waffleType = AskForWaffleType();
-                newOrder = new Waffle(option, scoop, flavoursList, toppingList, waffleType);
-            }
-            else
-            {
-                Console.WriteLine("Invalid option! Please enter Cup, Cone, or Waffle.");
-                return;
-            }
-
-            // add ice cream object to order
-            orderNew.AddIceCream(newOrder);
-
-            customer.CurrentOrder = orderNew;
-
-
-            Console.Write("Would you like to add another ice cream to the order? (Y/N): ");
-            anotherIceCream = Console.ReadLine().ToUpper();
-
-            if (anotherIceCream == "N")
-            {
-                if (customer.Rewards.Tier == "Gold")
+                if (availableFlavours.Contains(type))
                 {
-                    goldOrderQueue.Enqueue(orderNew);
+                    premium = IsPremiumFlavour(type);
+                    Flavour flavour = new Flavour(type, premium, scoop);
+                    flavoursList.Add(flavour);
+                    break; // exit the loop if the input is a valid flavour
                 }
                 else
                 {
-                    regularOrderQueue.Enqueue(orderNew);
+                    Console.WriteLine("Invalid flavour. Please choose from the available flavours.");
                 }
-                
-                DateTime timeFulfilled = (DateTime)customer.CurrentOrder.TimeFulfilled;
-                DateTime timeReceived = (DateTime)customer.CurrentOrder.TimeReceived;
-
-                int maxToppings = 4;
-                int maxFlavours = 3;
-
-                //customer.CurrentOrder.Id += 1;
-
-                string information = $"{customer.CurrentOrder.Id},{customer.Memberid},{timeReceived.ToString("dd/MM/yyyy HH:mm")},";
-
-                // Check if the order is fulfilled
-                if (timeFulfilled != DateTime.MinValue)
-                {
-                    information += $"{timeFulfilled.ToString("dd/MM/yyyy HH:mm")},";
-                }
-                else
-                {
-                    information += ",";
-                }
-
-                foreach (IceCream iceCream in orderNew.IceCreamList)
-                {
-                    string type = iceCream.Option;
-
-                    // Add common information for each ice cream
-                    information += $"{type},{iceCream.Scoops},";
-
-                    // For Cone option, check if it's a dipped cone
-                    if (option == "cone")
-                    {
-                        Cone cone = (Cone)iceCream; // Assuming IceCream has a property named "Dipped"
-                        information += $"{(cone.Dipped ? "True" : "False")},";
-                    }
-                    else
-                    {
-                        information += ",";
-                    }
-
-                    // For Waffle option, add waffle flavour
-                    if (option == "waffle")
-                    {
-                        Waffle waffle = (Waffle)iceCream; // Assuming IceCream has a property named "WaffleFlavour"
-                        information += $"{waffle.WaffleFlavour},";
-                    }
-                    else
-                    {
-                        information += ",";
-                    }
-
-                    // Add flavours
-                    for (int i = 0; i < maxFlavours; i++)
-                    {
-                        if (i < iceCream.Flavours.Count)
-                        {
-                            information += $"{iceCream.Flavours[i].Type},";
-                        }
-                        else
-                        {
-                            information += ",";
-                        }
-                    }
-
-                    // Add toppings
-                    for (int i = 0; i < maxToppings; i++)
-                    {
-                        if (i < iceCream.Toppings.Count)
-                        {
-                            information += $"{iceCream.Toppings[i].Type},";
-                        }
-                        else
-                        {
-                            information += ",";
-                        }
-                    }
-                }
-
-                // Remove the trailing comma at the end
-                information = information.TrimEnd(',');
-
-                Console.WriteLine(information);
-
-
-
-
-
-                // todo: add multiple orders under the same ORder id
-                break; // Exit the loop if the user enters "N"
-            }
-            else
-            {
-                continue;
             }
         }
         else
         {
-            Console.WriteLine("Customer is not a member at I.C.Treats.\nPlease ensure the correct Member ID was selected or register this customer by choosing option 3.");
-            break;
+            Console.WriteLine("3 scoops maximum.");
         }
+        List<Topping> toppingList = new List<Topping>();
+        AskForToppings(toppingList);
+
+            
+        List<IceCream> IceCreamList = orderNew.IceCreamList;
+        IceCream newOrder;
+
+        // create ice cream object 
+        if (option == "cup")
+        {
+            newOrder = new Cup(option, scoop, flavoursList, toppingList);
+        }
+        else if (option == "cone")
+        {
+            bool dipped = AskForChocolateDippedCone();
+            newOrder = new Cone(option, scoop, flavoursList, toppingList, dipped);
+        }
+        else if (option == "waffle")
+        {
+            string waffleType = AskForWaffleType();
+            newOrder = new Waffle(option, scoop, flavoursList, toppingList, waffleType);
+        }
+        else
+        {
+            Console.WriteLine("Invalid option! Please enter Cup, Cone, or Waffle.");
+            return;
+        }
+
+        // add ice cream object to order
+        orderNew.AddIceCream(newOrder);
+
+        customer.CurrentOrder = orderNew;
+
+
+        Console.Write("Would you like to add another ice cream to the order? (Y/N): ");
+        anotherIceCream = Console.ReadLine().ToUpper();
+
+        if (anotherIceCream == "N")
+        {
+            if (customer.Rewards.Tier == "Gold")
+            {
+                goldOrderQueue.Enqueue(orderNew);
+            }
+            else
+            {
+                regularOrderQueue.Enqueue(orderNew);
+            }
+                
+            DateTime timeFulfilled = (DateTime)customer.CurrentOrder.TimeFulfilled;
+            DateTime timeReceived = (DateTime)customer.CurrentOrder.TimeReceived;
+
+            int maxToppings = 4;
+            int maxFlavours = 3;
+
+            //customer.CurrentOrder.Id += 1;
+
+            string commonInformation = $"{customer.CurrentOrder.Id},{customer.Memberid},{timeReceived.ToString("dd/MM/yyyy HH:mm")},";
+
+            // Check if the order is fulfilled
+            if (timeFulfilled != DateTime.MinValue)
+            {
+                commonInformation += $"{timeFulfilled.ToString("dd/MM/yyyy HH:mm")},";
+            }
+            else
+            {
+                commonInformation += ",";
+            }
+
+
+            foreach (IceCream iceCream in orderNew.IceCreamList)
+            {
+                string type = iceCream.Option;
+
+                string information = $"{commonInformation}";
+
+                // Add common information for each ice cream
+                information += $"{type},{iceCream.Scoops},";
+
+                // For Cone option, check if it's a dipped cone
+                if (type == "Cone")
+                {
+                    Cone cone = (Cone)iceCream; // Assuming IceCream has a property named "Dipped"
+                    information += $"{(cone.Dipped ? "True" : "False")},,";
+                }
+                else if (type == "Cup")
+                {
+                    information += ",,,";
+                }
+                // For Waffle option, add waffle flavour
+                else if (type == "Waffle")
+                {
+                    Waffle waffle = (Waffle)iceCream; // Assuming IceCream has a property named "WaffleFlavour"
+                    information += $",{waffle.WaffleFlavour},";
+                }
+                else
+                {
+                    information += ",,,";
+                }
+
+                // Add flavours
+                for (int i = 0; i < maxFlavours; i++)
+                {
+                    if (i < iceCream.Flavours.Count)
+                    {
+                        information += $"{iceCream.Flavours[i].Type},";
+                    }
+                    else 
+                    {                       
+                        information += ",";
+
+                    }
+                }
+
+                // Add toppings
+                for (int i = 0; i < maxToppings; i++)
+                {
+                    if (i < iceCream.Toppings.Count)
+                    {
+                        information += $"{iceCream.Toppings[i].Type},";
+                    }
+                    else
+                    {
+                        information += ",";
+                    }
+                }
+ 
+
+                Console.WriteLine(information);
+
+            }
+
+
+
+
+
+
+            // todo: add multiple orders under the same ORder id
+            break; // Exit the loop if the user enters "N"
+        }
+        else
+        {
+            continue;
+        }
+        
+        
     }
 }
     // todo: add points and modify code -- add a orderid couonter, add topping methods, i need to add this order plus info from order in th eorder.csv file, add 1 flavour at a time
@@ -1034,7 +1039,7 @@ static void OptionSix(Dictionary<int, Customer> customerDictionary)
             }
             else
             {
-                Console.WriteLine("Invalid input. Please enter 'Y' for Yes or 'N' for No.");
+                Console.WriteLine("Invalid input. Please enter 'Y' for Yes or 'N'.");
             }
         }
     }
@@ -1245,19 +1250,30 @@ amounts for the input year
     {
         int orderId = (int)orderData[0];
         DateTime timeFulfilled = (DateTime)orderData[1];
+        int monthIndex = timeFulfilled.Month;
+        string monthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(monthIndex);
 
         double totalPrice = 0;
 
         // Check if TimeFulfilled has a value before accessing its properties
         if (timeFulfilled != DateTime.MaxValue)
         {
-            int monthIndex = timeFulfilled.Month;
-            string monthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(monthIndex);
+            
 
             // Assuming orderData is an array containing the necessary information for CalculateTotal
-            //totalPrice = CalculateTotal(orderData); // Adjust this line according to your actual implementation
-            Console.WriteLine("{0,-10}{1,-15}{2,-10}", monthName.Substring(0,3) + " " + year + ":", timeFulfilled.ToString(), totalPrice);
+            foreach(Customer c in  customerDictionary.Values)
+            {
+                foreach (Order order in c.OrderHistory)
+                {
+                    totalPrice += order.CalculateTotal(); // Adjust this line according to your actual implementation
+
+
+                }
+
+            }
         }
+        Console.WriteLine("{0,-10}{1,-15}", monthName.Substring(0, 3) + " " + year + ":", totalPrice);
+
     }
 
 

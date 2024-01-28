@@ -29,7 +29,7 @@ namespace PRG2_Assignment2_Team12
         {
             Id = id;
             TimeReceived = timeReceived;
-            TimeFulfilled = DateTime.MinValue;
+            TimeFulfilled = DateTime.Now;
             AssociatedCustomer = associatedCustomer; // Link the order to the customer
         }
         public void ModifyIceCream(int iceCreamIndex)
@@ -263,7 +263,7 @@ namespace PRG2_Assignment2_Team12
                 double price = iceCream.CalculatePrice();
                 total += price;
             }
-            Console.WriteLine("Total amount to pay: {0}", total);
+            //Console.WriteLine("Total amount to pay: {0}", total);
             return total;
         }
     }
