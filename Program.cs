@@ -7,6 +7,7 @@ using Microsoft.VisualBasic.FileIO;
 using PRG2_Assignment2_Team12;
 using System;
 using System.ComponentModel.Design;
+using System.Globalization;
 using System.Linq;
 using System.Numerics;
 using System.Reflection.Metadata.Ecma335;
@@ -67,6 +68,9 @@ bool IsPremiumFlavour(string flavour)
 
 // Read orders.csv separately beacuse it is used throughout the whole program
 
+// Create a list to store orders for feature 8
+List<object[]> timeFulfilledList = new List<object[]>();
+
 Customer customer = null;
 
 using (StreamReader sr = new StreamReader("orders.csv"))
@@ -96,6 +100,7 @@ using (StreamReader sr = new StreamReader("orders.csv"))
         // Create a new order and add it to the customer's order history
         Order order = new Order(orderId, timeReceived, foundCustomer);
         customer?.OrderHistory.Add(order);
+        timeFulfilledList.Add(new object[] { orderId, timeReceived, timeFulfilled });
 
         // Simplify the creation of Flavour and Topping instances
         List<Flavour> flavoursList = CreateFlavoursList(data, 8, 10);
@@ -211,11 +216,11 @@ while (true)
     }
     else if (option == "7")
     {
-        OptionSeven(regularOrderQueue, goldOrderQueue);
+        //OptionSeven();
     }
     else if (option == "8")
     {
-        // OptionEight();
+        OptionEight(customerDictionary, timeFulfilledList);
     }
     else if (option == "0")
     {
@@ -524,6 +529,8 @@ void OptionFour()
                 
                 DateTime timeFulfilled = (DateTime)customer.CurrentOrder.TimeFulfilled;
                 DateTime timeReceived = (DateTime)customer.CurrentOrder.TimeReceived;
+
+                timeFulfilledList.Add(new object[] { customer.CurrentOrder.Id, timeReceived, timeFulfilled });
 
                 int maxFlavors = 3;
                 int maxToppings = 4;
@@ -1127,7 +1134,7 @@ void ProcessOrderQueue(Order currentOrder)
 
 
 // Advanced (b)- Feature 8
-static void OptionEight()
+void OptionEight(Dictionary<int, Customer> customerDictionary, List<object[]> timeFulfilledList)
 {
     /*
      *  prompt the user for the year
@@ -1135,7 +1142,83 @@ static void OptionEight()
  compute and display the monthly charged amounts breakdown & the total charged
 amounts for the input year
     */
-    Console.WriteLine("Hello World");
+
+    int year;
+    while (true)
+    {
+        try
+        {
+            Console.Write("Enter the year: ");
+            year = Convert.ToInt32(Console.ReadLine());
+            if (year.ToString().Length != 4)
+            {
+                Console.WriteLine("Invalid year. Year must have 4 digits.");
+            }
+            else if (year < 2010 || year > 2024)
+            {
+                Console.WriteLine("Invalid year. Please enter a year between 2010 and 2024.");
+            }
+            else
+            {
+                // Valid year input
+                break; // Exit the loop if the year is valid
+            }
+        }
+        catch (FormatException)
+        {
+            Console.WriteLine("Year must be an integer.");
+        }
+    }
+    List<object[]> orderForYear = GetOrders(timeFulfilledList, year);
+
+    foreach (object[] orderData in orderForYear)
+    {
+        int orderId = (int)orderData[0];
+        DateTime timeFulfilled = (DateTime)orderData[1];
+
+        double totalPrice = 0;
+
+        // Check if TimeFulfilled has a value before accessing its properties
+        if (timeFulfilled != DateTime.MaxValue)
+        {
+            int monthIndex = timeFulfilled.Month;
+            string monthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(monthIndex);
+
+            // Assuming orderData is an array containing the necessary information for CalculateTotal
+            //totalPrice = CalculateTotal(orderData); // Adjust this line according to your actual implementation
+            Console.WriteLine("{0,-10}{1,-15}{2,-10}", monthName.Substring(0,3) + " " + year + ":", timeFulfilled.ToString(), totalPrice);
+        }
+    }
+
+
+    string GetMonthName(int monthIndex)
+    {
+        return CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(monthIndex);
+    }
+
+
+    List<object[]> GetOrders(List<object[]> timeFulfilledList, int year)
+    {
+        // Convert the year to a string for comparison
+        string targetYearString = year.ToString();
+
+        List<object[]> orders = new List<object[]>();
+        Console.WriteLine("Getting orders...");
+
+        foreach (object[] list in timeFulfilledList)
+        {
+            // Assuming list[0] is the orderId and list[2] is the timeFulfilled
+            int orderId = (int)list[0];
+            DateTime timeFulfilled = (DateTime)list[2];
+
+            // Check if the order is from the specified year
+            if (year == timeFulfilled.Year)
+            {
+                orders.Add(new object[] { orderId, timeFulfilled });
+            }
+        }
+        return orders;
+    }
 }
 
 
