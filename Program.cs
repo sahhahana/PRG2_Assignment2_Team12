@@ -165,13 +165,6 @@ List<Topping> CreateToppingsList(string[] data, int startIndex, int endIndex)
             // You can skip adding it to the list or take other appropriate actions.
         }
     }
-    foreach(Topping toppings in toppingsList)
-    {
-        Console.WriteLine(toppings.ToString());
-    }
-
-
-
     return toppingsList;
 }
 
