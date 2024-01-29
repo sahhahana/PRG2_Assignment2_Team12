@@ -259,6 +259,7 @@ namespace PRG2_Assignment2_Team12
             double total = 0;
             foreach (IceCream iceCream in IceCreamList)
             {
+                Console.WriteLine(iceCream.CalculatePrice());
                 double price = iceCream.CalculatePrice();
                 total += price;
             }

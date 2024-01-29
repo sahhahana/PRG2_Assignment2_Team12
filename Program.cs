@@ -149,11 +149,28 @@ List<Topping> CreateToppingsList(string[] data, int startIndex, int endIndex)
 {
     List<Topping> toppingsList = new List<Topping>();
 
-    for (int i = startIndex; i <= endIndex; i++)
+
+    for (int i = 11; i <= 14; i++)
     {
-        Topping topping = new Topping(data[i]);
-        toppingsList.Add(topping);
+        string toppingInfo = data[i].Trim(); // Trim to remove leading and trailing spaces
+
+        if (!string.IsNullOrWhiteSpace(toppingInfo))
+        {
+            Topping topping = new Topping(toppingInfo);
+            toppingsList.Add(topping);
+        }
+        else
+        {
+            // Handle the case where the topping is just whitespace (or empty)
+            // You can skip adding it to the list or take other appropriate actions.
+        }
     }
+    foreach(Topping toppings in toppingsList)
+    {
+        Console.WriteLine(toppings.ToString());
+    }
+
+
 
     return toppingsList;
 }
@@ -1250,6 +1267,7 @@ amounts for the input year
                 if (timeFulfilled.Year == year && timeFulfilled.Month == i)
                 {
                     double monthlyPrice = order.CalculateTotal();
+                    Console.WriteLine(order.CalculateTotal());
                     yearlyTotal += monthlyPrice;
                     monthlyTotal += monthlyPrice;
                 }
