@@ -1219,9 +1219,9 @@ amounts for the input year
             {
                 Console.WriteLine("Invalid year. Year must have 4 digits.");
             }
-            else if (year < 2010 || year > 2024)
+            else if (year < 2023 || year > 2024)
             {
-                Console.WriteLine("Invalid year. Please enter a year between 2010 and 2024.");
+                Console.WriteLine("Invalid year. Please enter a year between 2023 and 2024.");
             }
             else
             {
@@ -1234,8 +1234,17 @@ amounts for the input year
             Console.WriteLine("Year must be an integer.");
         }
     }
-    List<object[]> orderForYear = GetOrders(timeFulfilledList, year);
+    foreach (Customer customer in customerDictionary.Values)
+    {
+        foreach (Order order in customer.OrderHistory)
+        {
+            //if (order.TimeFulfilled.YeConsole.WriteLine(order.Id);
+        }
 
+
+
+    }
+    /*
     foreach (object[] orderData in orderForYear)
     {
         int orderId = (int)orderData[0];
@@ -1259,31 +1268,7 @@ amounts for the input year
     string GetMonthName(int monthIndex)
     {
         return CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(monthIndex);
-    }
-
-
-    List<object[]> GetOrders(List<object[]> timeFulfilledList, int year)
-    {
-        // Convert the year to a string for comparison
-        string targetYearString = year.ToString();
-
-        List<object[]> orders = new List<object[]>();
-        Console.WriteLine("Getting orders...");
-
-        foreach (object[] list in timeFulfilledList)
-        {
-            // Assuming list[0] is the orderId and list[2] is the timeFulfilled
-            int orderId = (int)list[0];
-            DateTime timeFulfilled = (DateTime)list[2];
-
-            // Check if the order is from the specified year
-            if (year == timeFulfilled.Year)
-            {
-                orders.Add(new object[] { orderId, timeFulfilled });
-            }
-        }
-        return orders;
-    }
+    }*/
 }
 
 
