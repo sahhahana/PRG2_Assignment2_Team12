@@ -99,6 +99,7 @@ using (StreamReader sr = new StreamReader("orders.csv"))
 
         // Create a new order and add it to the customer's order history
         Order order = new Order(orderId, timeReceived, foundCustomer);
+        order.TimeFulfilled = timeFulfilled;
         customer?.OrderHistory.Add(order);
         timeFulfilledList.Add(new object[] { orderId, timeReceived, timeFulfilled });
 
@@ -730,8 +731,16 @@ static void DisplayOrderDetails(Order order)
 {
     foreach (var iceCream in order.IceCreamList)
     {
-        Console.WriteLine($"ID: {order.Id}\nTime Received: {order.TimeReceived}\nTime Fulfilled: {order.TimeFulfilled?.ToString("dd/MM/yyyy HH:mm") ?? "Not fulfilled"}");
-        Console.WriteLine(iceCream.ToString());
+        if (order.TimeFulfilled.HasValue)
+        {
+            Console.WriteLine($"ID: {order.Id}\nTime Received: {order.TimeReceived}\nTime Fulfilled: {order.TimeFulfilled?.ToString("dd/MM/yyyy HH:mm")}");
+            Console.WriteLine(iceCream.ToString());
+        }
+        else
+        {
+            Console.WriteLine($"ID: {order.Id}\nTime Received: {order.TimeReceived}\nTime Fulfilled: {order.TimeFulfilled?.ToString("dd/MM/yyyy HH:mm")??"Not Fulfilled"}");
+            Console.WriteLine(iceCream.ToString());
+        }
     }
 }
 static void DisplayCustomerDictionary(Dictionary<int, Customer> customers)
