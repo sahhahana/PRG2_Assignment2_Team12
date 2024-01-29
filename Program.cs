@@ -1058,13 +1058,14 @@ void OptionSeven(Queue<Order> RegularOrderQueue, Queue<Order> GoldOrderQueue)
     {
         foreach (IceCream iceCream in order.IceCreamList)
         {
-            Console.WriteLine(iceCream.ToString());
+            Console.WriteLine($"{iceCream.ToString()}\n");
         }
     }
 
     // Dequeue the first order
     currentOrder = currentQueue.Dequeue();
 
+    ProcessOrderQueue(currentOrder);
 
     DateTime timeFulfilled = DateTime.Now;
     DateTime timeReceived = currentOrder.TimeReceived;
@@ -1138,39 +1139,77 @@ void OptionSeven(Queue<Order> RegularOrderQueue, Queue<Order> GoldOrderQueue)
 
     }
 
-    ProcessOrderQueue(currentOrder);
+
 }
 
 void ProcessOrderQueue(Order currentOrder)
 {
-    
-    
-
+   
     // Display the total bill amount
     double totalBill = currentOrder.CalculateTotal();
+    Console.WriteLine($"{currentOrder.AssociatedCustomer.Name}'s total is ${totalBill:0.00}");
+    Console.WriteLine($"{currentOrder.AssociatedCustomer.Name}'s Membership Status: {currentOrder.AssociatedCustomer.Rewards.Tier}\n{currentOrder.AssociatedCustomer.Name}'s Membership Points: {currentOrder.AssociatedCustomer.Rewards.Points}\n");
+
+
+    List<double> prices = new List<double>();
+    double firstOrder_forPunch = 0;
+    if (currentOrder.IceCreamList.Count > 1)
+    {
+        firstOrder_forPunch += currentOrder.IceCreamList[0].CalculatePrice();
+
+        foreach (IceCream ic in currentOrder.IceCreamList)
+        {
+            double pricePerIceCream = ic.CalculatePrice();
+            prices.Add(pricePerIceCream); 
+        }
+    }
+
 
     // Check if it's the customer's birthday
     if (currentOrder.AssociatedCustomer.IsBirthday())
     {
-        // Calculate the final bill with the most expensive ice cream costing $0.00
-        totalBill = 0;
+        bool hasAlreadyComeToday = currentOrder.AssociatedCustomer.OrderHistory.Any(order => order.TimeReceived.Date == DateTime.Now.Date);
+        if (hasAlreadyComeToday)
+        {
+            Console.WriteLine("The customer has already redeemed their free birthday ice cream.");
+            return;
+        }
+        else
+        {
+            // Calculate the final bill with the most expensive ice cream costing $0.00
+            if (currentOrder.IceCreamList.Count > 1)
+            {
+                totalBill = totalBill - (prices.Max());
+            }
+            else
+            {
+                totalBill = 0;
+            }
+            Console.WriteLine($"FREE Birthday Ice Cream Redeemed!\n{currentOrder.AssociatedCustomer.Name}'s total is ${totalBill:0.00}");
+
+        }
+
     }
 
     // Check if the customer has completed their punch card
     if (currentOrder.AssociatedCustomer.Rewards.PunchCard == 10)
     {
-        // Calculate the final bill with the first ice cream costing $0.00
-        totalBill = 0;
+        if (currentOrder.IceCreamList.Count > 1)
+        {
+            totalBill -= firstOrder_forPunch;
+        }
+        else
+        {
+            totalBill = 0;
+        }
+       
 
-        // Reset punch card back to 0
-        currentOrder.AssociatedCustomer.Rewards.PunchCard = 0;
+        Console.WriteLine($"Yay! 11th Ice Cream is FREE!\n{currentOrder.AssociatedCustomer.Name}'s total is ${totalBill:0.00}");
     }
 
     // Check Pointcard status to determine if the customer can redeem points
     if (currentOrder.AssociatedCustomer.Rewards.Points > 0)
     {
-        Console.WriteLine($"{currentOrder.AssociatedCustomer.Name}'s Membership Points: {currentOrder.AssociatedCustomer.Rewards.Points}\n");
-
         Console.Write("How many points would you like to use to offset the final bill? ");
         int pointsToOffset = Convert.ToInt32(Console.ReadLine());
 
@@ -1183,11 +1222,11 @@ void ProcessOrderQueue(Order currentOrder)
     Console.WriteLine($"Final Total Bill Amount: {totalBill:C}");
 
     // Prompt user to press any key to make payment
-    Console.WriteLine("Press any key to make payment...");
+    Console.Write("Press any key to make payment...");
     Console.ReadKey();
 
     // Increment the punch card for every ice cream in the order (if it goes above 10, set it back down to 10)
-    foreach (var iceCream in currentOrder.IceCreamList)
+    foreach (IceCream iceCream in currentOrder.IceCreamList)
     {
         currentOrder.AssociatedCustomer.Rewards.Punch();
     }
@@ -1197,9 +1236,6 @@ void ProcessOrderQueue(Order currentOrder)
 
     // Upgrade member status accordingly
     currentOrder.AssociatedCustomer.Rewards.UpdateTier();
-
-    // Mark the order as fulfilled with the current datetime
-    currentOrder.TimeFulfilled = DateTime.Now;
 
     // Add this fulfilled order object to the customer’s order history
     currentOrder.AssociatedCustomer.OrderHistory.Add(currentOrder);

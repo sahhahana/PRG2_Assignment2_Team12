@@ -49,11 +49,18 @@ namespace PRG2_Assignment2_Team12
         }
         public void Punch()
         {
-            punchCard++;
-            if (punchCard == 10)
+            PunchCard++;
+            if (PunchCard % 10 == 0)
             {
-                Console.WriteLine("Congratulations! Your 11th ice cream is free!");
-                punchCard = 0; // Reset punch card
+                if (PunchCard > 10)
+                {
+                    PunchCard = 10; // Reset punch card to 10
+                }
+                else
+                {
+                    PunchCard = 0; // Reset punch card
+                }
+                    
             }
         }
         public void UpdateTier() //for easier reference to update the tier regularly instead of constantly re-coding it out
