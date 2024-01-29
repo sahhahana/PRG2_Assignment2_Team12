@@ -42,7 +42,10 @@ namespace PRG2_Assignment2_Team12
             }
             foreach (Topping topping in Toppings)
             {
-                price += 1;
+                if (topping != null)
+                {
+                    price += 1;
+                } 
             }
             return price;
         }

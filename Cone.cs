@@ -22,7 +22,6 @@ namespace PRG2_Assignment2_Team12
         public override double CalculatePrice()
         {
             double price = 0;
-            double toppingCount = 1;
             if (Scoops == 1)
             {
                 price = 4.0;
@@ -52,9 +51,11 @@ namespace PRG2_Assignment2_Team12
             }
             foreach (Topping topping in Toppings)
             {
-                toppingCount += 1;
+                if (topping != null)
+                {
+                    price += 1;
+                }
             }
-            price += (toppingCount * 1);
             if (Dipped == true)
             {
                 price += 2;
