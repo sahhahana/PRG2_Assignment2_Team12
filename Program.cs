@@ -535,96 +535,6 @@ void OptionFour()
             {
                 regularOrderQueue.Enqueue(orderNew);
             }
-                
-            DateTime timeFulfilled = (DateTime)customer.CurrentOrder.TimeFulfilled;
-            DateTime timeReceived = (DateTime)customer.CurrentOrder.TimeReceived;
-
-            int maxToppings = 4;
-            int maxFlavours = 3;
-
-            //customer.CurrentOrder.Id += 1;
-
-            string commonInformation = $"{customer.CurrentOrder.Id},{customer.Memberid},{timeReceived.ToString("dd/MM/yyyy HH:mm")},";
-
-            // Check if the order is fulfilled
-            if (timeFulfilled != DateTime.MinValue)
-            {
-                commonInformation += $"{timeFulfilled.ToString("dd/MM/yyyy HH:mm")},";
-            }
-            else
-            {
-                commonInformation += ",";
-            }
-
-
-            foreach (IceCream iceCream in orderNew.IceCreamList)
-            {
-                string type = iceCream.Option;
-
-                string information = $"{commonInformation}";
-
-                // Add common information for each ice cream
-                information += $"{type},{iceCream.Scoops},";
-
-                // For Cone option, check if it's a dipped cone
-                if (type == "Cone")
-                {
-                    Cone cone = (Cone)iceCream; // Assuming IceCream has a property named "Dipped"
-                    information += $"{(cone.Dipped ? "True" : "False")},,";
-                }
-                else if (type == "Cup")
-                {
-                    information += ",,,";
-                }
-                // For Waffle option, add waffle flavour
-                else if (type == "Waffle")
-                {
-                    Waffle waffle = (Waffle)iceCream; // Assuming IceCream has a property named "WaffleFlavour"
-                    information += $",{waffle.WaffleFlavour},";
-                }
-                else
-                {
-                    information += ",,,";
-                }
-
-                // Add flavours
-                for (int i = 0; i < maxFlavours; i++)
-                {
-                    if (i < iceCream.Flavours.Count)
-                    {
-                        information += $"{iceCream.Flavours[i].Type},";
-                    }
-                    else 
-                    {                       
-                        information += ",";
-
-                    }
-                }
-
-                // Add toppings
-                for (int i = 0; i < maxToppings; i++)
-                {
-                    if (i < iceCream.Toppings.Count)
-                    {
-                        information += $"{iceCream.Toppings[i].Type},";
-                    }
-                    else
-                    {
-                        information += ",";
-                    }
-                }
- 
-
-                Console.WriteLine(information);
-
-            }
-
-
-
-
-
-
-           
             break; // Exit the loop if the user enters "N"
         }
         else
@@ -1136,6 +1046,79 @@ void OptionSeven(Queue<Order> RegularOrderQueue, Queue<Order> GoldOrderQueue)
     // Dequeue the first order
     currentOrder = currentQueue.Dequeue();
 
+
+    DateTime timeFulfilled = DateTime.Now;
+    DateTime timeReceived = currentOrder.TimeReceived;
+
+    int maxToppings = 4;
+    int maxFlavours = 3;
+
+
+    string commonInformation = $"{currentOrder.Id},{currentOrder.AssociatedCustomer.Memberid},{timeReceived.ToString("dd/MM/yyyy HH:mm")},{timeFulfilled.ToString("dd/MM/yyyy HH:mm")},";
+
+    foreach (IceCream iceCream in currentOrder.IceCreamList)
+    {
+        string type = iceCream.Option;
+
+        string information = $"{commonInformation}";
+
+        // Add common information for each ice cream
+        information += $"{type},{iceCream.Scoops},";
+
+        // For Cone option, check if it's a dipped cone
+        if (type == "Cone")
+        {
+            Cone cone = (Cone)iceCream; // Assuming IceCream has a property named "Dipped"
+            information += $"{(cone.Dipped ? "True" : "False")},,";
+        }
+        else if (type == "Cup")
+        {
+            information += ",,,";
+        }
+        // For Waffle option, add waffle flavour
+        else if (type == "Waffle")
+        {
+            Waffle waffle = (Waffle)iceCream; // Assuming IceCream has a property named "WaffleFlavour"
+            information += $",{waffle.WaffleFlavour},";
+        }
+        else
+        {
+            information += ",,,";
+        }
+
+        // Add flavours
+        for (int i = 0; i < maxFlavours; i++)
+        {
+            if (i < iceCream.Flavours.Count)
+            {
+                information += $"{iceCream.Flavours[i].Type},";
+            }
+            else
+            {
+                information += ",";
+
+            }
+        }
+
+        // Add toppings
+        for (int i = 0; i < maxToppings; i++)
+        {
+            if (i < iceCream.Toppings.Count)
+            {
+                information += $"{iceCream.Toppings[i].Type},";
+            }
+            else
+            {
+                information += ",";
+            }
+        }
+        using (StreamWriter sw = new StreamWriter("orders.csv", true))
+        {
+            sw.WriteLine(information);
+        }
+
+    }
+
     ProcessOrderQueue(currentOrder);
 }
 
@@ -1147,21 +1130,18 @@ void ProcessOrderQueue(Order currentOrder)
     // Display the total bill amount
     double totalBill = currentOrder.CalculateTotal();
 
-    // Display membership status & points of the customer
-    Console.Write(currentOrder.AssociatedCustomer.Name);
-
     // Check if it's the customer's birthday
     if (currentOrder.AssociatedCustomer.IsBirthday())
     {
         // Calculate the final bill with the most expensive ice cream costing $0.00
-        totalBill = currentOrder.CalculateTotal();
+        totalBill = 0;
     }
 
     // Check if the customer has completed their punch card
     if (currentOrder.AssociatedCustomer.Rewards.PunchCard == 10)
     {
         // Calculate the final bill with the first ice cream costing $0.00
-        totalBill = currentOrder.CalculateTotal();
+        totalBill = 0;
 
         // Reset punch card back to 0
         currentOrder.AssociatedCustomer.Rewards.PunchCard = 0;
@@ -1170,6 +1150,8 @@ void ProcessOrderQueue(Order currentOrder)
     // Check Pointcard status to determine if the customer can redeem points
     if (currentOrder.AssociatedCustomer.Rewards.Points > 0)
     {
+        Console.WriteLine($"{currentOrder.AssociatedCustomer.Name}'s Membership Points: {currentOrder.AssociatedCustomer.Rewards.Points}\n");
+
         Console.Write("How many points would you like to use to offset the final bill? ");
         int pointsToOffset = Convert.ToInt32(Console.ReadLine());
 
