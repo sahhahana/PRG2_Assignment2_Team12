@@ -1234,43 +1234,46 @@ amounts for the input year
             Console.WriteLine("Year must be an integer.");
         }
     }
-    foreach (Customer customer in customerDictionary.Values)
+
+    Dictionary<string, double> monthlyPrices = new Dictionary<string, double>();
+    double yearlyTotal = 0;
+
+    for (int i = 1; i <= 12; i++)
     {
-        foreach (Order order in customer.OrderHistory)
+        double monthlyTotal = 0;
+
+        foreach (Customer customer in customerDictionary.Values)
         {
-            //if (order.TimeFulfilled.YeConsole.WriteLine(order.Id);
+            foreach (Order order in customer.OrderHistory)
+            {
+                DateTime timeFulfilled = (DateTime)order.TimeFulfilled;
+                if (timeFulfilled.Year == year && timeFulfilled.Month == i)
+                {
+                    double monthlyPrice = order.CalculateTotal();
+                    yearlyTotal += monthlyPrice;
+                    monthlyTotal += monthlyPrice;
+                }
+            }
         }
 
-
-
+        // Update monthly total in the dictionary
+        monthlyPrices[$"{GetMonthName(i).Substring(0, 3)} {year}"] = monthlyTotal;
     }
-    /*
-    foreach (object[] orderData in orderForYear)
+
+    // Print monthly totals
+    foreach (var entry in monthlyPrices)
     {
-        int orderId = (int)orderData[0];
-        DateTime timeFulfilled = (DateTime)orderData[1];
-
-           double totalPrice = 0;
-
-        // Check if TimeFulfilled has a value before accessing its properties
-        if (timeFulfilled != DateTime.MaxValue)
-        {
-            int monthIndex = timeFulfilled.Month;
-            string monthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(monthIndex);
-
-            // Assuming orderData is an array containing the necessary information for CalculateTotal
-            //totalPrice = CalculateTotal(orderData); // Adjust this line according to your actual implementation
-            Console.WriteLine("{0,-10}{1,-15}{2,-10}", monthName.Substring(0,3) + " " + year + ":", timeFulfilled.ToString(), totalPrice);
-        }
+        Console.WriteLine($"{entry.Key}:   ${entry.Value:F2}");
     }
 
+    Console.WriteLine("\nTotal: ${0:F2}", yearlyTotal);
 
     string GetMonthName(int monthIndex)
     {
         return CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(monthIndex);
-    }*/
-}
+    }
 
+}
 
 // Advanced (c)- GUI
 // Will be done most likely on a separate document
