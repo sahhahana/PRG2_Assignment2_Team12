@@ -93,10 +93,10 @@ namespace PRG2_Assignment2_Team12
 
         string AskForWaffleType()
         {
-            List<string> waffleFlavour = new List<string> { "red velvet", "charcoal", "pandan" };
+            List<string> waffleFlavour = new List<string> { "orignal", "red velvet", "charcoal", "pandan" };
             while (true)
             {
-                Console.Write("Select Waffle Type (red velvet, charcoal, or pandan): ");
+                Console.Write("Select Waffle Type (original, red velvet, charcoal, or pandan): ");
                 string wafflesType = Console.ReadLine().ToLower();
 
                 if (waffleFlavour.Contains(wafflesType))
@@ -259,6 +259,7 @@ namespace PRG2_Assignment2_Team12
             double total = 0;
             foreach (IceCream iceCream in IceCreamList)
             {
+                Console.WriteLine(iceCream.CalculatePrice());
                 double price = iceCream.CalculatePrice();
                 total += price;
             }

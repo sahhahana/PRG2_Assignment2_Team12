@@ -22,7 +22,6 @@ namespace PRG2_Assignment2_Team12
         public override double CalculatePrice()
         {
             double price = 0;
-            double toppingCount = 1;
             if (Scoops == 1)
             {
                 price = 4.0;
@@ -37,29 +36,24 @@ namespace PRG2_Assignment2_Team12
             }
             foreach (Flavour flavour in Flavours)
             {
-                if (flavour.Type == "durian")
+                if (flavour.Type == "Durian" || flavour.Type == "Ube" || flavour.Type == "Sea Salt")
+                {
+                    price += 2.0;
+                }
+                else if (flavour.Type == "Ube")
                 {
                     price += 2;
                 }
-                else if (flavour.Type == "ube")
+                else if (flavour.Type == "Sea Salt")
                 {
-                    price += 2;
-                }
-                else if (flavour.Type == "sea salt")
-                {
-                    price += 2;
+                    toppingPrice += 1.0;
                 }
             }
-            foreach (Topping topping in Toppings)
-            {
-                toppingCount += 1;
-            }
-            price += (toppingCount * 1);
             if (Dipped == true)
             {
-                price += 2;
+                price += 2.0;
             }
-            return price;
+            return price+=toppingPrice;
         }
         public override string ToString()
         {

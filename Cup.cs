@@ -37,14 +37,18 @@ namespace PRG2_Assignment2_Team12
             {
                 if (flavour.Type == "durian" || flavour.Type == "ube" || flavour.Type == "sea salt")
                 {
-                    price += 2;
+                    price += 2.0;
                 }
             }
+            double toppingPrice = 0;
             foreach (Topping topping in Toppings)
             {
-                price += 1;
+                if (topping != null)
+                {
+                    toppingPrice += 1.0;
+                }
             }
-            return price;
+            return price+=toppingPrice;
         }
 
         public override string ToString()

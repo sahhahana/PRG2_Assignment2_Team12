@@ -149,11 +149,28 @@ List<Topping> CreateToppingsList(string[] data, int startIndex, int endIndex)
 {
     List<Topping> toppingsList = new List<Topping>();
 
-    for (int i = startIndex; i <= endIndex; i++)
+
+    for (int i = 11; i <= 14; i++)
     {
-        Topping topping = new Topping(data[i]);
-        toppingsList.Add(topping);
+        string toppingInfo = data[i].Trim(); // Trim to remove leading and trailing spaces
+
+        if (!string.IsNullOrWhiteSpace(toppingInfo))
+        {
+            Topping topping = new Topping(toppingInfo);
+            toppingsList.Add(topping);
+        }
+        else
+        {
+            // Handle the case where the topping is just whitespace (or empty)
+            // You can skip adding it to the list or take other appropriate actions.
+        }
     }
+    foreach(Topping toppings in toppingsList)
+    {
+        Console.WriteLine(toppings.ToString());
+    }
+
+
 
     return toppingsList;
 }
@@ -558,10 +575,10 @@ void OptionFour()
 
     string AskForWaffleType()
     {
-        List<string> waffleFlavour = new List<string> { "red velvet", "charcoal", "pandan" };
+        List<string> waffleFlavour = new List<string> { "red velvet", "charcoal", "pandan", "original" };
         while (true)
         {
-            Console.Write("Select Waffle Type (red velvet, charcoal, or pandan): ");
+            Console.Write("Select Waffle Type (original, red velvet, charcoal, or pandan): ");
             string wafflesType = Console.ReadLine().ToLower();
 
             if (waffleFlavour.Contains(wafflesType))
@@ -570,7 +587,7 @@ void OptionFour()
             }
             else
             {
-                Console.Write("Please choose among red velvet, charcoal or pandan waffle type.");
+                Console.Write("Please choose among original, red velvet, charcoal or pandan waffle type.");
                 return "";
             }
         }
@@ -964,10 +981,10 @@ static void OptionSix(Dictionary<int, Customer> customerDictionary)
 
     string AskForWaffleType()
     {
-        List<string> waffleFlavour = new List<string> { "red velvet", "charcoal", "pandan" };
+        List<string> waffleFlavour = new List<string> { "oroginal","red velvet", "charcoal", "pandan" };
         while (true)
         {
-            Console.Write("Select Waffle Type (red velvet, charcoal, or pandan): ");
+            Console.Write("Select Waffle Type (original, red velvet, charcoal, or pandan): ");
             string wafflesType = Console.ReadLine().ToLower();
 
             if (waffleFlavour.Contains(wafflesType))
@@ -1250,6 +1267,7 @@ amounts for the input year
                 if (timeFulfilled.Year == year && timeFulfilled.Month == i)
                 {
                     double monthlyPrice = order.CalculateTotal();
+                    Console.WriteLine(order.CalculateTotal());
                     yearlyTotal += monthlyPrice;
                     monthlyTotal += monthlyPrice;
                 }
