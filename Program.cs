@@ -558,10 +558,10 @@ void OptionFour()
 
     string AskForWaffleType()
     {
-        List<string> waffleFlavour = new List<string> { "red velvet", "charcoal", "pandan" };
+        List<string> waffleFlavour = new List<string> { "red velvet", "charcoal", "pandan", "original" };
         while (true)
         {
-            Console.Write("Select Waffle Type (red velvet, charcoal, or pandan): ");
+            Console.Write("Select Waffle Type (original, red velvet, charcoal, or pandan): ");
             string wafflesType = Console.ReadLine().ToLower();
 
             if (waffleFlavour.Contains(wafflesType))
@@ -570,7 +570,7 @@ void OptionFour()
             }
             else
             {
-                Console.Write("Please choose among red velvet, charcoal or pandan waffle type.");
+                Console.Write("Please choose among original, red velvet, charcoal or pandan waffle type.");
                 return "";
             }
         }
@@ -964,10 +964,10 @@ static void OptionSix(Dictionary<int, Customer> customerDictionary)
 
     string AskForWaffleType()
     {
-        List<string> waffleFlavour = new List<string> { "red velvet", "charcoal", "pandan" };
+        List<string> waffleFlavour = new List<string> { "oroginal","red velvet", "charcoal", "pandan" };
         while (true)
         {
-            Console.Write("Select Waffle Type (red velvet, charcoal, or pandan): ");
+            Console.Write("Select Waffle Type (original, red velvet, charcoal, or pandan): ");
             string wafflesType = Console.ReadLine().ToLower();
 
             if (waffleFlavour.Contains(wafflesType))
