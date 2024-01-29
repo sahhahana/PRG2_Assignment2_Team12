@@ -100,7 +100,7 @@ using (StreamReader sr = new StreamReader("orders.csv"))
         // Create a new order and add it to the customer's order history
         Order order = new Order(orderId, timeReceived, foundCustomer);
         customer?.OrderHistory.Add(order);
-
+        order.TimeFulfilled = timeFulfilled;
        
 
         // Simplify the creation of Flavour and Topping instances

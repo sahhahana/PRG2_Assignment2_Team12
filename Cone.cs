@@ -40,11 +40,11 @@ namespace PRG2_Assignment2_Team12
                 {
                     price += 2.0;
                 }
-                else if (flavour.Type == "Ube")
-                {
-                    price += 2;
-                }
-                else if (flavour.Type == "Sea Salt")
+            }
+            double toppingPrice = 0;
+            foreach (Topping topping in Toppings)
+            {
+                if (topping != null)
                 {
                     toppingPrice += 1.0;
                 }
