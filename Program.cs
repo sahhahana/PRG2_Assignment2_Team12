@@ -350,7 +350,7 @@ void OptionThree()
 
             Console.Write("Enter your date of birth (dd/mm/yyyy): ");
             DateTime dob = Convert.ToDateTime(Console.ReadLine());
-            if (dob >= DateTime.Today)
+            if (dob > DateTime.Today)
             {
                 throw new Exception("Date of Birth cannot later than today!");
             }
@@ -426,10 +426,10 @@ void OptionFour()
 
         Console.Write("Scoop(s): ");
         int scoop = Convert.ToInt32(Console.ReadLine());
-        int scoopNo = 1;
+        
         List<string> availableFlavours = new List<string> { "vanilla", "durian", "chocolate", "ube", "strawberry", "sea salt" };
         List<Flavour> flavoursList = new List<Flavour>();
-        if (scoop > 1)
+        if (scoop < 4)
         {
             for (int i = 1; i < scoop + 1; i++)
             {
@@ -486,6 +486,7 @@ void OptionFour()
         else
         {
             Console.WriteLine("3 scoops maximum.");
+            break;
         }
         List<Topping> toppingList = new List<Topping>();
         AskForToppings(toppingList);
@@ -623,7 +624,7 @@ void OptionFour()
 
 
 
-            // todo: add multiple orders under the same ORder id
+           
             break; // Exit the loop if the user enters "N"
         }
         else
