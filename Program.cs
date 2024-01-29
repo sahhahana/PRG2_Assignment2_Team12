@@ -1260,7 +1260,6 @@ amounts for the input year
                 if (timeFulfilled.Year == year && timeFulfilled.Month == i)
                 {
                     double monthlyPrice = order.CalculateTotal();
-                    Console.WriteLine(order.CalculateTotal());
                     yearlyTotal += monthlyPrice;
                     monthlyTotal += monthlyPrice;
                 }
