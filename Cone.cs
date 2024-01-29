@@ -15,7 +15,7 @@ namespace PRG2_Assignment2_Team12
     {
         public bool Dipped { get; set; }
         public Cone() { }
-        public Cone(string option, int scoops, List<Flavour> flavours, List<Topping> toppings, bool dipped) : base("Cone", scoops, flavours, toppings)
+        public Cone(string option, int scoops, List<Flavour> flavours, List<Topping> toppings, bool dipped) : base("cone", scoops, flavours, toppings)
         {
             Dipped = dipped;
         }
@@ -37,15 +37,15 @@ namespace PRG2_Assignment2_Team12
             }
             foreach (Flavour flavour in Flavours)
             {
-                if (flavour.Type == "Durian")
+                if (flavour.Type == "durian")
                 {
                     price += 2;
                 }
-                else if (flavour.Type == "Ube")
+                else if (flavour.Type == "ube")
                 {
                     price += 2;
                 }
-                else if (flavour.Type == "Sea Salt")
+                else if (flavour.Type == "sea salt")
                 {
                     price += 2;
                 }

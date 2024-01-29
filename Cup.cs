@@ -35,7 +35,7 @@ namespace PRG2_Assignment2_Team12
             }
             foreach (Flavour flavour in Flavours)
             {
-                if (flavour.Type == "Durian" || flavour.Type == "Ube" || flavour.Type == "Sea Salt")
+                if (flavour.Type == "durian" || flavour.Type == "ube" || flavour.Type == "sea salt")
                 {
                     price += 2;
                 }
