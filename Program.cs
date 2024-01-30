@@ -15,14 +15,8 @@ using System.Security.Cryptography.X509Certificates;
 using System.Xml.Linq;
 using static System.Formats.Asn1.AsnWriter;
 
-
-//chloe - features 2,5 and 6
-//sahana- features 1, 3 ad 4
-
-
 Queue<Order> regularOrderQueue = new Queue<Order>();
 Queue<Order> goldOrderQueue = new Queue<Order>();
-
 
 // Read customers.csv and create a dictionary to store customer data
 Dictionary<int, Customer> customerDictionary = new Dictionary<int, Customer>();
@@ -211,9 +205,7 @@ while (true)
     }
     else if (option == "4")
     {
-
         OptionFour();
-
     }
     else if (option == "5")
     {
@@ -245,10 +237,6 @@ while (true)
 // Feature 1
 void OptionOne()
 {
-    //In this case, i (chloe) used "Celeste" as a test to test if the program worked
-    //So here I have to remove all "Celeste" Values to show only the values taken from the .csv file
-    //Just know that this part works :>
-
     Console.WriteLine($"{"Name",-8} {"MemberID",-12} {"DOB",-14} {"Status",-14} {"Points",-10} {"Punch Card",-10}");
     Console.WriteLine($"{"----",-8} {"--------",-12} {"---",-14} {"------",-14} {"------",-10} {"----------",-10}");
 
@@ -257,9 +245,6 @@ void OptionOne()
     foreach (var entry in customerDictionary)
     {
         Customer customer = entry.Value;
-        // Since I used "Celeste" as my test run experiments, I will remove them from the dictionary
-        // This is because "Celeste" is (unfortunately) now part of the dict permanantly
-        // If this code is removed "Celeste" values will re-appear
 
         if (customer.Name != "Celeste")
         {
@@ -267,8 +252,6 @@ void OptionOne()
         }
     }
     Console.WriteLine("");
-
-
 }
 
 // Feature 2
@@ -377,7 +360,6 @@ void OptionThree()
             using (StreamWriter sw = new StreamWriter("Customers.csv", true))
             {
                 sw.WriteLine($"{newCustomer.Name},{newCustomer.Memberid},{newCustomer.Dob.ToString("dd/MM/yyyy")},{newCustomer.Rewards.Tier},{newCustomer.Rewards.Points},{newCustomer.Rewards.PunchCard}");
-
             }
             Console.WriteLine("\nCustomer is officially a member of I.C.Treats! Welcome:D\n");
             break;
@@ -502,7 +484,6 @@ void OptionFour()
         List<Topping> toppingList = new List<Topping>();
         AskForToppings(toppingList);
 
-            
         List<IceCream> IceCreamList = orderNew.IceCreamList;
         IceCream newOrder;
 
@@ -590,11 +571,9 @@ void OptionFour()
         Console.Write("Do you want topping(s)? (Y/N): ");
         string yesOrNo = Console.ReadLine().ToUpper();
 
-
         if (yesOrNo == "N")
         {
             return;
-
         }
         else
         {
@@ -611,11 +590,6 @@ void OptionFour()
 // Feature 5
 static void OptionFive(Dictionary<int, Customer> customerDictionary)
 {
-    /* list the customers
- prompt ottoo the robot to select a customer and retrieve the selected customer
- retrieve all the order objects of the customer, past and current -- using order history
- for each order, display all the details of the order including datetime received, datetime
-fulfilled(if applicable) and all ice cream details associated with the order*/
     DisplayCustomerDictionary(customerDictionary);
 
     Console.Write("Enter the Member ID of the customer you want to view orders for:");
@@ -678,17 +652,6 @@ static void DisplayCustomerDictionary(Dictionary<int, Customer> customers)
 // Feature 6
 static void OptionSix(Dictionary<int, Customer> customerDictionary)
 {
-    /* - list customers
-     * - user chooses a customer > get that customers order
-     * - list all iceCream objects contained in the order
-     * need to use orderid to refernece all the ice cream orders referencing ice cream list 
-
-     * - choose: [1] modify iceCream, [2] add new iceCream, [3] delete iceCream
-     * [1]: choose which iceCream to modify > prompt for all the information > update accordingly
-     * [2]: prompt for all the information > update accordingly (add to order)
-     * [3]: choose which iceCream to remove > remove iceCream from order 
-     *      (if iceCream count == 1: "You cannot have 0 iceCreams in an order."
-     * - display the new updated order      */
     DisplayCustomerDictionary(customerDictionary);
     Console.Write("Enter the Member ID of the customer you want to view orders for:");
     string inputId = Console.ReadLine();
@@ -1247,13 +1210,6 @@ void ProcessOrderQueue(Order currentOrder)
 // Advanced (b)- Feature 8
 void OptionEight(Dictionary<int, Customer> customerDictionary, List<object[]> timeFulfilledList)
 {
-    /*
-     *  prompt the user for the year
- retrieve all order objects that were successfully fulfilled within the inputted year
- compute and display the monthly charged amounts breakdown & the total charged
-amounts for the input year
-    */
-
     int year;
     while (true)
     {
