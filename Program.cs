@@ -54,6 +54,7 @@ using (StreamReader sr = new StreamReader("customers.csv")) //to read file 'cust
     }
 }
 
+// methods to check if flavour is premium
 bool IsPremiumFlavour(string flavour)
 {
     List<string> premiumFlavours = new List<string> { "durian", "ube", "sea salt" };
@@ -162,13 +163,10 @@ List<Topping> CreateToppingsList(string[] data, int startIndex, int endIndex)
     return toppingsList;
 }
 
-
-
-
 // Display menu
 void DisplayOptions()
 {
-    Console.WriteLine("========= Welcome to I.C.Treats! =========\n" +
+    Console.WriteLine("\n========= Welcome to I.C.Treats! =========\n" +
         "\n1. List all customers\n" +
         "2. List all current orders\n" +
         "3. Register a new customer\n" +
@@ -182,11 +180,7 @@ void DisplayOptions()
     Console.Write("Enter your option: ");
 }
 
-
-
-
 // Run program
-
 while (true)
 {
     DisplayOptions();
@@ -331,55 +325,77 @@ void OptionTwo(Dictionary<int, Customer> customerDictionary)
 // Feature 3
 void OptionThree()
 {
+    // Constants for magic numbers
+    const int MinMemberId = 100000;
+    const int MaxMemberId = 999999;
+
     while (true)
     {
         try
         {
             Console.WriteLine("\nNew Customer\n\r" +
-                          "------------");
+                              "------------");
             Console.Write("Enter your name: ");
             string name = Console.ReadLine();
 
             Random random = new Random();
 
             // Generate a random six-digit ID
-            int memberId = random.Next(100000, 1000000);
+            int memberId;
+            do
+            {
+                // Generate a random member ID until it is unique
+                memberId = random.Next(MinMemberId, MaxMemberId + 1);
+            } while (customerDictionary.ContainsKey(memberId));
 
             Console.WriteLine($"Your 6-digit member ID is {memberId} ");
 
             Console.Write("Enter your date of birth (dd/mm/yyyy): ");
-            DateTime dob = Convert.ToDateTime(Console.ReadLine());
-            if (dob > DateTime.Today)
+            string dobInput = Console.ReadLine();
+
+            // Try to parse the date of birth, and validate it
+            if (!DateTime.TryParse(dobInput, out DateTime dob) || dob > DateTime.Today)
             {
-                throw new Exception("Date of Birth cannot later than today!");
+                // Throw a FormatException for invalid date
+                throw new FormatException("Invalid date of birth. Please enter a valid date.");
             }
 
             string status = "Ordinary";
 
+            // Create a new customer object
             Customer newCustomer = new Customer(name, memberId, dob);
 
+            // Create a new PointCard for the customer
             PointCard newPointCard = new PointCard(0, 0, status);
             newCustomer.Rewards = newPointCard;
+
+            // Add the new customer to the dictionary
             customerDictionary.Add(memberId, newCustomer);
 
-            using (StreamWriter sw = new StreamWriter("Customers.csv", true))
+            using (var sw = new StreamWriter("Customers.csv", true))
             {
+                // Write customer details to the CSV file
+                // Ensure consistent date formatting in the CSV file
                 sw.WriteLine($"{newCustomer.Name},{newCustomer.Memberid},{newCustomer.Dob.ToString("dd/MM/yyyy")},{newCustomer.Rewards.Tier},{newCustomer.Rewards.Points},{newCustomer.Rewards.PunchCard}");
-                        }
-            Console.WriteLine("\nCustomer is officially a member of I.C.Treats! Welcome:D\n");
-            break;
+            }
 
+            Console.WriteLine("\nCustomer is officially a member of I.C.Treats! Welcome:D\n");
+            break;  // Exit the loop after successfully creating a new customer
         }
         catch (FormatException ex)
         {
-            Console.WriteLine(ex.Message);
+            // Handle FormatException for invalid input
+            Console.WriteLine($"Invalid input: {ex.Message}");
+            // Optionally log the exception details
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);
+            // Handle other exceptions
+            Console.WriteLine($"An error occurred: {ex.Message}");
+            // Optionally log the exception details
         }
-
     }
+
 
 }
 
