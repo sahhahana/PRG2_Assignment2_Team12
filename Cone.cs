@@ -117,6 +117,7 @@ namespace PRG2_Assignment2_Team12
             // return a default value 0
             return price;
         }
+        // Helper method to get the price for mix-in flavours
         double GetMixInFlavorPrice(Flavour mixInFlavour)
         {
             // Assuming each mix-in flavor has an additional cost
