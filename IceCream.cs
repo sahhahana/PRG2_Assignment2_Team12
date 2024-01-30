@@ -29,10 +29,12 @@ namespace PRG2_Assignment2_Team12
         public abstract double CalculatePrice();
         public virtual string ToString()
         {
+            string customFlavourString = CustomFlavour != null ? CustomFlavour.ToString() : "No Customization";
             string flavoursString = FormatFlavour(Flavours);
             string toppingsString = FormatToppings(Toppings);
 
-            return $"Option: {Option}\nNumber of Scoops: {Scoops}\nFlavours: {flavoursString}\nToppings: {toppingsString}";
+            return $"Option: {Option}\nNumber of Scoops: {Scoops}\nFlavours: {flavoursString}\nToppings: {toppingsString}" +
+       $"\n\nCustomization:\n{customFlavourString}";
         }
 
         string FormatFlavour(List<Flavour> flavours)
@@ -99,7 +101,8 @@ namespace PRG2_Assignment2_Team12
             return formattedToppings.ToString();
         }
 
-
+        // New customization property
+        public Flavour CustomFlavour { get; set; }
 
     }
 
