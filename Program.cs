@@ -60,9 +60,6 @@ bool IsPremiumFlavour(string flavour)
     List<string> premiumFlavours = new List<string> { "durian", "ube", "sea salt" };
     return premiumFlavours.Contains(flavour);
 }
-
-// Read orders.csv separately beacuse it is used throughout the whole program
-
 // Create a list to store orders for feature 8
 List<object[]> timeFulfilledList = new List<object[]>();
 
@@ -559,8 +556,6 @@ void OptionFour()
         
     }
 }
-    // todo: add points and modify code -- add a orderid couonter, add topping methods, i need to add this order plus info from order in th eorder.csv file, add 1 flavour at a time
-    //Id,MemberId,TimeReceived,TimeFulfilled,Option,Scoops,Dipped,WaffleFlavour,Flavour1,Flavour2,Flavour3,Topping1,Topping2,Topping3,Topping
 
     // Helper method for dipped cone
     bool AskForChocolateDippedCone()
