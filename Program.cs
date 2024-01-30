@@ -15,6 +15,8 @@ using System.Security.Cryptography.X509Certificates;
 using System.Xml.Linq;
 using static System.Formats.Asn1.AsnWriter;
 
+// Set Gold and Regular customers into two separate queues
+// Order will be based on the csv file
 Queue<Order> regularOrderQueue = new Queue<Order>();
 Queue<Order> goldOrderQueue = new Queue<Order>();
 
@@ -53,8 +55,7 @@ using (StreamReader sr = new StreamReader("customers.csv")) //to read file 'cust
         }
     }
 }
-
-// methods to check if flavour is premium
+// Helper method to check if the flavour is a premium flavour
 bool IsPremiumFlavour(string flavour)
 {
     List<string> premiumFlavours = new List<string> { "durian", "ube", "sea salt" };
@@ -65,6 +66,7 @@ List<object[]> timeFulfilledList = new List<object[]>();
 
 Customer customer = null;
 
+// Read orders.csv separately beacuse it is used throughout the whole program
 using (StreamReader sr = new StreamReader("orders.csv"))
 {
     string s = sr.ReadLine(); // Read heading
@@ -160,7 +162,10 @@ List<Topping> CreateToppingsList(string[] data, int startIndex, int endIndex)
     return toppingsList;
 }
 
-// Display menu
+
+
+
+// Display menu and retrieve option number
 void DisplayOptions()
 {
     Console.WriteLine("\n========= Welcome to I.C.Treats! =========\n" +
@@ -253,11 +258,13 @@ void OptionOne()
 // Feature 2
 void OptionTwo(Dictionary<int, Customer> customerDictionary)
 {
+    // Create separate lists for gold and non-gold customers
     List<Customer> goldList = new List<Customer>();
     List<Customer> nonGoldList = new List<Customer>();
 
     foreach (Customer customer in customerDictionary.Values)
     {
+        // Check if the customer is a gold or ordinary customer and add it into the list
         if (customer.Rewards.Tier == "Gold")
         {
             goldList.Add(customer);
@@ -308,10 +315,12 @@ void OptionTwo(Dictionary<int, Customer> customerDictionary)
         }
         Console.WriteLine("");
     }
+    // Helper method to format the flavours (as strings) and skip over null values 
     string FormatFlavour(string f1, string f2, string f3)
     {
         return $"{f1}{(string.IsNullOrWhiteSpace(f2) ? "" : $",{f2}")}{(string.IsNullOrWhiteSpace(f3) ? "" : $",{f3}")}";
     }
+    // Helper method to format the toppings (as strings) and skip over null values
     string FormatToppings(string t1, string t2, string t3)
     {
         return $"{t1}{(string.IsNullOrWhiteSpace(t2) ? "" : $",{t2}")}{(string.IsNullOrWhiteSpace(t3) ? "" : $",{t3}")}";
@@ -368,8 +377,8 @@ void OptionThree()
 
             // Add the new customer to the dictionary
             customerDictionary.Add(memberId, newCustomer);
-
-            using (var sw = new StreamWriter("Customers.csv", true))
+            // Add the user into Customers.csv for them to be a member
+            using (StreamWriter sw = new StreamWriter("Customers.csv", true))
             {
                 // Write customer details to the CSV file
                 // Ensure consistent date formatting in the CSV file
@@ -379,12 +388,14 @@ void OptionThree()
             Console.WriteLine("\nCustomer is officially a member of I.C.Treats! Welcome:D\n");
             break;  // Exit the loop after successfully creating a new customer
         }
+        // Catch errors if the user types a wrong formatted input
         catch (FormatException ex)
         {
             // Handle FormatException for invalid input
             Console.WriteLine($"Invalid input: {ex.Message}");
             // Optionally log the exception details
         }
+        // Catch other forms of unexpected errors
         catch (Exception ex)
         {
             // Handle other exceptions
@@ -400,7 +411,7 @@ void OptionThree()
 // Feature 4
 void OptionFour()
 {
-    // list customer details
+    // List customer details
     Console.WriteLine($"{"Name",-8} {"MemberID",-12} {"DOB",-14} {"Status",-14} {"Points",-10} {"Punch Card",-10}");
     Console.WriteLine($"{"----",-8} {"--------",-12} {"---",-14} {"------",-14} {"------",-10} {"----------",-10}");
 
@@ -410,12 +421,13 @@ void OptionFour()
     }
 
     Customer customer;
+    // Set default for anotherIceCream to be Y to create an ice cream order
     string anotherIceCream = "Y";
 
-    // prompt user to select a customer
+    // Prompt user to select a customer
     Console.Write("Enter customer's member ID to select: ");
     int memberid = Convert.ToInt32(Console.ReadLine());
-    if (customerDictionary.ContainsKey(memberid))
+    if (customerDictionary.ContainsKey(memberid)) // Check if the customer is a member
     {
         customer = customerDictionary[memberid];
     }
@@ -424,11 +436,11 @@ void OptionFour()
         Console.WriteLine("Customer is not a member at I.C.Treats.\nPlease ensure the correct Member ID was selected or register this customer by choosing option 3.");
         return;
     }
-
+    // Make a new order for the customer
     Order orderNew = customer.MakeOrder(customer);
     while (anotherIceCream == "Y")
     {
-        // prompt user to enter their ice cream order
+        // Prompt user to enter their ice cream order
         Console.WriteLine($"{customer.Name}'s Order");
         Console.WriteLine("------------------------------\n");
 
@@ -440,12 +452,12 @@ void OptionFour()
         
         List<string> availableFlavours = new List<string> { "vanilla", "durian", "chocolate", "ube", "strawberry", "sea salt" };
         List<Flavour> flavoursList = new List<Flavour>();
-        if (scoop < 4)
+        if (scoop < 4) // Check the maximum number of scoops = 3
         {
             for (int i = 1; i < scoop + 1; i++)
             {
                 string type;
-                bool premium = false;
+                bool premium = false; // Set default to false
 
                 while (true)
                 {
@@ -455,7 +467,7 @@ void OptionFour()
                     Console.Write($"Flavour for scoop {i}: ");
                     type = Console.ReadLine().ToLower();
 
-                    if (availableFlavours.Contains(type))
+                    if (availableFlavours.Contains(type)) // Check if the input flavour is valid
                     {
                         premium = IsPremiumFlavour(type);
                         Flavour flavour = new Flavour(type, premium, scoop);
@@ -469,7 +481,7 @@ void OptionFour()
                 }
             }
         }
-        else if (scoop == 1)
+        else if (scoop == 1) // Format the asking of flavours differently if it is a single scoop
         {
             while (true)
             {
@@ -481,7 +493,7 @@ void OptionFour()
                 string type = Console.ReadLine().ToLower();
                 bool premium = IsPremiumFlavour(type);
 
-                if (availableFlavours.Contains(type))
+                if (availableFlavours.Contains(type)) // Check if the input flavour is valid
                 {
                     premium = IsPremiumFlavour(type);
                     Flavour flavour = new Flavour(type, premium, scoop);
@@ -520,7 +532,7 @@ void OptionFour()
             string waffleType = AskForWaffleType();
             newOrder = new Waffle(option, scoop, flavoursList, toppingList, waffleType);
         }
-        else
+        else // Check if the input for the ice cream option is valid
         {
             Console.WriteLine("Invalid option! Please enter Cup, Cone, or Waffle.");
             return;
@@ -538,7 +550,7 @@ void OptionFour()
 
         if (anotherIceCream == "N")
         {
-            if (customer.Rewards.Tier == "Gold")
+            if (customer.Rewards.Tier == "Gold") // Adding the customer into the respected queues
             {
                 goldOrderQueue.Enqueue(orderNew);
             }
@@ -556,7 +568,7 @@ void OptionFour()
         
     }
 }
-
+   
     // Helper method for dipped cone
     bool AskForChocolateDippedCone()
     {
@@ -1057,8 +1069,10 @@ static void OptionSix(Dictionary<int, Customer> customerDictionary)
 
 
 // Advanced (a)- Feature 7
-void OptionSeven(Queue<Order> RegularOrderQueue, Queue<Order> GoldOrderQueue)
+void OptionSeven(Queue<Order> RegularOrderQueue, Queue<Order> GoldOrderQueue) 
+// Feature 7 is based on feature 4, so order from 4 will be passed onto 7 for payment
 {
+    // Check if there are orders to process
     if (RegularOrderQueue.Count == 0 && GoldOrderQueue.Count == 0)
     {
         Console.WriteLine("No pending orders to process.");
@@ -1068,6 +1082,7 @@ void OptionSeven(Queue<Order> RegularOrderQueue, Queue<Order> GoldOrderQueue)
     Queue<Order> currentQueue;
     Order currentOrder;
 
+    // Prioritize gold queue
     if (GoldOrderQueue.Count > 0)
     {
         currentQueue = GoldOrderQueue;
@@ -1156,6 +1171,7 @@ void OptionSeven(Queue<Order> RegularOrderQueue, Queue<Order> GoldOrderQueue)
                 information += ",";
             }
         }
+        // Write the information into the orders.csv file
         using (StreamWriter sw = new StreamWriter("orders.csv", true))
         {
             sw.WriteLine(information);
@@ -1178,7 +1194,7 @@ void ProcessOrderQueue(Order currentOrder)
 
     List<double> prices = new List<double>();
     double firstOrder_forPunch = 0;
-    if (currentOrder.IceCreamList.Count > 1)
+    if (currentOrder.IceCreamList.Count > 1) // Check if the number of ice creams in the ice cream list > 1
     {
         firstOrder_forPunch += currentOrder.IceCreamList[0].CalculatePrice();
 
@@ -1193,8 +1209,9 @@ void ProcessOrderQueue(Order currentOrder)
     // Check if it's the customer's birthday
     if (currentOrder.AssociatedCustomer.IsBirthday())
     {
+        // Assuming the birthday deal can only be redeemed once
         bool hasAlreadyComeToday = currentOrder.AssociatedCustomer.OrderHistory.Any(order => order.TimeReceived.Date == DateTime.Now.Date);
-        if (hasAlreadyComeToday)
+        if (hasAlreadyComeToday) // Check if the birthday deal has been redeemed
         {
             Console.WriteLine("The customer has already redeemed their free birthday ice cream.");
             return;
@@ -1290,11 +1307,11 @@ void OptionEight(Dictionary<int, Customer> customerDictionary, List<object[]> ti
             }
             else
             {
-                // indicates a valid year input
+                // Indicates a valid year input
                 break; // Exit the loop if the year is valid
             }
         }
-        catch (FormatException)
+        catch (FormatException) // Catch for wrongly formatted inputs from the user
         {
             Console.WriteLine("Year must be an integer.");
         }
@@ -1332,7 +1349,7 @@ void OptionEight(Dictionary<int, Customer> customerDictionary, List<object[]> ti
     }
 
     Console.WriteLine("\nTotal: ${0:F2}", yearlyTotal);
-
+    // Helper method to get the name of the month (January, February etc)
     string GetMonthName(int monthIndex)
     {
         return CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(monthIndex);

@@ -31,6 +31,8 @@ namespace PRG2_Assignment2_Team12
             TimeReceived = timeReceived;
             AssociatedCustomer = associatedCustomer; // Link the order to the customer
         }
+
+        // Method for modify ice cream
         public void ModifyIceCream(int iceCreamIndex)
         {
             if (iceCreamIndex >= 0 && iceCreamIndex < IceCreamList.Count)
@@ -68,6 +70,8 @@ namespace PRG2_Assignment2_Team12
                 Console.WriteLine("Invalid ice cream index.");
             }
         }
+
+        // Helper method for dipped cone
         bool AskForChocolateDippedCone()
         {
             while (true)
@@ -90,7 +94,7 @@ namespace PRG2_Assignment2_Team12
             }
         }
 
-
+        // Method for waffle type
         string AskForWaffleType()
         {
             List<string> waffleFlavour = new List<string> { "orignal", "red velvet", "charcoal", "pandan" };
@@ -111,6 +115,8 @@ namespace PRG2_Assignment2_Team12
                 }
             }
         }
+
+        // Method for toppings
         void AskForToppings(List<Topping> toppingList)
         {
             Console.WriteLine("Do you want topping(s)? (Y/N): ");
@@ -140,11 +146,15 @@ namespace PRG2_Assignment2_Team12
                 }
             }
         }
+
+        // Check if flavour is a premium flavour
         bool IsPremiumFlavour(string flavour)
         {
             List<string> premiumFlavours = new List<string> { "durian", "ube", "sea salt" };
             return premiumFlavours.Contains(flavour);
         }
+
+        // Retrieve flavours from user input
         private List<Flavour> GetFlavours(int newScoopsInput)
         {
             List<string> availableFlavours = new List<string> { "vanilla", "durian", "chocolate", "ube", "strawberry", "sea salt" };
@@ -181,7 +191,7 @@ namespace PRG2_Assignment2_Team12
             return flavoursList;
         }
 
-
+        // Method to create ice cream 
         private IceCream CreateIceCream(string newOption, int newScoopsInput, List<Flavour> newFlavourList, List<Topping> newToppingList)
         {
             IceCream newIceCream = null;
@@ -204,6 +214,7 @@ namespace PRG2_Assignment2_Team12
             return newIceCream;
         }
 
+        // Helper method to display modified order
         private void DisplayModifiedOrder(IceCream modifiedIceCream)
         {
             Console.WriteLine("Order modified and added. This is your changed order:");
@@ -229,6 +240,8 @@ namespace PRG2_Assignment2_Team12
                 Console.WriteLine("No toppings requested.");
             }
         }
+
+        // Method to add ice cream
         public void AddIceCream(IceCream iceCream)
         {
             // Update the ice cream with the modified information
@@ -236,6 +249,7 @@ namespace PRG2_Assignment2_Team12
             Console.WriteLine("\nOrder has been made successfully!");
         }
 
+        // Method to delete ice cream
         public void DeleteIceCream(int iceCreamIndex)
         {
             if (iceCreamIndex >= 0 && iceCreamIndex < IceCreamList.Count)
@@ -253,7 +267,7 @@ namespace PRG2_Assignment2_Team12
         }
 
 
-
+        // Method to calculate total cost of all ice creams in customer's current order
         public double CalculateTotal()
         {
             double total = 0;

@@ -22,7 +22,7 @@ namespace PRG2_Assignment2_Team12
         public string Name { get; set; }
         public int Memberid { get; set; }
         public DateTime Dob{ get; set; }
-        public Order CurrentOrder { get; set; } // customer's latest order before being fulfilled
+        public Order CurrentOrder { get; set; } // Customer's latest order before being fulfilled
         public List<Order> OrderHistory { get; set; } = new List<Order>();
         public PointCard Rewards { get; set; } = new PointCard();
         public Customer() { }
@@ -32,6 +32,7 @@ namespace PRG2_Assignment2_Team12
             Memberid = memberid;
             Dob = dob;
         }
+        // Method to make a new order for the customer
         public Order MakeOrder( Customer customer)
         {
             int ID = OrderHistory.Count + 1;
@@ -40,7 +41,7 @@ namespace PRG2_Assignment2_Team12
             OrderHistory.Add(newOrder);  // Add the new order to the customer's order history
             return newOrder;
         }
-
+        // Method to check if it is the customer's birthday today
         public bool IsBirthday()
         {
             if (Dob.Month == DateTime.Today.Month && Dob.Day == DateTime.Today.Day) 
@@ -49,7 +50,7 @@ namespace PRG2_Assignment2_Team12
             }
             return false;
         }
-
+        // Method to make a custom order for the customer
         public Order MakeCustomOrder(Customer customer)
         {
             int orderId = OrderHistory.Count + 1;

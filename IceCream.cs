@@ -37,37 +37,38 @@ namespace PRG2_Assignment2_Team12
        $"\n\nCustomization:\n{customFlavourString}";
         }
 
+        // Helper method to format flavours list into a string for the printing of flavours
         string FormatFlavour(List<Flavour> flavours)
         {
             if (flavours == null || flavours.Count == 0)
             {
                 return string.Empty; // or any other default value
             }
-
+            // Convert flavour list into string list
             List<string> flavourNames = flavours.Select(flavour => flavour.Type).ToList();
 
             return FormatFlavour(flavourNames.ToArray());
         }
-
+        // Helper method to format toppings list into a string for the printing of toppings
         string FormatToppings(List<Topping> toppings)
         {
             if (toppings == null || toppings.Count == 0)
             {
                 return string.Empty; // or any other default value
             }
-
+            // Convert toppings list into string list
             List<string> toppingNames = toppings.Select(topping => topping.Type).ToList();
 
             return FormatToppings(toppingNames.ToArray());
         }
-
+        // Helper method to format the string of flavours for printing
         string FormatFlavour(string[] flavours)
         {
             if (flavours == null || flavours.Length == 0)
             {
                 return string.Empty; // or any other default value
             }
-
+            // Use StringBuilder to help join strings together which skips over null flavours
             StringBuilder formattedFlavours = new StringBuilder(flavours[0]);
 
             for (int i = 1; i < flavours.Length && i < 3; i++)
@@ -80,14 +81,14 @@ namespace PRG2_Assignment2_Team12
 
             return formattedFlavours.ToString();
         }
-
+        // Helper method to format the string of toppings for printing
         string FormatToppings(string[] toppings)
         {
             if (toppings == null || toppings.Length == 0)
             {
                 return string.Empty; // or any other default value
             }
-
+            // Use StringBuilder to help join strings together which skips over null toppings
             StringBuilder formattedToppings = new StringBuilder(toppings[0]);
 
             for (int i = 1; i < toppings.Length && i < 3; i++)
@@ -100,10 +101,10 @@ namespace PRG2_Assignment2_Team12
 
             return formattedToppings.ToString();
         }
-
+        /*
         // New customization property
         public Flavour CustomFlavour { get; set; }
-
+        */
     }
 
 }

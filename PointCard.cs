@@ -26,20 +26,23 @@ namespace PRG2_Assignment2_Team12
             Points = points;
             PunchCard = punchCard;
             Tier = tier;
-            UpdateTier(); //use UpdateTier in the case where the no. of points is >0 50 or >= 100
+            UpdateTier(); // Use UpdateTier in the case where the number of points is >0, 50 or >= 100
             
         }
+        // Method to add points to the pointcard
         public void AddPoints(int amountPaid)
         {
             int earnedPoints = (int)Math.Floor(amountPaid * 0.72); //formula based on rubrics
             Points += earnedPoints;
             UpdateTier();
         }
+        // Method to redeem the points from the pointcard
         public void RedeemPoints(int pointsToRedeem)
         {
-            if (Tier == "Silver" || Tier == "Gold") // || should refer to 'or'
+            if (Tier == "Silver" || Tier == "Gold") // Check if the user's tier is silver or gold
             {
                 Points -= pointsToRedeem;
+                // Call to update the tier in case the number of points drops the tier status
                 UpdateTier();
             }
             else
@@ -63,7 +66,9 @@ namespace PRG2_Assignment2_Team12
                     
             }
         }
-        public void UpdateTier() //for easier reference to update the tier regularly instead of constantly re-coding it out
+        // Method to update tier
+        // For easier reference to update the tier regularly instead of constantly re-coding it out
+        public void UpdateTier() 
         {
             if (Points >= 100)
             {
