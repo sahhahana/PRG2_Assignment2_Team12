@@ -32,8 +32,7 @@ namespace PRG2_Assignment2_Team12
             string flavoursString = FormatFlavour(Flavours);
             string toppingsString = FormatToppings(Toppings);
 
-            return $"Option: {Option}\nNumber of Scoops: {Scoops}\nFlavours: {flavoursString}\nToppings: {toppingsString}" +
-       $"\n\nCustomization:\n{customFlavourString}";
+            return $"Option: {Option}\nNumber of Scoops: {Scoops}\nFlavours: {flavoursString}\nToppings: {toppingsString}";
         }
 
         // Helper method to format flavours list into a string for the printing of flavours
@@ -101,4 +100,5 @@ namespace PRG2_Assignment2_Team12
             return formattedToppings.ToString();
         }
 
+    }
 }

@@ -22,42 +22,40 @@ namespace PRG2_Assignment2_Team12
         public override double CalculatePrice()
         {
             double price = 0;
-            if (CustomFlavour != null)
+            price = 0;
+            if (Scoops == 1)
             {
-                price = 0;
-                if (Scoops == 1)
-                {
-                    price = 4.0;
-                }
-                else if (Scoops == 2)
-                {
-                    price = 5.5;
-                }
-                else if (Scoops == 3)
-                {
-                    price = 6.5;
-                }
-                foreach (Flavour flavour in Flavours)
-                {
-                    if (flavour.Type == "Durian" || flavour.Type == "Ube" || flavour.Type == "Sea Salt")
-                    {
-                        price += 2.0;
-                    }
-                }
-                double toppingPrice = 0;
-                foreach (Topping topping in Toppings)
-                {
-                    if (topping != null)
-                    {
-                        toppingPrice += 1.0;
-                    }
-                }
-                if (Dipped == true)
+                price = 4.0;
+            }
+            else if (Scoops == 2)
+            {
+                price = 5.5;
+            }
+            else if (Scoops == 3)
+            {
+                price = 6.5;
+            }
+            foreach (Flavour flavour in Flavours)
+            {
+                if (flavour.Type == "Durian" || flavour.Type == "Ube" || flavour.Type == "Sea Salt")
                 {
                     price += 2.0;
                 }
-                price += toppingPrice;
             }
+            double toppingPrice = 0;
+            foreach (Topping topping in Toppings)
+            {
+                if (topping != null)
+                {
+                    toppingPrice += 1.0;
+                }
+            }
+            if (Dipped == true)
+            {
+                price += 2.0;
+            }
+            return price += toppingPrice;
+        }
 
         public override string ToString()
         {
