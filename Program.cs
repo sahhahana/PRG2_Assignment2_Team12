@@ -55,6 +55,19 @@ using (StreamReader sr = new StreamReader("customers.csv")) //to read file 'cust
 }
 // COMMON METHODS
 //=================
+// method to add order to queue
+void addingOrderToQueue(Order orderNew, string membershipStatus)
+{
+    if (membershipStatus == "Gold")
+    {
+        goldOrderQueue.Enqueue(orderNew);
+    }
+    else
+    {
+        regularOrderQueue.Enqueue(orderNew);
+    }
+}
+
 
 // method to check ice cream option
 string checkIceCreamOption()
@@ -333,7 +346,7 @@ while (true)
     }
     else if (option == "0")
     {
-        Console.WriteLine("Thank you for shopping with I.C.Treats!");
+        Console.WriteLine("Enjoy your ice cream!");
         break;
     }
     else
@@ -348,16 +361,14 @@ void OptionOne()
     Console.WriteLine($"{"Name",-8} {"MemberID",-12} {"DOB",-14} {"Status",-14} {"Points",-10} {"Punch Card",-10}");
     Console.WriteLine($"{"----",-8} {"--------",-12} {"---",-14} {"------",-14} {"------",-10} {"----------",-10}");
 
-    List<int> membersToRemove = new List<int>();
+    //List<int> membersToRemove = new List<int>();
 
     foreach (var entry in customerDictionary)
     {
         Customer customer = entry.Value;
-
-        if (customer.Name != "Celeste")
-        {
-            Console.WriteLine($"{customer.Name,-8} {customer.Memberid,-12} {customer.Dob.ToString("dd/MM/yyyy"),-14} {customer.Rewards.Tier,-14} {customer.Rewards.Points,-10} {customer.Rewards.PunchCard,-10}");
-        }
+       
+        Console.WriteLine($"{customer.Name,-8} {customer.Memberid,-12} {customer.Dob.ToString("dd/MM/yyyy"),-14} {customer.Rewards.Tier,-14} {customer.Rewards.Points,-10} {customer.Rewards.PunchCard,-10}");
+        
     }
     Console.WriteLine("");
 }
@@ -435,8 +446,8 @@ void OptionTwo(Dictionary<int, Customer> customerDictionary)
 void OptionThree()
 {
     // Constants for memberID
-    const int MinMemberId = 100000;
-    const int MaxMemberId = 999999;
+    const int minMemberId = 100000;
+    const int maxMemberId = 999999;
 
     while (true)
     {
@@ -466,16 +477,17 @@ void OptionThree()
             do
             {
                 // Generate a random member ID until it is unique
-                memberId = random.Next(MinMemberId, MaxMemberId + 1);
+                memberId = random.Next(minMemberId, maxMemberId + 1);
             } while (customerDictionary.ContainsKey(memberId));
 
             Console.WriteLine($"Your 6-digit member ID is {memberId} ");
 
             Console.Write("Enter your date of birth (dd/mm/yyyy): ");
             string dobInput = Console.ReadLine();
+            DateTime dob;
 
             // Try to parse the date of birth, and validate it
-            if (!DateTime.TryParse(dobInput, out DateTime dob) || dob > DateTime.Today)
+            if (!DateTime.TryParseExact(dobInput, "dd/MM/yyyy", null, DateTimeStyles.None, out dob) || (dob > DateTime.Today && dob.Year > 1900))
             {
                 // Throw a FormatException for invalid date
                 throw new FormatException("Invalid date of birth. Please enter a valid date.");
@@ -500,7 +512,7 @@ void OptionThree()
                 sw.WriteLine($"{newCustomer.Name},{newCustomer.Memberid},{newCustomer.Dob.ToString("dd/MM/yyyy")},{newCustomer.Rewards.Tier},{newCustomer.Rewards.Points},{newCustomer.Rewards.PunchCard}");
             }
 
-            Console.WriteLine("\nCustomer is officially a member of I.C.Treats! Welcome:D\n");
+            Console.WriteLine($"\n{newCustomer.Name} is officially a member of I.C.Treats! Welcome:D\n");
             break;  // Exit the loop after successfully creating a new customer
         }
         catch (FormatException ex)
@@ -539,7 +551,7 @@ void OptionFour()
         string anotherIceCream = "Y";
 
         // prompt user to select a customer
-        Console.Write("Enter customer's member ID to select: ");
+        Console.Write("\nEnter customer's member ID to select: ");
         int memberid = Convert.ToInt32(Console.ReadLine());
         // check if customer is a member
         if (customerDictionary.ContainsKey(memberid))
@@ -551,15 +563,18 @@ void OptionFour()
             Console.WriteLine("Customer is not a member at I.C.Treats.\nPlease ensure the correct Member ID was selected or register this customer by choosing option 3.");
             return;
         }
-        // assigning order as currentOrder
+
+        //creating order object to make an order
         Order orderNew = customer.MakeOrder(customer);
+
+        // assigning order as currentOrder
         orderNew = customer.CurrentOrder;
 
         while (anotherIceCream == "Y")
         {
             // prompt user to enter their ice cream order
             Console.WriteLine($"{customer.Name}'s Order");
-            Console.WriteLine("------------------------------\n");
+            Console.WriteLine("------------------------------");
 
             string option = checkIceCreamOption();
 
@@ -614,14 +629,8 @@ void OptionFour()
 
             if (anotherIceCream == "N")
             {
-                if (customer.Rewards.Tier == "Gold")
-                {
-                    goldOrderQueue.Enqueue(orderNew);
-                }
-                else
-                {
-                    regularOrderQueue.Enqueue(orderNew);
-                }
+                string membershipStatus = customer.Rewards.Tier;
+                addingOrderToQueue(orderNew, membershipStatus);
                 break; // Exit the loop if the user enters "N"
             }
             else
@@ -1118,7 +1127,8 @@ void OptionSeven(Queue<Order> RegularOrderQueue, Queue<Order> GoldOrderQueue)
         {
             foreach (IceCream iceCream in order.IceCreamList)
             {
-                Console.WriteLine($"{iceCream.ToString()}\n");
+                Console.WriteLine($"{iceCream.ToString()}");
+                Console.WriteLine($"Total: ${iceCream.CalculatePrice():0.00}\n");
             }
         }
 
@@ -1192,20 +1202,51 @@ void OptionSeven(Queue<Order> RegularOrderQueue, Queue<Order> GoldOrderQueue)
                     information += ",";
                 }
             }
+            // writing order into order.csv file
             using (StreamWriter sw = new StreamWriter("orders.csv", true))
             {
                 sw.WriteLine(information);
             }
+            
+
+            // Specify the name to search for and the new value
+            string searchName = customer.Name;
+            string newValue = customer.Rewards.Points.ToString();
+
+            // Read all lines from the original CSV file
+            string[] lines = File.ReadAllLines("customers.csv");
+
+            // Create a temporary file to write the updated content
+            string tempFilePath = Path.GetTempFileName("tempCustomers.csv");
+
+            using (StreamWriter writer = new StreamWriter(tempFilePath))
+            {
+                foreach (string line in lines)
+                {
+                    string[] values = line.Split(',');
+
+                    // Assuming the name is in the first column (adjust index accordingly)
+                    if (values.Length > 0 && values[0] == searchName)
+                    {
+                        // Assuming you want to update the second column (adjust index accordingly)
+                        values[1] = newValue;
+                    }
+
+                    // Write the updated line to the temporary file
+                    writer.WriteLine(string.Join(",", values));
+                }
+            }
+
 
         }
         // Method to process order queue
         void ProcessOrderQueue(Order currentOrder)
         {
-
+            string name = currentOrder.AssociatedCustomer.Name;
             // Display the total bill amount
             double totalBill = currentOrder.CalculateTotal();
-            Console.WriteLine($"{currentOrder.AssociatedCustomer.Name}'s total is ${totalBill:0.00}");
-            Console.WriteLine($"{currentOrder.AssociatedCustomer.Name}'s Membership Status: {currentOrder.AssociatedCustomer.Rewards.Tier}\n{currentOrder.AssociatedCustomer.Name}'s Membership Points: {currentOrder.AssociatedCustomer.Rewards.Points}\n");
+            Console.WriteLine($"{name}'s total is ${totalBill:0.00}");
+            Console.WriteLine($"{name}'s Membership Status: {currentOrder.AssociatedCustomer.Rewards.Tier}\n{name}'s Membership Points: {currentOrder.AssociatedCustomer.Rewards.Points}\n");
 
 
             List<double> prices = new List<double>();
@@ -1242,7 +1283,7 @@ void OptionSeven(Queue<Order> RegularOrderQueue, Queue<Order> GoldOrderQueue)
                     {
                         totalBill = 0;
                     }
-                    Console.WriteLine($"FREE Birthday Ice Cream Redeemed!\n{currentOrder.AssociatedCustomer.Name}'s total is ${totalBill:0.00}");
+                    Console.WriteLine($"FREE Birthday Ice Cream Redeemed!\n{name}'s total is ${totalBill:0.00}");
 
                 }
 
@@ -1261,11 +1302,11 @@ void OptionSeven(Queue<Order> RegularOrderQueue, Queue<Order> GoldOrderQueue)
                 }
 
 
-                Console.WriteLine($"Yay! 11th Ice Cream is FREE!\n{currentOrder.AssociatedCustomer.Name}'s total is ${totalBill:0.00}");
+                Console.WriteLine($"Yay! 11th Ice Cream is FREE!\n{name}'s total is ${totalBill:0.00}");
             }
 
             // Check Pointcard status to determine if the customer can redeem points
-            if (currentOrder.AssociatedCustomer.Rewards.Tier == "Silver" || currentOrder.AssociatedCustomer.Rewards.Tier == "Gold") // Check if the user's tier is silver or gold
+            if (currentOrder.AssociatedCustomer.Rewards.Tier == "Silver" || currentOrder.AssociatedCustomer.Rewards.Tier == "Gold" && totalBill != 0) // Check if the user's tier is silver or gold
             {
                 int pointsToOffset = 0;
                 while (true)
@@ -1289,7 +1330,7 @@ void OptionSeven(Queue<Order> RegularOrderQueue, Queue<Order> GoldOrderQueue)
             }
             else
             {
-                Console.WriteLine($"{currentOrder.AssociatedCustomer.Name} is unable redeem points yet.");
+                Console.WriteLine($"{name} is unable redeem points.");
             }
 
 

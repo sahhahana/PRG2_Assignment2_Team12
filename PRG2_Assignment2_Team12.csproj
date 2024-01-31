@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <None Include="bin\Debug\net6.0\customers.csv" />
+    <None Include="bin\Debug\net6.0\orders.csv" />
   </ItemGroup>
 
 </Project>

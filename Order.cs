@@ -111,7 +111,6 @@ namespace PRG2_Assignment2_Team12
                 else
                 {
                     Console.WriteLine("Please enter your waffle type.");
-                    return "";
                 }
             }
         }
