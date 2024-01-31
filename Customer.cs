@@ -50,19 +50,6 @@ namespace PRG2_Assignment2_Team12
             }
             return false;
         }
-        // Method to make a custom order for the customer
-        public Order MakeCustomOrder(Customer customer)
-        {
-            int orderId = OrderHistory.Count + 1;
-            Order customOrder = new Order(orderId, DateTime.Now, customer);
-            CurrentOrder = customOrder; // Link the new order to the customer's current order
-            OrderHistory.Add(customOrder); // Add the new order to the customer's order history
-
-            //customOrder.MakeCustomOrder(this);  // Call the new method in the Order class
-
-            return customOrder;
-        }
-
         public override string ToString()
         {
             return $"{base.ToString()} Name: {Name}, Member ID: {Memberid}, DOB: {Dob:dd/MM/yyyy}";

@@ -29,7 +29,6 @@ namespace PRG2_Assignment2_Team12
         public abstract double CalculatePrice();
         public virtual string ToString()
         {
-            string customFlavourString = CustomFlavour != null ? CustomFlavour.ToString() : "No Customization";
             string flavoursString = FormatFlavour(Flavours);
             string toppingsString = FormatToppings(Toppings);
 
@@ -101,10 +100,5 @@ namespace PRG2_Assignment2_Team12
 
             return formattedToppings.ToString();
         }
-        /*
-        // New customization property
-        public Flavour CustomFlavour { get; set; }
-        */
-    }
 
 }

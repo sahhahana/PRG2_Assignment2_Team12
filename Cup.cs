@@ -21,8 +21,6 @@ namespace PRG2_Assignment2_Team12
         public override double CalculatePrice()
         {
             double price = 0;
-            if (CustomFlavour == null)
-            {
                 price = 0;
                 if (Scoops == 1)
                 {
