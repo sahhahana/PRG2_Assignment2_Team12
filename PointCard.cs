@@ -18,7 +18,7 @@ namespace PRG2_Assignment2_Team12
         private int punchCard;
         private string tier;
         public int Points { get; set; }
-        public int PunchCard { get; set;}
+        public int PunchCard { get; set; }
         public string Tier { get; set; }
         public PointCard() { }
         public PointCard(int punchCard, int points, string tier)
@@ -27,7 +27,7 @@ namespace PRG2_Assignment2_Team12
             PunchCard = punchCard;
             Tier = tier;
             UpdateTier(); // Use UpdateTier in the case where the number of points is >0, 50 or >= 100
-            
+
         }
         // Method to add points to the pointcard
         public void AddPoints(int amountPaid)
@@ -39,7 +39,7 @@ namespace PRG2_Assignment2_Team12
         // Method to redeem the points from the pointcard
         public void RedeemPoints(int pointsToRedeem)
         {
-            if (Tier == "Silver" || Tier == "Gold") // Check if the user's tier is silver or gold
+            if (Points >= pointsToRedeem) // Check if the user's tier is silver or gold
             {
                 Points -= pointsToRedeem;
                 // Call to update the tier in case the number of points drops the tier status
@@ -47,28 +47,27 @@ namespace PRG2_Assignment2_Team12
             }
             else
             {
-                Console.WriteLine("Only Silver and Gold members can redeem points.");
+                Console.WriteLine("Insufficient number of points.");
+                return;
             }
         }
         public void Punch()
         {
-            PunchCard++;
-            if (PunchCard % 10 == 0)
+
+            if (PunchCard > 11)
             {
-                if (PunchCard > 10)
-                {
-                    PunchCard = 10; // Reset punch card to 10
-                }
-                else
-                {
-                    PunchCard = 0; // Reset punch card
-                }
-                    
+                PunchCard = 10; // Reset punch card to 10
             }
+            else if (PunchCard == 11)
+            {
+                PunchCard = 0; // Reset punch card
+            }
+
+
         }
         // Method to update tier
         // For easier reference to update the tier regularly instead of constantly re-coding it out
-        public void UpdateTier() 
+        public void UpdateTier()
         {
             if (Points >= 100)
             {

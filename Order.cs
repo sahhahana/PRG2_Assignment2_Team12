@@ -192,20 +192,21 @@ namespace PRG2_Assignment2_Team12
         }
 
         // Method to create ice cream 
-        private IceCream CreateIceCream(string newOption, int newScoopsInput, List<Flavour> newFlavourList, List<Topping> newToppingList)
+        public IceCream CreateIceCream(string newOption, int newScoopsInput, List<Flavour> newFlavourList, List<Topping> newToppingList)
         {
             IceCream newIceCream = null;
 
-            if (newOption.ToUpper() == "CUP")
+            if (newOption.ToLower() == "cup")
             {
                 newIceCream = new Cup(newOption, newScoopsInput, newFlavourList, newToppingList);
+
             }
-            else if (newOption.ToUpper() == "CONE")
+            else if (newOption.ToLower() == "cone")
             {
                 bool dipped = AskForChocolateDippedCone();
                 newIceCream = new Cone(newOption, newScoopsInput, newFlavourList, newToppingList, dipped);
             }
-            else if (newOption.ToUpper() == "WAFFLE")
+            else if (newOption.ToLower() == "waffle")
             {
                 string waffleType = AskForWaffleType();
                 newIceCream = new Waffle(newOption, newScoopsInput, newFlavourList, newToppingList, waffleType);
