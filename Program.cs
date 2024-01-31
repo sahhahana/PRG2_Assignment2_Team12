@@ -307,6 +307,7 @@ while (true)
 {
     DisplayOptions();
     string option = Console.ReadLine();
+    Console.WriteLine(" ");
 
     if (option == "1")
     {
@@ -1037,7 +1038,7 @@ static void OptionSix(Dictionary<int, Customer> customerDictionary)
     // Helper method for waffle type
     string AskForWaffleType()
     {
-        List<string> waffleFlavour = new List<string> { "oroginal", "red velvet", "charcoal", "pandan" };
+        List<string> waffleFlavour = new List<string> { "original", "red velvet", "charcoal", "pandan" };
         while (true)
         {
             Console.Write("Select Waffle Type (original, red velvet, charcoal, or pandan): ");
@@ -1202,41 +1203,11 @@ void OptionSeven(Queue<Order> RegularOrderQueue, Queue<Order> GoldOrderQueue)
                     information += ",";
                 }
             }
-            // writing order into order.csv file
+            // write order into orders.csv
             using (StreamWriter sw = new StreamWriter("orders.csv", true))
             {
                 sw.WriteLine(information);
             }
-            
-
-            // Specify the name to search for and the new value
-            string searchName = customer.Name;
-            string newValue = customer.Rewards.Points.ToString();
-
-            // Read all lines from the original CSV file
-            string[] lines = File.ReadAllLines("customers.csv");
-
-            // Create a temporary file to write the updated content
-            string tempFilePath = Path.GetTempFileName("tempCustomers.csv");
-
-            using (StreamWriter writer = new StreamWriter(tempFilePath))
-            {
-                foreach (string line in lines)
-                {
-                    string[] values = line.Split(',');
-
-                    // Assuming the name is in the first column (adjust index accordingly)
-                    if (values.Length > 0 && values[0] == searchName)
-                    {
-                        // Assuming you want to update the second column (adjust index accordingly)
-                        values[1] = newValue;
-                    }
-
-                    // Write the updated line to the temporary file
-                    writer.WriteLine(string.Join(",", values));
-                }
-            }
-
 
         }
         // Method to process order queue
@@ -1245,7 +1216,7 @@ void OptionSeven(Queue<Order> RegularOrderQueue, Queue<Order> GoldOrderQueue)
             string name = currentOrder.AssociatedCustomer.Name;
             // Display the total bill amount
             double totalBill = currentOrder.CalculateTotal();
-            Console.WriteLine($"{name}'s total is ${totalBill:0.00}");
+            Console.WriteLine($"\n{name}'s total is ${totalBill:0.00}");
             Console.WriteLine($"{name}'s Membership Status: {currentOrder.AssociatedCustomer.Rewards.Tier}\n{name}'s Membership Points: {currentOrder.AssociatedCustomer.Rewards.Points}\n");
 
 
@@ -1302,7 +1273,8 @@ void OptionSeven(Queue<Order> RegularOrderQueue, Queue<Order> GoldOrderQueue)
                 }
 
 
-                Console.WriteLine($"Yay! 11th Ice Cream is FREE!\n{name}'s total is ${totalBill:0.00}");
+                Console.WriteLine($"Yay! 11th Ice Cream is FREE!\n");
+                Console.WriteLine($"{name}'s total is ${totalBill:0.00}");
             }
 
             // Check Pointcard status to determine if the customer can redeem points
@@ -1335,10 +1307,10 @@ void OptionSeven(Queue<Order> RegularOrderQueue, Queue<Order> GoldOrderQueue)
 
 
             // Display the final total bill amount
-            Console.WriteLine($"Final Total Bill Amount: {totalBill:C}");
+            Console.WriteLine($"\nFinal Total Bill Amount: {totalBill:C}");
 
             // Prompt user to press any key to make payment
-            Console.WriteLine("Press any key to make payment...");
+            Console.WriteLine("\nPress any key to make payment...");
             Console.ReadKey();
 
             // Increment the punch card for every ice cream in the order (if it goes above 10, set it back down to 10)

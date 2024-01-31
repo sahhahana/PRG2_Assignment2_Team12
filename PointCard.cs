@@ -69,18 +69,35 @@ namespace PRG2_Assignment2_Team12
         // For easier reference to update the tier regularly instead of constantly re-coding it out
         public void UpdateTier()
         {
-            if (Points >= 100)
+            if (Tier == "Silver")
             {
-                Tier = "Gold";
+                if (Points >= 100)
+                {
+                    Tier = "Gold";
+                }
+                else
+                {
+                    Tier = "Silver";
+                }
             }
-            else if (Points >= 50)
+            else if (Tier == "Ordinary")
             {
-                Tier = "Silver";
-            }
-            else
-            {
-                Tier = "Ordinary";
+               
+                if (Points >= 100)
+                {
+                    Tier = "Gold";
+                }
+                else if (Points >= 50)
+                {
+                    Tier = "Silver";
+                }
+                else
+                {
+                    Tier = "Ordinary";
+                }
+
             }
         }
+
     }
 }
